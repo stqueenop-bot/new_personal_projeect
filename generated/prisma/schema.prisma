@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  PARTIAL
+  FAILED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  EXPIRED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  mobile    String?  @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders Order[]
+
+  @@map("users")
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  serviceId Int
+  link      String
+  quantity  Int
+  amount    Float
+  status    OrderStatus @default(PENDING)
+  remark    String?
+  userId    String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  user     User?     @relation(fields: [userId], references: [id])
+  payment  Payment?
+  smmOrder SmmOrder?
+
+  @@map("orders")
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  zapupiOrderId  String        @unique
+  orderId        String        @unique
+  amount         Float
+  status         PaymentStatus @default(PENDING)
+  paymentUrl     String?
+  utr            String?
+  customerMobile String?
+  zapupiTxnId    String?
+  failureReason  String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("payments")
+}
+
+model SmmOrder {
+  id         String      @id @default(uuid())
+  orderId    String      @unique
+  smmOrderId String?
+  serviceId  Int
+  link       String
+  quantity   Int
+  status     OrderStatus @default(PENDING)
+  startCount Int?
+  remains    Int?
+  charge     Float?
+  errorMsg   String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("smm_orders")
+}
+
+model Banner {
+  id              String   @id @default(uuid())
+  title           String
+  subtitle        String
+  buttonText      String
+  buttonLink      String
+  imageUrl        String?
+  backgroundColor String   @default("from-orange-400 to-orange-600")
+  sortOrder       Int      @default(0)
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("banners")
+}
+
+model SpecialOffer {
+  id          String   @id @default(uuid())
+  serviceSlug String
+  title       String
+  badge       String   @default("LIVE")
+  active      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("special_offers")
+}
