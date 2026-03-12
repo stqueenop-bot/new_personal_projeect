@@ -18,7 +18,7 @@ class SmmService_Class {
         private readonly apiUrl: string,
         private readonly apiKey: string,
         private readonly panelName: string
-    ) {}
+    ) { }
 
     /**
      * Generic helper to post to the SSM panel API.

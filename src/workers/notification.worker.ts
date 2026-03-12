@@ -1,7 +1,7 @@
 import { ConsumeMessage } from 'amqplib';
-import { rabbitMQService, QUEUES } from '../services/rabbitmq.service.js';
-import { telegramService } from '../services/telegram.service.js';
-import { logger } from '../utils/logger.js';
+import { rabbitMQService, QUEUES } from '../services/rabbitmq.service';
+import { telegramService } from '../services/telegram.service';
+import { logger } from '../utils/logger';
 
 /**
  * Handles order-related notifications (Telegram).

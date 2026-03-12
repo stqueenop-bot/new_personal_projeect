@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Express + TypeScript + Prisma backend with ZapUPI payment, RabbitMQ, and Telegram bot for SMM orders",
   "main": "dist/src/index.js",
-  "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "npx prisma generate && tsc",

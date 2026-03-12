@@ -1,15 +1,19 @@
 {
     "compilerOptions": {
-        "module": "ESNext",
-        "moduleResolution": "bundler",
+        "module": "CommonJS",
+        "moduleResolution": "Node",
         "target": "ES2023",
         "outDir": "dist",
+        "rootDir": "./",
         "strict": false,
         "esModuleInterop": true,
+        "allowJs": true,
+        "skipLibCheck": true
     },
     "include": [
         "src/**/*",
-        "lib/initiatePrisma.ts"
+        "lib/**/*",
+        "generated/**/*"
     ],
     "exclude": [
         "node_modules",
