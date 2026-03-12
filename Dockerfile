@@ -17,8 +17,10 @@ COPY . .
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
 
-# Make build script executable and run it
-RUN chmod +x ./scripts/build.sh && ./scripts/build.sh
+# Make build script executable, fix Windows line endings, and run it
+RUN chmod +x ./scripts/build.sh && \
+    sed -i 's/\r$//' ./scripts/build.sh && \
+    ./scripts/build.sh
 
 
 # --- Production Stage ---
