@@ -45,7 +45,7 @@ export async function getBanners(_req: Request, res: Response, next: NextFunctio
  */
 export async function createBanner(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const data = createBannerSchema.parse(req.body);
+        const data = req.body;
 
         const banner = await prisma.banner.create({ data });
 
