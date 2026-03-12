@@ -11,20 +11,26 @@ const envSchema = z.object({
     DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
 
     // ZapUPI
-    ZAPUPI_TOKEN_KEY: z.string().min(1, 'ZAPUPI_TOKEN_KEY is required'),
-    ZAPUPI_SECRET_KEY: z.string().min(1, 'ZAPUPI_SECRET_KEY is required'),
+    ZAPUPI_TOKEN_KEY: z.string().optional(),
+    ZAPUPI_SECRET_KEY: z.string().optional(),
     ZAPUPI_API_URL: z.string().default('https://api.zapupi.com/api'),
 
     // RabbitMQ
     RABBITMQ_URL: z.string().default('amqp://guest:guest@localhost:5672'),
 
     // Telegram
-    TELEGRAM_BOT_TOKEN: z.string().min(1, 'TELEGRAM_BOT_TOKEN is required'),
-    TELEGRAM_ADMIN_CHAT_ID: z.string().min(1, 'TELEGRAM_ADMIN_CHAT_ID is required'),
+    TELEGRAM_BOT_TOKEN: z.string().optional(),
+    TELEGRAM_ADMIN_CHAT_ID: z.string().optional(),
+    TELEGRAM_FAILED_BOT_TOKEN: z.string().optional(),   // Bot for failed/manual orders
+    TELEGRAM_FAILED_CHAT_ID: z.string().optional(),     // Admin chat for failed orders
 
-    // SSM Panel
+    // SSM Panel (Supportive SMM)
     SSM_API_URL: z.string().default('https://supportivesmm.com/api/v2'),
-    SSM_API_KEY: z.string().min(1, 'SSM_API_KEY is required'),
+    SSM_API_KEY: z.string().optional(),
+
+    // IND SMM Panel
+    IND_SMM_API_URL: z.string().default('https://indsmm.com/api/v2'),
+    IND_SMM_API_KEY: z.string().optional(),
 
     // Frontend
     FRONTEND_URL: z.string().default('http://localhost:3001'),
@@ -32,6 +38,7 @@ const envSchema = z.object({
     // Security
     API_AUTH_KEY: z.string().optional(),
     ZAPUPI_WEBHOOK_SECRET: z.string().optional(),
+    ZAPUPI_WEBHOOK_IPS: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

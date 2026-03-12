@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
-import { OrderStatus, PaymentStatus } from '@prisma/client';
+import { OrderStatus, PaymentStatus } from '../../generated/prisma/index.js';
 import { zapUPIService } from '../services/zapupi.service';
 import { rabbitMQService, QUEUES } from '../services/rabbitmq.service';
 import { createError } from '../middleware/errorHandler';
@@ -138,19 +138,57 @@ export async function handleWebhook(req: Request, res: Response, next: NextFunct
             return;
         }
 
-        // Verify payment status against ZapUPI API (double-check before trusting webhook)
-        let verifiedStatus = status;
+        // ─── MANDATORY: Verify payment via ZapUPI API (never trust webhook alone) ───
+        let verifiedStatus: string | null = null;
+        let verifiedAmount: number | null = null;
         try {
             const liveStatus = await zapUPIService.getOrderStatus(zapupiOrderId);
             if (liveStatus.status === 'success' && liveStatus.data) {
-                verifiedStatus = 'success';
-                logger.info(`[PaymentController] Payment verified via API: ${zapupiOrderId}`);
+                const normalizedStatus = liveStatus.data.status?.toLowerCase?.() ?? '';
+                if (normalizedStatus === 'success') {
+                    verifiedStatus = 'success';
+                    verifiedAmount = liveStatus.data.amount ?? null;
+                } else if (normalizedStatus === 'failed') {
+                    verifiedStatus = 'failed';
+                }
+                logger.info(`[PaymentController] ZapUPI API verified: status=${verifiedStatus}, amount=${verifiedAmount}`);
             }
         } catch (verifyErr) {
-            logger.warn(`[PaymentController] Could not verify payment via API, trusting webhook:`, verifyErr);
+            // DO NOT fall back to trusting webhook — keep PENDING for admin review
+            logger.error(`[PaymentController] ZapUPI API verification FAILED for ${zapupiOrderId}. Payment stays PENDING for manual review.`, verifyErr);
+            res.json({ success: true, message: 'Verification pending — will retry' });
+            return;
+        }
+
+        // If API didn't confirm success or failure, keep PENDING
+        if (!verifiedStatus) {
+            logger.warn(`[PaymentController] ZapUPI API returned no definitive status for ${zapupiOrderId}. Keeping PENDING.`);
+            res.json({ success: true, message: 'Payment status inconclusive — keeping pending' });
+            return;
         }
 
         if (verifiedStatus === 'success') {
+            // ─── AMOUNT VERIFICATION: Reject if paid amount doesn't match expected ───
+            if (verifiedAmount !== null && Math.abs(verifiedAmount - payment.amount) > 0.01) {
+                logger.error(`[PaymentController] AMOUNT MISMATCH for ${zapupiOrderId}! Expected ₹${payment.amount}, ZapUPI says ₹${verifiedAmount}. Flagging as suspicious.`);
+
+                await prisma.payment.update({
+                    where: { id: payment.id },
+                    data: {
+                        status: PaymentStatus.FAILED,
+                        failureReason: `Amount mismatch: expected ₹${payment.amount}, received ₹${verifiedAmount}`,
+                    },
+                });
+
+                await prisma.order.update({
+                    where: { id: payment.orderId },
+                    data: { status: OrderStatus.FAILED },
+                });
+
+                res.json({ success: true, message: 'Payment amount mismatch — flagged for review' });
+                return;
+            }
+
             await prisma.payment.update({
                 where: { id: payment.id },
                 data: { status: PaymentStatus.SUCCESS, utr: utr ?? '', zapupiTxnId: txn_id },

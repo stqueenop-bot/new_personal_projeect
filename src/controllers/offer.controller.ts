@@ -9,7 +9,11 @@ const createOfferSchema = z.object({
     title: z.string().min(1),
     badge: z.string().default('LIVE'),
     active: z.boolean().default(true),
-});
+    description: z.string().optional(),
+    serviceId: z.number().int().positive().optional(),
+    quantity: z.number().int().positive().optional(),
+    price: z.number().positive().optional(),
+}).strict();
 
 /**
  * GET /api/offers?service=instagram
@@ -70,7 +74,7 @@ export async function getAllOffers(_req: Request, res: Response, next: NextFunct
  */
 export async function createOffer(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const data = createOfferSchema.parse(req.body);
+        const data = req.body;
 
         // If activating a new offer, deactivate the old one for this service
         if (data.active) {
@@ -81,7 +85,7 @@ export async function createOffer(req: Request, res: Response, next: NextFunctio
             logger.info(`[OfferController] Deactivated previous offers for ${data.serviceSlug}`);
         }
 
-        const offer = await prisma.specialOffer.create({ data });
+        const offer = await prisma.specialOffer.create({ data: { ...data, serviceSlug: data.serviceSlug } });
 
         logger.info(`[OfferController] Created offer: ${offer.id} for ${offer.serviceSlug}`);
 

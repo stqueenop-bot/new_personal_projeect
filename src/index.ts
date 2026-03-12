@@ -12,6 +12,19 @@ const PORT = parseInt(env.PORT, 10);
 async function main() {
     logger.info('🚀 Starting SMM ZapUPI Backend...');
 
+    // ─── Production Security Checks ───
+    if (env.NODE_ENV === 'production') {
+        if (!env.API_AUTH_KEY) {
+            logger.error('❌ FATAL: API_AUTH_KEY is not set. Refusing to start in production without API authentication.');
+            process.exit(1);
+        }
+        if (!env.ZAPUPI_WEBHOOK_SECRET && !env.ZAPUPI_WEBHOOK_IPS) {
+            logger.error('❌ FATAL: Neither ZAPUPI_WEBHOOK_SECRET nor ZAPUPI_WEBHOOK_IPS is set. Refusing to start in production without webhook protection.');
+            process.exit(1);
+        }
+        logger.success('✅ Production security checks passed');
+    }
+
     // 1. Connect to PostgreSQL via Prisma
     try {
         await prisma.$connect();

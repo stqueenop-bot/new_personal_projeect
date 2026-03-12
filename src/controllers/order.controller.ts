@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
-import { OrderStatus, PaymentStatus } from '@prisma/client';
+import { OrderStatus, PaymentStatus } from '../../generated/prisma/index.js';
 import { prisma } from '../../lib/initiatePrisma';
 import { zapUPIService } from '../services/zapupi.service';
+import { smmService } from '../services/ssm.service';
 import { telegramService } from '../services/telegram.service';
 import { rabbitMQService, QUEUES } from '../services/rabbitmq.service';
 import { createError } from '../middleware/errorHandler';
@@ -13,11 +14,8 @@ import { ApiResponse } from '../types';
 // In-memory cache to rate-limit ZapUPI status checks (max once per 30s per order)
 const zapupiCheckCache = new Map<string, number>();
 
-import {
-    validateLinkForService,
-    detectInstagramLinkType,
-    ServiceCategory,
-} from '../services/instagram.validator';
+import { getProviderForService, getCategoryForId, getServiceNameForId } from '../utils/smm.mapper';
+import { validateLinkForService, ServiceCategory } from '../services/instagram.validator';
 
 // ===================== Validation Schemas =====================
 
@@ -72,54 +70,42 @@ export async function validateLink(req: Request, res: Response, next: NextFuncti
 /**
  * POST /api/orders
  * Creates a new SMM order and triggers the ZapUPI payment flow.
- * Validates Instagram link type against the selected service category.
  */
 export async function createOrder(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         const body = req.body as z.infer<typeof createOrderSchema>;
-        const { serviceId, link, quantity, amount, serviceCategory, customerMobile, remark, userId } = body;
+        let { serviceId, link, quantity, amount, serviceCategory, customerMobile, remark, userId } = body;
 
-        // 1. Validate link type vs service category
-        const linkValidation = validateLinkForService(link, serviceCategory as ServiceCategory);
-        if (!linkValidation.valid) {
-            const response: ApiResponse = {
-                success: false,
-                message: linkValidation.error ?? 'Link validation failed',
-                data: {
-                    linkType: linkValidation.linkType,
-                    allowedServices: linkValidation.allowedServices,
-                },
-            };
-            res.status(400).json(response);
-            return;
+        // Derive meta-data from serviceId (Override or supplement frontend)
+        const mappedCategory = getCategoryForId(serviceId);
+        const mappedName = getServiceNameForId(serviceId);
+
+        if (mappedCategory) {
+            serviceCategory = mappedCategory;
         }
 
-        // 2. Create Order in DB
+        const finalRemark = remark || (mappedName ? `${mappedName} - ${link}` : `${serviceCategory} - ${link}`);
+
+        // Determine SMM provider based on serviceId
+        const provider = getProviderForService(serviceId);
+
+        // Create Order in DB
         const order = await prisma.order.create({
             data: {
                 serviceId,
                 link,
                 quantity,
                 amount,
-                remark: remark ?? `${serviceCategory} - ${linkValidation.linkType}`,
+                provider, // Track which panel handles this service
+                remark: finalRemark,
                 userId: userId ?? null,
                 status: OrderStatus.PENDING,
             },
         });
 
-        logger.info(`[OrderController] Created order: ${order.id} (${serviceCategory} for ${linkValidation.linkType})`);
+        logger.info(`[OrderController] Created order: ${order.id} (Provider: ${provider}, Category: ${serviceCategory})`);
 
-        // 3. Notify admin about new order (fire-and-forget)
-        telegramService.notifyNewOrder({
-            orderId: order.id,
-            serviceId: order.serviceId,
-            link: order.link,
-            quantity: order.quantity,
-            amount: order.amount,
-            customerMobile,
-        }).catch(err => logger.warn('[OrderController] Telegram notification failed:', err));
-
-        // 4. Create ZapUPI payment (alphanumeric only, no hyphens)
+        // Create ZapUPI payment (alphanumeric only, no hyphens)
         const zapupiOrderId = `SMM${uuidv4().replace(/-/g, '').substring(0, 16).toUpperCase()}`;
         let paymentUrl: string | null = null;
 
@@ -175,7 +161,6 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
                 amount: order.amount,
                 status: order.status,
                 serviceCategory,
-                linkType: linkValidation.linkType,
                 paymentUrl,
                 zapupiOrderId,
                 createdAt: order.createdAt,

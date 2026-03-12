@@ -135,6 +135,7 @@ exports.Prisma.OrderScalarFieldEnum = {
   quantity: 'quantity',
   amount: 'amount',
   status: 'status',
+  provider: 'provider',
   remark: 'remark',
   userId: 'userId',
   createdAt: 'createdAt',
@@ -161,6 +162,7 @@ exports.Prisma.SmmOrderScalarFieldEnum = {
   orderId: 'orderId',
   smmOrderId: 'smmOrderId',
   serviceId: 'serviceId',
+  provider: 'provider',
   link: 'link',
   quantity: 'quantity',
   status: 'status',
@@ -191,9 +193,28 @@ exports.Prisma.SpecialOfferScalarFieldEnum = {
   serviceSlug: 'serviceSlug',
   title: 'title',
   badge: 'badge',
+  description: 'description',
+  serviceId: 'serviceId',
+  quantity: 'quantity',
+  price: 'price',
   active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SpendScalarFieldEnum = {
+  id: 'id',
+  category: 'category',
+  amount: 'amount',
+  note: 'note',
+  date: 'date',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AdminEmailScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -219,6 +240,11 @@ exports.OrderStatus = exports.$Enums.OrderStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.SmmProvider = exports.$Enums.SmmProvider = {
+  SUPPORTIVE: 'SUPPORTIVE',
+  IND: 'IND'
+};
+
 exports.PaymentStatus = exports.$Enums.PaymentStatus = {
   PENDING: 'PENDING',
   SUCCESS: 'SUCCESS',
@@ -232,7 +258,9 @@ exports.Prisma.ModelName = {
   Payment: 'Payment',
   SmmOrder: 'SmmOrder',
   Banner: 'Banner',
-  SpecialOffer: 'SpecialOffer'
+  SpecialOffer: 'SpecialOffer',
+  Spend: 'Spend',
+  AdminEmail: 'AdminEmail'
 };
 
 /**

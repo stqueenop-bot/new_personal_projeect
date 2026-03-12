@@ -8,6 +8,7 @@ import {
 } from '../controllers/payment.controller';
 import { validate } from '../middleware/validate';
 import { apiKeyAuth } from '../middleware/apiKeyAuth';
+import { webhookAuth } from '../middleware/webhookAuth';
 
 const router = Router();
 
@@ -21,9 +22,9 @@ router.post('/create', apiKeyAuth, validate(createPaymentSchema), createPayment)
 /**
  * POST /api/payments/webhook
  * ZapUPI payment callback endpoint.
- * NOT protected (ZapUPI must be able to call this).
+ * Protected by webhook signature/IP verification.
  */
-router.post('/webhook', validate(webhookSchema), handleWebhook);
+router.post('/webhook', webhookAuth, validate(webhookSchema), handleWebhook);
 
 /**
  * GET /api/payments/status/:orderId

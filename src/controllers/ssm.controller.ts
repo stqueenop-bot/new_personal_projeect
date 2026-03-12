@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus } from '../../generated/prisma/index.js';
 import { smmService } from '../services/ssm.service';
 import { prisma } from '../../lib/initiatePrisma';
 import { createError } from '../middleware/errorHandler';

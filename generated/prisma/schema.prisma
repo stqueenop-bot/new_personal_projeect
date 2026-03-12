@@ -26,6 +26,11 @@ enum PaymentStatus {
   EXPIRED
 }
 
+enum SmmProvider {
+  SUPPORTIVE
+  IND
+}
+
 model User {
   id        String   @id @default(uuid())
   mobile    String?  @unique
@@ -45,6 +50,7 @@ model Order {
   quantity  Int
   amount    Float
   status    OrderStatus @default(PENDING)
+  provider  SmmProvider @default(SUPPORTIVE)
   remark    String?
   userId    String?
   createdAt DateTime    @default(now())
@@ -81,6 +87,7 @@ model SmmOrder {
   orderId    String      @unique
   smmOrderId String?
   serviceId  Int
+  provider   SmmProvider @default(SUPPORTIVE)
   link       String
   quantity   Int
   status     OrderStatus @default(PENDING)
@@ -117,9 +124,32 @@ model SpecialOffer {
   serviceSlug String
   title       String
   badge       String   @default("LIVE")
+  description String?
+  serviceId   Int?
+  quantity    Int?
+  price       Float?
   active      Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@map("special_offers")
+}
+
+model Spend {
+  id        String   @id @default(uuid())
+  category  String
+  amount    Float
+  note      String?
+  date      DateTime
+  createdAt DateTime @default(now())
+
+  @@map("spends")
+}
+
+model AdminEmail {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("admin_emails")
 }

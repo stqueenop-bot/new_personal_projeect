@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { env } from '../config/env';
 import { logger } from '../utils/logger';
+import { SmmProvider } from '../../generated/prisma/index.js';
 import {
     SmmService,
     SmmAddOrderResponse,
@@ -9,23 +10,24 @@ import {
 } from '../types';
 
 /**
- * Supportive SSM Panel Service
+ * Generic SMM Panel Service
  * Integrates with generic SMM panel API (v2 standard).
- * You only need to set SSM_API_KEY and SSM_API_URL in .env.
  */
 class SmmService_Class {
-    private readonly apiUrl: string;
-    private readonly apiKey: string;
-
-    constructor() {
-        this.apiUrl = env.SSM_API_URL;
-        this.apiKey = env.SSM_API_KEY;
-    }
+    constructor(
+        private readonly apiUrl: string,
+        private readonly apiKey: string,
+        private readonly panelName: string
+    ) {}
 
     /**
      * Generic helper to post to the SSM panel API.
      */
     private async post<T>(params: Record<string, string | number>): Promise<T> {
+        if (!this.apiKey) {
+            throw new Error(`API Key for ${this.panelName} is not configured`);
+        }
+
         const payload = new URLSearchParams({
             key: this.apiKey,
             ...Object.entries(params).reduce(
@@ -47,13 +49,13 @@ class SmmService_Class {
      */
     async getServices(): Promise<SmmService[]> {
         try {
-            logger.info('[SSM] Fetching service list...');
+            logger.info(`[${this.panelName}] Fetching service list...`);
             const services = await this.post<SmmService[]>({ action: 'services' });
-            logger.info(`[SSM] Fetched ${services.length} services`);
+            logger.info(`[${this.panelName}] Fetched ${services.length} services`);
             return services;
         } catch (error) {
-            logger.error('[SSM] Failed to fetch services:', error);
-            throw new Error(`SSM getServices failed: ${(error as Error).message}`);
+            logger.error(`[${this.panelName}] Failed to fetch services:`, error);
+            throw new Error(`${this.panelName} getServices failed: ${(error as Error).message}`);
         }
     }
 
@@ -69,7 +71,7 @@ class SmmService_Class {
         interval?: number;
     }): Promise<number> {
         try {
-            logger.info(`[SSM] Placing order: service=${params.serviceId}, link=${params.link}, qty=${params.quantity}`);
+            logger.info(`[${this.panelName}] Placing order: service=${params.serviceId}, link=${params.link}, qty=${params.quantity}`);
 
             const payload: Record<string, string | number> = {
                 action: 'add',
@@ -88,14 +90,14 @@ class SmmService_Class {
             }
 
             if (!response.order) {
-                throw new Error('SSM panel returned no order ID');
+                throw new Error('Panel returned no order ID');
             }
 
-            logger.success(`[SSM] Order placed successfully. SMM Order ID: ${response.order}`);
+            logger.success(`[${this.panelName}] Order placed successfully. Order ID: ${response.order}`);
             return response.order;
         } catch (error) {
-            logger.error('[SSM] Failed to place order:', error);
-            throw new Error(`SSM placeOrder failed: ${(error as Error).message}`);
+            logger.error(`[${this.panelName}] Failed to place order:`, error);
+            throw new Error(`${this.panelName} placeOrder failed: ${(error as Error).message}`);
         }
     }
 
@@ -104,7 +106,7 @@ class SmmService_Class {
      */
     async getOrderStatus(smmOrderId: string | number): Promise<SmmOrderStatusResponse> {
         try {
-            logger.info(`[SSM] Checking order status: ${smmOrderId}`);
+            logger.info(`[${this.panelName}] Checking order status: ${smmOrderId}`);
 
             const response = await this.post<SmmOrderStatusResponse>({
                 action: 'status',
@@ -117,8 +119,8 @@ class SmmService_Class {
 
             return response;
         } catch (error) {
-            logger.error(`[SSM] Failed to get order status for ${smmOrderId}:`, error);
-            throw new Error(`SSM getOrderStatus failed: ${(error as Error).message}`);
+            logger.error(`[${this.panelName}] Failed to get order status for ${smmOrderId}:`, error);
+            throw new Error(`${this.panelName} getOrderStatus failed: ${(error as Error).message}`);
         }
     }
 
@@ -127,7 +129,7 @@ class SmmService_Class {
      */
     async getBalance(): Promise<{ balance: string; currency: string }> {
         try {
-            logger.info('[SSM] Fetching balance...');
+            logger.info(`[${this.panelName}] Fetching balance...`);
 
             const response = await this.post<SmmBalanceResponse>({ action: 'balance' });
 
@@ -140,10 +142,40 @@ class SmmService_Class {
                 currency: response.currency ?? 'USD',
             };
         } catch (error) {
-            logger.error('[SSM] Failed to get balance:', error);
-            throw new Error(`SSM getBalance failed: ${(error as Error).message}`);
+            logger.error(`[${this.panelName}] Failed to get balance:`, error);
+            throw new Error(`${this.panelName} getBalance failed: ${(error as Error).message}`);
         }
     }
 }
 
-export const smmService = new SmmService_Class();
+// ─── Provider Instances ───
+
+export const supportiveSmmService = new SmmService_Class(
+    env.SSM_API_URL,
+    env.SSM_API_KEY || '',
+    'Supportive SMM'
+);
+
+export const indSmmService = new SmmService_Class(
+    env.IND_SMM_API_URL,
+    env.IND_SMM_API_KEY || '',
+    'IND SMM'
+);
+
+/**
+ * Helper to get the correct service instance based on provider.
+ */
+export function getSmmService(provider: SmmProvider) {
+    switch (provider) {
+        case 'SUPPORTIVE':
+            return supportiveSmmService;
+        case 'IND':
+            return indSmmService;
+        default:
+            return supportiveSmmService;
+    }
+}
+
+// Export a default for backward compatibility if needed (defaults to Supportive)
+export const smmService = supportiveSmmService;
+

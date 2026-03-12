@@ -43,6 +43,16 @@ export type Banner = $Result.DefaultSelection<Prisma.$BannerPayload>
  * 
  */
 export type SpecialOffer = $Result.DefaultSelection<Prisma.$SpecialOfferPayload>
+/**
+ * Model Spend
+ * 
+ */
+export type Spend = $Result.DefaultSelection<Prisma.$SpendPayload>
+/**
+ * Model AdminEmail
+ * 
+ */
+export type AdminEmail = $Result.DefaultSelection<Prisma.$AdminEmailPayload>
 
 /**
  * Enums
@@ -69,6 +79,14 @@ export const PaymentStatus: {
 
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
 
+
+export const SmmProvider: {
+  SUPPORTIVE: 'SUPPORTIVE',
+  IND: 'IND'
+};
+
+export type SmmProvider = (typeof SmmProvider)[keyof typeof SmmProvider]
+
 }
 
 export type OrderStatus = $Enums.OrderStatus
@@ -78,6 +96,10 @@ export const OrderStatus: typeof $Enums.OrderStatus
 export type PaymentStatus = $Enums.PaymentStatus
 
 export const PaymentStatus: typeof $Enums.PaymentStatus
+
+export type SmmProvider = $Enums.SmmProvider
+
+export const SmmProvider: typeof $Enums.SmmProvider
 
 /**
  * ##  Prisma Client ʲˢ
@@ -259,6 +281,26 @@ export class PrismaClient<
     * ```
     */
   get specialOffer(): Prisma.SpecialOfferDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.spend`: Exposes CRUD operations for the **Spend** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Spends
+    * const spends = await prisma.spend.findMany()
+    * ```
+    */
+  get spend(): Prisma.SpendDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.adminEmail`: Exposes CRUD operations for the **AdminEmail** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AdminEmails
+    * const adminEmails = await prisma.adminEmail.findMany()
+    * ```
+    */
+  get adminEmail(): Prisma.AdminEmailDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -698,7 +740,9 @@ export namespace Prisma {
     Payment: 'Payment',
     SmmOrder: 'SmmOrder',
     Banner: 'Banner',
-    SpecialOffer: 'SpecialOffer'
+    SpecialOffer: 'SpecialOffer',
+    Spend: 'Spend',
+    AdminEmail: 'AdminEmail'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -714,7 +758,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "order" | "payment" | "smmOrder" | "banner" | "specialOffer"
+      modelProps: "user" | "order" | "payment" | "smmOrder" | "banner" | "specialOffer" | "spend" | "adminEmail"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1162,6 +1206,154 @@ export namespace Prisma {
           }
         }
       }
+      Spend: {
+        payload: Prisma.$SpendPayload<ExtArgs>
+        fields: Prisma.SpendFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SpendFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SpendPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SpendFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SpendPayload>
+          }
+          findFirst: {
+            args: Prisma.SpendFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SpendPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SpendFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SpendPayload>
+          }
+          findMany: {
+            args: Prisma.SpendFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SpendPayload>[]
+          }
+          create: {
+            args: Prisma.SpendCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SpendPayload>
+          }
+          createMany: {
+            args: Prisma.SpendCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SpendCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SpendPayload>[]
+          }
+          delete: {
+            args: Prisma.SpendDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SpendPayload>
+          }
+          update: {
+            args: Prisma.SpendUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SpendPayload>
+          }
+          deleteMany: {
+            args: Prisma.SpendDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SpendUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SpendUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SpendPayload>[]
+          }
+          upsert: {
+            args: Prisma.SpendUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SpendPayload>
+          }
+          aggregate: {
+            args: Prisma.SpendAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSpend>
+          }
+          groupBy: {
+            args: Prisma.SpendGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SpendGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SpendCountArgs<ExtArgs>
+            result: $Utils.Optional<SpendCountAggregateOutputType> | number
+          }
+        }
+      }
+      AdminEmail: {
+        payload: Prisma.$AdminEmailPayload<ExtArgs>
+        fields: Prisma.AdminEmailFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdminEmailFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminEmailPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdminEmailFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminEmailPayload>
+          }
+          findFirst: {
+            args: Prisma.AdminEmailFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminEmailPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdminEmailFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminEmailPayload>
+          }
+          findMany: {
+            args: Prisma.AdminEmailFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminEmailPayload>[]
+          }
+          create: {
+            args: Prisma.AdminEmailCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminEmailPayload>
+          }
+          createMany: {
+            args: Prisma.AdminEmailCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdminEmailCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminEmailPayload>[]
+          }
+          delete: {
+            args: Prisma.AdminEmailDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminEmailPayload>
+          }
+          update: {
+            args: Prisma.AdminEmailUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminEmailPayload>
+          }
+          deleteMany: {
+            args: Prisma.AdminEmailDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdminEmailUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AdminEmailUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminEmailPayload>[]
+          }
+          upsert: {
+            args: Prisma.AdminEmailUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminEmailPayload>
+          }
+          aggregate: {
+            args: Prisma.AdminEmailAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdminEmail>
+          }
+          groupBy: {
+            args: Prisma.AdminEmailGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdminEmailGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdminEmailCountArgs<ExtArgs>
+            result: $Utils.Optional<AdminEmailCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1276,6 +1468,8 @@ export namespace Prisma {
     smmOrder?: SmmOrderOmit
     banner?: BannerOmit
     specialOffer?: SpecialOfferOmit
+    spend?: SpendOmit
+    adminEmail?: AdminEmailOmit
   }
 
   /* Types for Logging */
@@ -2487,6 +2681,7 @@ export namespace Prisma {
     quantity: number | null
     amount: number | null
     status: $Enums.OrderStatus | null
+    provider: $Enums.SmmProvider | null
     remark: string | null
     userId: string | null
     createdAt: Date | null
@@ -2500,6 +2695,7 @@ export namespace Prisma {
     quantity: number | null
     amount: number | null
     status: $Enums.OrderStatus | null
+    provider: $Enums.SmmProvider | null
     remark: string | null
     userId: string | null
     createdAt: Date | null
@@ -2513,6 +2709,7 @@ export namespace Prisma {
     quantity: number
     amount: number
     status: number
+    provider: number
     remark: number
     userId: number
     createdAt: number
@@ -2540,6 +2737,7 @@ export namespace Prisma {
     quantity?: true
     amount?: true
     status?: true
+    provider?: true
     remark?: true
     userId?: true
     createdAt?: true
@@ -2553,6 +2751,7 @@ export namespace Prisma {
     quantity?: true
     amount?: true
     status?: true
+    provider?: true
     remark?: true
     userId?: true
     createdAt?: true
@@ -2566,6 +2765,7 @@ export namespace Prisma {
     quantity?: true
     amount?: true
     status?: true
+    provider?: true
     remark?: true
     userId?: true
     createdAt?: true
@@ -2666,6 +2866,7 @@ export namespace Prisma {
     quantity: number
     amount: number
     status: $Enums.OrderStatus
+    provider: $Enums.SmmProvider
     remark: string | null
     userId: string | null
     createdAt: Date
@@ -2698,6 +2899,7 @@ export namespace Prisma {
     quantity?: boolean
     amount?: boolean
     status?: boolean
+    provider?: boolean
     remark?: boolean
     userId?: boolean
     createdAt?: boolean
@@ -2714,6 +2916,7 @@ export namespace Prisma {
     quantity?: boolean
     amount?: boolean
     status?: boolean
+    provider?: boolean
     remark?: boolean
     userId?: boolean
     createdAt?: boolean
@@ -2728,6 +2931,7 @@ export namespace Prisma {
     quantity?: boolean
     amount?: boolean
     status?: boolean
+    provider?: boolean
     remark?: boolean
     userId?: boolean
     createdAt?: boolean
@@ -2742,13 +2946,14 @@ export namespace Prisma {
     quantity?: boolean
     amount?: boolean
     status?: boolean
+    provider?: boolean
     remark?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "serviceId" | "link" | "quantity" | "amount" | "status" | "remark" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "serviceId" | "link" | "quantity" | "amount" | "status" | "provider" | "remark" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Order$userArgs<ExtArgs>
     payment?: boolean | Order$paymentArgs<ExtArgs>
@@ -2775,6 +2980,7 @@ export namespace Prisma {
       quantity: number
       amount: number
       status: $Enums.OrderStatus
+      provider: $Enums.SmmProvider
       remark: string | null
       userId: string | null
       createdAt: Date
@@ -3211,6 +3417,7 @@ export namespace Prisma {
     readonly quantity: FieldRef<"Order", 'Int'>
     readonly amount: FieldRef<"Order", 'Float'>
     readonly status: FieldRef<"Order", 'OrderStatus'>
+    readonly provider: FieldRef<"Order", 'SmmProvider'>
     readonly remark: FieldRef<"Order", 'String'>
     readonly userId: FieldRef<"Order", 'String'>
     readonly createdAt: FieldRef<"Order", 'DateTime'>
@@ -4902,6 +5109,7 @@ export namespace Prisma {
     orderId: string | null
     smmOrderId: string | null
     serviceId: number | null
+    provider: $Enums.SmmProvider | null
     link: string | null
     quantity: number | null
     status: $Enums.OrderStatus | null
@@ -4918,6 +5126,7 @@ export namespace Prisma {
     orderId: string | null
     smmOrderId: string | null
     serviceId: number | null
+    provider: $Enums.SmmProvider | null
     link: string | null
     quantity: number | null
     status: $Enums.OrderStatus | null
@@ -4934,6 +5143,7 @@ export namespace Prisma {
     orderId: number
     smmOrderId: number
     serviceId: number
+    provider: number
     link: number
     quantity: number
     status: number
@@ -4968,6 +5178,7 @@ export namespace Prisma {
     orderId?: true
     smmOrderId?: true
     serviceId?: true
+    provider?: true
     link?: true
     quantity?: true
     status?: true
@@ -4984,6 +5195,7 @@ export namespace Prisma {
     orderId?: true
     smmOrderId?: true
     serviceId?: true
+    provider?: true
     link?: true
     quantity?: true
     status?: true
@@ -5000,6 +5212,7 @@ export namespace Prisma {
     orderId?: true
     smmOrderId?: true
     serviceId?: true
+    provider?: true
     link?: true
     quantity?: true
     status?: true
@@ -5103,6 +5316,7 @@ export namespace Prisma {
     orderId: string
     smmOrderId: string | null
     serviceId: number
+    provider: $Enums.SmmProvider
     link: string
     quantity: number
     status: $Enums.OrderStatus
@@ -5138,6 +5352,7 @@ export namespace Prisma {
     orderId?: boolean
     smmOrderId?: boolean
     serviceId?: boolean
+    provider?: boolean
     link?: boolean
     quantity?: boolean
     status?: boolean
@@ -5155,6 +5370,7 @@ export namespace Prisma {
     orderId?: boolean
     smmOrderId?: boolean
     serviceId?: boolean
+    provider?: boolean
     link?: boolean
     quantity?: boolean
     status?: boolean
@@ -5172,6 +5388,7 @@ export namespace Prisma {
     orderId?: boolean
     smmOrderId?: boolean
     serviceId?: boolean
+    provider?: boolean
     link?: boolean
     quantity?: boolean
     status?: boolean
@@ -5189,6 +5406,7 @@ export namespace Prisma {
     orderId?: boolean
     smmOrderId?: boolean
     serviceId?: boolean
+    provider?: boolean
     link?: boolean
     quantity?: boolean
     status?: boolean
@@ -5200,7 +5418,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SmmOrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "smmOrderId" | "serviceId" | "link" | "quantity" | "status" | "startCount" | "remains" | "charge" | "errorMsg" | "createdAt" | "updatedAt", ExtArgs["result"]["smmOrder"]>
+  export type SmmOrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "smmOrderId" | "serviceId" | "provider" | "link" | "quantity" | "status" | "startCount" | "remains" | "charge" | "errorMsg" | "createdAt" | "updatedAt", ExtArgs["result"]["smmOrder"]>
   export type SmmOrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     order?: boolean | OrderDefaultArgs<ExtArgs>
   }
@@ -5221,6 +5439,7 @@ export namespace Prisma {
       orderId: string
       smmOrderId: string | null
       serviceId: number
+      provider: $Enums.SmmProvider
       link: string
       quantity: number
       status: $Enums.OrderStatus
@@ -5658,6 +5877,7 @@ export namespace Prisma {
     readonly orderId: FieldRef<"SmmOrder", 'String'>
     readonly smmOrderId: FieldRef<"SmmOrder", 'String'>
     readonly serviceId: FieldRef<"SmmOrder", 'Int'>
+    readonly provider: FieldRef<"SmmOrder", 'SmmProvider'>
     readonly link: FieldRef<"SmmOrder", 'String'>
     readonly quantity: FieldRef<"SmmOrder", 'Int'>
     readonly status: FieldRef<"SmmOrder", 'OrderStatus'>
@@ -7194,8 +7414,22 @@ export namespace Prisma {
 
   export type AggregateSpecialOffer = {
     _count: SpecialOfferCountAggregateOutputType | null
+    _avg: SpecialOfferAvgAggregateOutputType | null
+    _sum: SpecialOfferSumAggregateOutputType | null
     _min: SpecialOfferMinAggregateOutputType | null
     _max: SpecialOfferMaxAggregateOutputType | null
+  }
+
+  export type SpecialOfferAvgAggregateOutputType = {
+    serviceId: number | null
+    quantity: number | null
+    price: number | null
+  }
+
+  export type SpecialOfferSumAggregateOutputType = {
+    serviceId: number | null
+    quantity: number | null
+    price: number | null
   }
 
   export type SpecialOfferMinAggregateOutputType = {
@@ -7203,6 +7437,10 @@ export namespace Prisma {
     serviceSlug: string | null
     title: string | null
     badge: string | null
+    description: string | null
+    serviceId: number | null
+    quantity: number | null
+    price: number | null
     active: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -7213,6 +7451,10 @@ export namespace Prisma {
     serviceSlug: string | null
     title: string | null
     badge: string | null
+    description: string | null
+    serviceId: number | null
+    quantity: number | null
+    price: number | null
     active: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -7223,6 +7465,10 @@ export namespace Prisma {
     serviceSlug: number
     title: number
     badge: number
+    description: number
+    serviceId: number
+    quantity: number
+    price: number
     active: number
     createdAt: number
     updatedAt: number
@@ -7230,11 +7476,27 @@ export namespace Prisma {
   }
 
 
+  export type SpecialOfferAvgAggregateInputType = {
+    serviceId?: true
+    quantity?: true
+    price?: true
+  }
+
+  export type SpecialOfferSumAggregateInputType = {
+    serviceId?: true
+    quantity?: true
+    price?: true
+  }
+
   export type SpecialOfferMinAggregateInputType = {
     id?: true
     serviceSlug?: true
     title?: true
     badge?: true
+    description?: true
+    serviceId?: true
+    quantity?: true
+    price?: true
     active?: true
     createdAt?: true
     updatedAt?: true
@@ -7245,6 +7507,10 @@ export namespace Prisma {
     serviceSlug?: true
     title?: true
     badge?: true
+    description?: true
+    serviceId?: true
+    quantity?: true
+    price?: true
     active?: true
     createdAt?: true
     updatedAt?: true
@@ -7255,6 +7521,10 @@ export namespace Prisma {
     serviceSlug?: true
     title?: true
     badge?: true
+    description?: true
+    serviceId?: true
+    quantity?: true
+    price?: true
     active?: true
     createdAt?: true
     updatedAt?: true
@@ -7299,6 +7569,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: SpecialOfferAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SpecialOfferSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: SpecialOfferMinAggregateInputType
@@ -7329,6 +7611,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: SpecialOfferCountAggregateInputType | true
+    _avg?: SpecialOfferAvgAggregateInputType
+    _sum?: SpecialOfferSumAggregateInputType
     _min?: SpecialOfferMinAggregateInputType
     _max?: SpecialOfferMaxAggregateInputType
   }
@@ -7338,10 +7622,16 @@ export namespace Prisma {
     serviceSlug: string
     title: string
     badge: string
+    description: string | null
+    serviceId: number | null
+    quantity: number | null
+    price: number | null
     active: boolean
     createdAt: Date
     updatedAt: Date
     _count: SpecialOfferCountAggregateOutputType | null
+    _avg: SpecialOfferAvgAggregateOutputType | null
+    _sum: SpecialOfferSumAggregateOutputType | null
     _min: SpecialOfferMinAggregateOutputType | null
     _max: SpecialOfferMaxAggregateOutputType | null
   }
@@ -7365,6 +7655,10 @@ export namespace Prisma {
     serviceSlug?: boolean
     title?: boolean
     badge?: boolean
+    description?: boolean
+    serviceId?: boolean
+    quantity?: boolean
+    price?: boolean
     active?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -7375,6 +7669,10 @@ export namespace Prisma {
     serviceSlug?: boolean
     title?: boolean
     badge?: boolean
+    description?: boolean
+    serviceId?: boolean
+    quantity?: boolean
+    price?: boolean
     active?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -7385,6 +7683,10 @@ export namespace Prisma {
     serviceSlug?: boolean
     title?: boolean
     badge?: boolean
+    description?: boolean
+    serviceId?: boolean
+    quantity?: boolean
+    price?: boolean
     active?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -7395,12 +7697,16 @@ export namespace Prisma {
     serviceSlug?: boolean
     title?: boolean
     badge?: boolean
+    description?: boolean
+    serviceId?: boolean
+    quantity?: boolean
+    price?: boolean
     active?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SpecialOfferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "serviceSlug" | "title" | "badge" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["specialOffer"]>
+  export type SpecialOfferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "serviceSlug" | "title" | "badge" | "description" | "serviceId" | "quantity" | "price" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["specialOffer"]>
 
   export type $SpecialOfferPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SpecialOffer"
@@ -7410,6 +7716,10 @@ export namespace Prisma {
       serviceSlug: string
       title: string
       badge: string
+      description: string | null
+      serviceId: number | null
+      quantity: number | null
+      price: number | null
       active: boolean
       createdAt: Date
       updatedAt: Date
@@ -7840,6 +8150,10 @@ export namespace Prisma {
     readonly serviceSlug: FieldRef<"SpecialOffer", 'String'>
     readonly title: FieldRef<"SpecialOffer", 'String'>
     readonly badge: FieldRef<"SpecialOffer", 'String'>
+    readonly description: FieldRef<"SpecialOffer", 'String'>
+    readonly serviceId: FieldRef<"SpecialOffer", 'Int'>
+    readonly quantity: FieldRef<"SpecialOffer", 'Int'>
+    readonly price: FieldRef<"SpecialOffer", 'Float'>
     readonly active: FieldRef<"SpecialOffer", 'Boolean'>
     readonly createdAt: FieldRef<"SpecialOffer", 'DateTime'>
     readonly updatedAt: FieldRef<"SpecialOffer", 'DateTime'>
@@ -8210,6 +8524,2017 @@ export namespace Prisma {
 
 
   /**
+   * Model Spend
+   */
+
+  export type AggregateSpend = {
+    _count: SpendCountAggregateOutputType | null
+    _avg: SpendAvgAggregateOutputType | null
+    _sum: SpendSumAggregateOutputType | null
+    _min: SpendMinAggregateOutputType | null
+    _max: SpendMaxAggregateOutputType | null
+  }
+
+  export type SpendAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type SpendSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type SpendMinAggregateOutputType = {
+    id: string | null
+    category: string | null
+    amount: number | null
+    note: string | null
+    date: Date | null
+    createdAt: Date | null
+  }
+
+  export type SpendMaxAggregateOutputType = {
+    id: string | null
+    category: string | null
+    amount: number | null
+    note: string | null
+    date: Date | null
+    createdAt: Date | null
+  }
+
+  export type SpendCountAggregateOutputType = {
+    id: number
+    category: number
+    amount: number
+    note: number
+    date: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SpendAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type SpendSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type SpendMinAggregateInputType = {
+    id?: true
+    category?: true
+    amount?: true
+    note?: true
+    date?: true
+    createdAt?: true
+  }
+
+  export type SpendMaxAggregateInputType = {
+    id?: true
+    category?: true
+    amount?: true
+    note?: true
+    date?: true
+    createdAt?: true
+  }
+
+  export type SpendCountAggregateInputType = {
+    id?: true
+    category?: true
+    amount?: true
+    note?: true
+    date?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SpendAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Spend to aggregate.
+     */
+    where?: SpendWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Spends to fetch.
+     */
+    orderBy?: SpendOrderByWithRelationInput | SpendOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SpendWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Spends from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Spends.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Spends
+    **/
+    _count?: true | SpendCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SpendAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SpendSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SpendMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SpendMaxAggregateInputType
+  }
+
+  export type GetSpendAggregateType<T extends SpendAggregateArgs> = {
+        [P in keyof T & keyof AggregateSpend]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSpend[P]>
+      : GetScalarType<T[P], AggregateSpend[P]>
+  }
+
+
+
+
+  export type SpendGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SpendWhereInput
+    orderBy?: SpendOrderByWithAggregationInput | SpendOrderByWithAggregationInput[]
+    by: SpendScalarFieldEnum[] | SpendScalarFieldEnum
+    having?: SpendScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SpendCountAggregateInputType | true
+    _avg?: SpendAvgAggregateInputType
+    _sum?: SpendSumAggregateInputType
+    _min?: SpendMinAggregateInputType
+    _max?: SpendMaxAggregateInputType
+  }
+
+  export type SpendGroupByOutputType = {
+    id: string
+    category: string
+    amount: number
+    note: string | null
+    date: Date
+    createdAt: Date
+    _count: SpendCountAggregateOutputType | null
+    _avg: SpendAvgAggregateOutputType | null
+    _sum: SpendSumAggregateOutputType | null
+    _min: SpendMinAggregateOutputType | null
+    _max: SpendMaxAggregateOutputType | null
+  }
+
+  type GetSpendGroupByPayload<T extends SpendGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SpendGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SpendGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SpendGroupByOutputType[P]>
+            : GetScalarType<T[P], SpendGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SpendSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    category?: boolean
+    amount?: boolean
+    note?: boolean
+    date?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["spend"]>
+
+  export type SpendSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    category?: boolean
+    amount?: boolean
+    note?: boolean
+    date?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["spend"]>
+
+  export type SpendSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    category?: boolean
+    amount?: boolean
+    note?: boolean
+    date?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["spend"]>
+
+  export type SpendSelectScalar = {
+    id?: boolean
+    category?: boolean
+    amount?: boolean
+    note?: boolean
+    date?: boolean
+    createdAt?: boolean
+  }
+
+  export type SpendOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "category" | "amount" | "note" | "date" | "createdAt", ExtArgs["result"]["spend"]>
+
+  export type $SpendPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Spend"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      category: string
+      amount: number
+      note: string | null
+      date: Date
+      createdAt: Date
+    }, ExtArgs["result"]["spend"]>
+    composites: {}
+  }
+
+  type SpendGetPayload<S extends boolean | null | undefined | SpendDefaultArgs> = $Result.GetResult<Prisma.$SpendPayload, S>
+
+  type SpendCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SpendFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SpendCountAggregateInputType | true
+    }
+
+  export interface SpendDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Spend'], meta: { name: 'Spend' } }
+    /**
+     * Find zero or one Spend that matches the filter.
+     * @param {SpendFindUniqueArgs} args - Arguments to find a Spend
+     * @example
+     * // Get one Spend
+     * const spend = await prisma.spend.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SpendFindUniqueArgs>(args: SelectSubset<T, SpendFindUniqueArgs<ExtArgs>>): Prisma__SpendClient<$Result.GetResult<Prisma.$SpendPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Spend that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SpendFindUniqueOrThrowArgs} args - Arguments to find a Spend
+     * @example
+     * // Get one Spend
+     * const spend = await prisma.spend.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SpendFindUniqueOrThrowArgs>(args: SelectSubset<T, SpendFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SpendClient<$Result.GetResult<Prisma.$SpendPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Spend that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SpendFindFirstArgs} args - Arguments to find a Spend
+     * @example
+     * // Get one Spend
+     * const spend = await prisma.spend.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SpendFindFirstArgs>(args?: SelectSubset<T, SpendFindFirstArgs<ExtArgs>>): Prisma__SpendClient<$Result.GetResult<Prisma.$SpendPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Spend that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SpendFindFirstOrThrowArgs} args - Arguments to find a Spend
+     * @example
+     * // Get one Spend
+     * const spend = await prisma.spend.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SpendFindFirstOrThrowArgs>(args?: SelectSubset<T, SpendFindFirstOrThrowArgs<ExtArgs>>): Prisma__SpendClient<$Result.GetResult<Prisma.$SpendPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Spends that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SpendFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Spends
+     * const spends = await prisma.spend.findMany()
+     * 
+     * // Get first 10 Spends
+     * const spends = await prisma.spend.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const spendWithIdOnly = await prisma.spend.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SpendFindManyArgs>(args?: SelectSubset<T, SpendFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SpendPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Spend.
+     * @param {SpendCreateArgs} args - Arguments to create a Spend.
+     * @example
+     * // Create one Spend
+     * const Spend = await prisma.spend.create({
+     *   data: {
+     *     // ... data to create a Spend
+     *   }
+     * })
+     * 
+     */
+    create<T extends SpendCreateArgs>(args: SelectSubset<T, SpendCreateArgs<ExtArgs>>): Prisma__SpendClient<$Result.GetResult<Prisma.$SpendPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Spends.
+     * @param {SpendCreateManyArgs} args - Arguments to create many Spends.
+     * @example
+     * // Create many Spends
+     * const spend = await prisma.spend.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SpendCreateManyArgs>(args?: SelectSubset<T, SpendCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Spends and returns the data saved in the database.
+     * @param {SpendCreateManyAndReturnArgs} args - Arguments to create many Spends.
+     * @example
+     * // Create many Spends
+     * const spend = await prisma.spend.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Spends and only return the `id`
+     * const spendWithIdOnly = await prisma.spend.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SpendCreateManyAndReturnArgs>(args?: SelectSubset<T, SpendCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SpendPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Spend.
+     * @param {SpendDeleteArgs} args - Arguments to delete one Spend.
+     * @example
+     * // Delete one Spend
+     * const Spend = await prisma.spend.delete({
+     *   where: {
+     *     // ... filter to delete one Spend
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SpendDeleteArgs>(args: SelectSubset<T, SpendDeleteArgs<ExtArgs>>): Prisma__SpendClient<$Result.GetResult<Prisma.$SpendPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Spend.
+     * @param {SpendUpdateArgs} args - Arguments to update one Spend.
+     * @example
+     * // Update one Spend
+     * const spend = await prisma.spend.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SpendUpdateArgs>(args: SelectSubset<T, SpendUpdateArgs<ExtArgs>>): Prisma__SpendClient<$Result.GetResult<Prisma.$SpendPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Spends.
+     * @param {SpendDeleteManyArgs} args - Arguments to filter Spends to delete.
+     * @example
+     * // Delete a few Spends
+     * const { count } = await prisma.spend.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SpendDeleteManyArgs>(args?: SelectSubset<T, SpendDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Spends.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SpendUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Spends
+     * const spend = await prisma.spend.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SpendUpdateManyArgs>(args: SelectSubset<T, SpendUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Spends and returns the data updated in the database.
+     * @param {SpendUpdateManyAndReturnArgs} args - Arguments to update many Spends.
+     * @example
+     * // Update many Spends
+     * const spend = await prisma.spend.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Spends and only return the `id`
+     * const spendWithIdOnly = await prisma.spend.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SpendUpdateManyAndReturnArgs>(args: SelectSubset<T, SpendUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SpendPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Spend.
+     * @param {SpendUpsertArgs} args - Arguments to update or create a Spend.
+     * @example
+     * // Update or create a Spend
+     * const spend = await prisma.spend.upsert({
+     *   create: {
+     *     // ... data to create a Spend
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Spend we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SpendUpsertArgs>(args: SelectSubset<T, SpendUpsertArgs<ExtArgs>>): Prisma__SpendClient<$Result.GetResult<Prisma.$SpendPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Spends.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SpendCountArgs} args - Arguments to filter Spends to count.
+     * @example
+     * // Count the number of Spends
+     * const count = await prisma.spend.count({
+     *   where: {
+     *     // ... the filter for the Spends we want to count
+     *   }
+     * })
+    **/
+    count<T extends SpendCountArgs>(
+      args?: Subset<T, SpendCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SpendCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Spend.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SpendAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SpendAggregateArgs>(args: Subset<T, SpendAggregateArgs>): Prisma.PrismaPromise<GetSpendAggregateType<T>>
+
+    /**
+     * Group by Spend.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SpendGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SpendGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SpendGroupByArgs['orderBy'] }
+        : { orderBy?: SpendGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SpendGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSpendGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Spend model
+   */
+  readonly fields: SpendFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Spend.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SpendClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Spend model
+   */
+  interface SpendFieldRefs {
+    readonly id: FieldRef<"Spend", 'String'>
+    readonly category: FieldRef<"Spend", 'String'>
+    readonly amount: FieldRef<"Spend", 'Float'>
+    readonly note: FieldRef<"Spend", 'String'>
+    readonly date: FieldRef<"Spend", 'DateTime'>
+    readonly createdAt: FieldRef<"Spend", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Spend findUnique
+   */
+  export type SpendFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Spend
+     */
+    select?: SpendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Spend
+     */
+    omit?: SpendOmit<ExtArgs> | null
+    /**
+     * Filter, which Spend to fetch.
+     */
+    where: SpendWhereUniqueInput
+  }
+
+  /**
+   * Spend findUniqueOrThrow
+   */
+  export type SpendFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Spend
+     */
+    select?: SpendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Spend
+     */
+    omit?: SpendOmit<ExtArgs> | null
+    /**
+     * Filter, which Spend to fetch.
+     */
+    where: SpendWhereUniqueInput
+  }
+
+  /**
+   * Spend findFirst
+   */
+  export type SpendFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Spend
+     */
+    select?: SpendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Spend
+     */
+    omit?: SpendOmit<ExtArgs> | null
+    /**
+     * Filter, which Spend to fetch.
+     */
+    where?: SpendWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Spends to fetch.
+     */
+    orderBy?: SpendOrderByWithRelationInput | SpendOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Spends.
+     */
+    cursor?: SpendWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Spends from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Spends.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Spends.
+     */
+    distinct?: SpendScalarFieldEnum | SpendScalarFieldEnum[]
+  }
+
+  /**
+   * Spend findFirstOrThrow
+   */
+  export type SpendFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Spend
+     */
+    select?: SpendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Spend
+     */
+    omit?: SpendOmit<ExtArgs> | null
+    /**
+     * Filter, which Spend to fetch.
+     */
+    where?: SpendWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Spends to fetch.
+     */
+    orderBy?: SpendOrderByWithRelationInput | SpendOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Spends.
+     */
+    cursor?: SpendWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Spends from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Spends.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Spends.
+     */
+    distinct?: SpendScalarFieldEnum | SpendScalarFieldEnum[]
+  }
+
+  /**
+   * Spend findMany
+   */
+  export type SpendFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Spend
+     */
+    select?: SpendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Spend
+     */
+    omit?: SpendOmit<ExtArgs> | null
+    /**
+     * Filter, which Spends to fetch.
+     */
+    where?: SpendWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Spends to fetch.
+     */
+    orderBy?: SpendOrderByWithRelationInput | SpendOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Spends.
+     */
+    cursor?: SpendWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Spends from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Spends.
+     */
+    skip?: number
+    distinct?: SpendScalarFieldEnum | SpendScalarFieldEnum[]
+  }
+
+  /**
+   * Spend create
+   */
+  export type SpendCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Spend
+     */
+    select?: SpendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Spend
+     */
+    omit?: SpendOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Spend.
+     */
+    data: XOR<SpendCreateInput, SpendUncheckedCreateInput>
+  }
+
+  /**
+   * Spend createMany
+   */
+  export type SpendCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Spends.
+     */
+    data: SpendCreateManyInput | SpendCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Spend createManyAndReturn
+   */
+  export type SpendCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Spend
+     */
+    select?: SpendSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Spend
+     */
+    omit?: SpendOmit<ExtArgs> | null
+    /**
+     * The data used to create many Spends.
+     */
+    data: SpendCreateManyInput | SpendCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Spend update
+   */
+  export type SpendUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Spend
+     */
+    select?: SpendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Spend
+     */
+    omit?: SpendOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Spend.
+     */
+    data: XOR<SpendUpdateInput, SpendUncheckedUpdateInput>
+    /**
+     * Choose, which Spend to update.
+     */
+    where: SpendWhereUniqueInput
+  }
+
+  /**
+   * Spend updateMany
+   */
+  export type SpendUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Spends.
+     */
+    data: XOR<SpendUpdateManyMutationInput, SpendUncheckedUpdateManyInput>
+    /**
+     * Filter which Spends to update
+     */
+    where?: SpendWhereInput
+    /**
+     * Limit how many Spends to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Spend updateManyAndReturn
+   */
+  export type SpendUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Spend
+     */
+    select?: SpendSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Spend
+     */
+    omit?: SpendOmit<ExtArgs> | null
+    /**
+     * The data used to update Spends.
+     */
+    data: XOR<SpendUpdateManyMutationInput, SpendUncheckedUpdateManyInput>
+    /**
+     * Filter which Spends to update
+     */
+    where?: SpendWhereInput
+    /**
+     * Limit how many Spends to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Spend upsert
+   */
+  export type SpendUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Spend
+     */
+    select?: SpendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Spend
+     */
+    omit?: SpendOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Spend to update in case it exists.
+     */
+    where: SpendWhereUniqueInput
+    /**
+     * In case the Spend found by the `where` argument doesn't exist, create a new Spend with this data.
+     */
+    create: XOR<SpendCreateInput, SpendUncheckedCreateInput>
+    /**
+     * In case the Spend was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SpendUpdateInput, SpendUncheckedUpdateInput>
+  }
+
+  /**
+   * Spend delete
+   */
+  export type SpendDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Spend
+     */
+    select?: SpendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Spend
+     */
+    omit?: SpendOmit<ExtArgs> | null
+    /**
+     * Filter which Spend to delete.
+     */
+    where: SpendWhereUniqueInput
+  }
+
+  /**
+   * Spend deleteMany
+   */
+  export type SpendDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Spends to delete
+     */
+    where?: SpendWhereInput
+    /**
+     * Limit how many Spends to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Spend without action
+   */
+  export type SpendDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Spend
+     */
+    select?: SpendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Spend
+     */
+    omit?: SpendOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AdminEmail
+   */
+
+  export type AggregateAdminEmail = {
+    _count: AdminEmailCountAggregateOutputType | null
+    _min: AdminEmailMinAggregateOutputType | null
+    _max: AdminEmailMaxAggregateOutputType | null
+  }
+
+  export type AdminEmailMinAggregateOutputType = {
+    id: string | null
+    email: string | null
+    createdAt: Date | null
+  }
+
+  export type AdminEmailMaxAggregateOutputType = {
+    id: string | null
+    email: string | null
+    createdAt: Date | null
+  }
+
+  export type AdminEmailCountAggregateOutputType = {
+    id: number
+    email: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AdminEmailMinAggregateInputType = {
+    id?: true
+    email?: true
+    createdAt?: true
+  }
+
+  export type AdminEmailMaxAggregateInputType = {
+    id?: true
+    email?: true
+    createdAt?: true
+  }
+
+  export type AdminEmailCountAggregateInputType = {
+    id?: true
+    email?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AdminEmailAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminEmail to aggregate.
+     */
+    where?: AdminEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminEmails to fetch.
+     */
+    orderBy?: AdminEmailOrderByWithRelationInput | AdminEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdminEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminEmails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AdminEmails
+    **/
+    _count?: true | AdminEmailCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdminEmailMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdminEmailMaxAggregateInputType
+  }
+
+  export type GetAdminEmailAggregateType<T extends AdminEmailAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdminEmail]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdminEmail[P]>
+      : GetScalarType<T[P], AggregateAdminEmail[P]>
+  }
+
+
+
+
+  export type AdminEmailGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminEmailWhereInput
+    orderBy?: AdminEmailOrderByWithAggregationInput | AdminEmailOrderByWithAggregationInput[]
+    by: AdminEmailScalarFieldEnum[] | AdminEmailScalarFieldEnum
+    having?: AdminEmailScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdminEmailCountAggregateInputType | true
+    _min?: AdminEmailMinAggregateInputType
+    _max?: AdminEmailMaxAggregateInputType
+  }
+
+  export type AdminEmailGroupByOutputType = {
+    id: string
+    email: string
+    createdAt: Date
+    _count: AdminEmailCountAggregateOutputType | null
+    _min: AdminEmailMinAggregateOutputType | null
+    _max: AdminEmailMaxAggregateOutputType | null
+  }
+
+  type GetAdminEmailGroupByPayload<T extends AdminEmailGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdminEmailGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdminEmailGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdminEmailGroupByOutputType[P]>
+            : GetScalarType<T[P], AdminEmailGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdminEmailSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["adminEmail"]>
+
+  export type AdminEmailSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["adminEmail"]>
+
+  export type AdminEmailSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["adminEmail"]>
+
+  export type AdminEmailSelectScalar = {
+    id?: boolean
+    email?: boolean
+    createdAt?: boolean
+  }
+
+  export type AdminEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "createdAt", ExtArgs["result"]["adminEmail"]>
+
+  export type $AdminEmailPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AdminEmail"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      email: string
+      createdAt: Date
+    }, ExtArgs["result"]["adminEmail"]>
+    composites: {}
+  }
+
+  type AdminEmailGetPayload<S extends boolean | null | undefined | AdminEmailDefaultArgs> = $Result.GetResult<Prisma.$AdminEmailPayload, S>
+
+  type AdminEmailCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdminEmailFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdminEmailCountAggregateInputType | true
+    }
+
+  export interface AdminEmailDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AdminEmail'], meta: { name: 'AdminEmail' } }
+    /**
+     * Find zero or one AdminEmail that matches the filter.
+     * @param {AdminEmailFindUniqueArgs} args - Arguments to find a AdminEmail
+     * @example
+     * // Get one AdminEmail
+     * const adminEmail = await prisma.adminEmail.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdminEmailFindUniqueArgs>(args: SelectSubset<T, AdminEmailFindUniqueArgs<ExtArgs>>): Prisma__AdminEmailClient<$Result.GetResult<Prisma.$AdminEmailPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AdminEmail that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AdminEmailFindUniqueOrThrowArgs} args - Arguments to find a AdminEmail
+     * @example
+     * // Get one AdminEmail
+     * const adminEmail = await prisma.adminEmail.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdminEmailFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminEmailFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminEmailClient<$Result.GetResult<Prisma.$AdminEmailPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdminEmail that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminEmailFindFirstArgs} args - Arguments to find a AdminEmail
+     * @example
+     * // Get one AdminEmail
+     * const adminEmail = await prisma.adminEmail.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdminEmailFindFirstArgs>(args?: SelectSubset<T, AdminEmailFindFirstArgs<ExtArgs>>): Prisma__AdminEmailClient<$Result.GetResult<Prisma.$AdminEmailPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdminEmail that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminEmailFindFirstOrThrowArgs} args - Arguments to find a AdminEmail
+     * @example
+     * // Get one AdminEmail
+     * const adminEmail = await prisma.adminEmail.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdminEmailFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminEmailFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminEmailClient<$Result.GetResult<Prisma.$AdminEmailPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AdminEmails that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminEmailFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AdminEmails
+     * const adminEmails = await prisma.adminEmail.findMany()
+     * 
+     * // Get first 10 AdminEmails
+     * const adminEmails = await prisma.adminEmail.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const adminEmailWithIdOnly = await prisma.adminEmail.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdminEmailFindManyArgs>(args?: SelectSubset<T, AdminEmailFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AdminEmail.
+     * @param {AdminEmailCreateArgs} args - Arguments to create a AdminEmail.
+     * @example
+     * // Create one AdminEmail
+     * const AdminEmail = await prisma.adminEmail.create({
+     *   data: {
+     *     // ... data to create a AdminEmail
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdminEmailCreateArgs>(args: SelectSubset<T, AdminEmailCreateArgs<ExtArgs>>): Prisma__AdminEmailClient<$Result.GetResult<Prisma.$AdminEmailPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AdminEmails.
+     * @param {AdminEmailCreateManyArgs} args - Arguments to create many AdminEmails.
+     * @example
+     * // Create many AdminEmails
+     * const adminEmail = await prisma.adminEmail.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdminEmailCreateManyArgs>(args?: SelectSubset<T, AdminEmailCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AdminEmails and returns the data saved in the database.
+     * @param {AdminEmailCreateManyAndReturnArgs} args - Arguments to create many AdminEmails.
+     * @example
+     * // Create many AdminEmails
+     * const adminEmail = await prisma.adminEmail.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AdminEmails and only return the `id`
+     * const adminEmailWithIdOnly = await prisma.adminEmail.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdminEmailCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminEmailCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminEmailPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AdminEmail.
+     * @param {AdminEmailDeleteArgs} args - Arguments to delete one AdminEmail.
+     * @example
+     * // Delete one AdminEmail
+     * const AdminEmail = await prisma.adminEmail.delete({
+     *   where: {
+     *     // ... filter to delete one AdminEmail
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdminEmailDeleteArgs>(args: SelectSubset<T, AdminEmailDeleteArgs<ExtArgs>>): Prisma__AdminEmailClient<$Result.GetResult<Prisma.$AdminEmailPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AdminEmail.
+     * @param {AdminEmailUpdateArgs} args - Arguments to update one AdminEmail.
+     * @example
+     * // Update one AdminEmail
+     * const adminEmail = await prisma.adminEmail.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdminEmailUpdateArgs>(args: SelectSubset<T, AdminEmailUpdateArgs<ExtArgs>>): Prisma__AdminEmailClient<$Result.GetResult<Prisma.$AdminEmailPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AdminEmails.
+     * @param {AdminEmailDeleteManyArgs} args - Arguments to filter AdminEmails to delete.
+     * @example
+     * // Delete a few AdminEmails
+     * const { count } = await prisma.adminEmail.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdminEmailDeleteManyArgs>(args?: SelectSubset<T, AdminEmailDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdminEmails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminEmailUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AdminEmails
+     * const adminEmail = await prisma.adminEmail.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdminEmailUpdateManyArgs>(args: SelectSubset<T, AdminEmailUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdminEmails and returns the data updated in the database.
+     * @param {AdminEmailUpdateManyAndReturnArgs} args - Arguments to update many AdminEmails.
+     * @example
+     * // Update many AdminEmails
+     * const adminEmail = await prisma.adminEmail.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AdminEmails and only return the `id`
+     * const adminEmailWithIdOnly = await prisma.adminEmail.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AdminEmailUpdateManyAndReturnArgs>(args: SelectSubset<T, AdminEmailUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminEmailPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AdminEmail.
+     * @param {AdminEmailUpsertArgs} args - Arguments to update or create a AdminEmail.
+     * @example
+     * // Update or create a AdminEmail
+     * const adminEmail = await prisma.adminEmail.upsert({
+     *   create: {
+     *     // ... data to create a AdminEmail
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AdminEmail we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdminEmailUpsertArgs>(args: SelectSubset<T, AdminEmailUpsertArgs<ExtArgs>>): Prisma__AdminEmailClient<$Result.GetResult<Prisma.$AdminEmailPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AdminEmails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminEmailCountArgs} args - Arguments to filter AdminEmails to count.
+     * @example
+     * // Count the number of AdminEmails
+     * const count = await prisma.adminEmail.count({
+     *   where: {
+     *     // ... the filter for the AdminEmails we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdminEmailCountArgs>(
+      args?: Subset<T, AdminEmailCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdminEmailCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AdminEmail.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminEmailAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdminEmailAggregateArgs>(args: Subset<T, AdminEmailAggregateArgs>): Prisma.PrismaPromise<GetAdminEmailAggregateType<T>>
+
+    /**
+     * Group by AdminEmail.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminEmailGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdminEmailGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdminEmailGroupByArgs['orderBy'] }
+        : { orderBy?: AdminEmailGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdminEmailGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminEmailGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AdminEmail model
+   */
+  readonly fields: AdminEmailFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AdminEmail.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdminEmailClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AdminEmail model
+   */
+  interface AdminEmailFieldRefs {
+    readonly id: FieldRef<"AdminEmail", 'String'>
+    readonly email: FieldRef<"AdminEmail", 'String'>
+    readonly createdAt: FieldRef<"AdminEmail", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AdminEmail findUnique
+   */
+  export type AdminEmailFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminEmail
+     */
+    select?: AdminEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminEmail
+     */
+    omit?: AdminEmailOmit<ExtArgs> | null
+    /**
+     * Filter, which AdminEmail to fetch.
+     */
+    where: AdminEmailWhereUniqueInput
+  }
+
+  /**
+   * AdminEmail findUniqueOrThrow
+   */
+  export type AdminEmailFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminEmail
+     */
+    select?: AdminEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminEmail
+     */
+    omit?: AdminEmailOmit<ExtArgs> | null
+    /**
+     * Filter, which AdminEmail to fetch.
+     */
+    where: AdminEmailWhereUniqueInput
+  }
+
+  /**
+   * AdminEmail findFirst
+   */
+  export type AdminEmailFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminEmail
+     */
+    select?: AdminEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminEmail
+     */
+    omit?: AdminEmailOmit<ExtArgs> | null
+    /**
+     * Filter, which AdminEmail to fetch.
+     */
+    where?: AdminEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminEmails to fetch.
+     */
+    orderBy?: AdminEmailOrderByWithRelationInput | AdminEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminEmails.
+     */
+    cursor?: AdminEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminEmails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminEmails.
+     */
+    distinct?: AdminEmailScalarFieldEnum | AdminEmailScalarFieldEnum[]
+  }
+
+  /**
+   * AdminEmail findFirstOrThrow
+   */
+  export type AdminEmailFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminEmail
+     */
+    select?: AdminEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminEmail
+     */
+    omit?: AdminEmailOmit<ExtArgs> | null
+    /**
+     * Filter, which AdminEmail to fetch.
+     */
+    where?: AdminEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminEmails to fetch.
+     */
+    orderBy?: AdminEmailOrderByWithRelationInput | AdminEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdminEmails.
+     */
+    cursor?: AdminEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminEmails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdminEmails.
+     */
+    distinct?: AdminEmailScalarFieldEnum | AdminEmailScalarFieldEnum[]
+  }
+
+  /**
+   * AdminEmail findMany
+   */
+  export type AdminEmailFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminEmail
+     */
+    select?: AdminEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminEmail
+     */
+    omit?: AdminEmailOmit<ExtArgs> | null
+    /**
+     * Filter, which AdminEmails to fetch.
+     */
+    where?: AdminEmailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdminEmails to fetch.
+     */
+    orderBy?: AdminEmailOrderByWithRelationInput | AdminEmailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AdminEmails.
+     */
+    cursor?: AdminEmailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdminEmails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdminEmails.
+     */
+    skip?: number
+    distinct?: AdminEmailScalarFieldEnum | AdminEmailScalarFieldEnum[]
+  }
+
+  /**
+   * AdminEmail create
+   */
+  export type AdminEmailCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminEmail
+     */
+    select?: AdminEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminEmail
+     */
+    omit?: AdminEmailOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AdminEmail.
+     */
+    data: XOR<AdminEmailCreateInput, AdminEmailUncheckedCreateInput>
+  }
+
+  /**
+   * AdminEmail createMany
+   */
+  export type AdminEmailCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AdminEmails.
+     */
+    data: AdminEmailCreateManyInput | AdminEmailCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AdminEmail createManyAndReturn
+   */
+  export type AdminEmailCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminEmail
+     */
+    select?: AdminEmailSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminEmail
+     */
+    omit?: AdminEmailOmit<ExtArgs> | null
+    /**
+     * The data used to create many AdminEmails.
+     */
+    data: AdminEmailCreateManyInput | AdminEmailCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AdminEmail update
+   */
+  export type AdminEmailUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminEmail
+     */
+    select?: AdminEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminEmail
+     */
+    omit?: AdminEmailOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AdminEmail.
+     */
+    data: XOR<AdminEmailUpdateInput, AdminEmailUncheckedUpdateInput>
+    /**
+     * Choose, which AdminEmail to update.
+     */
+    where: AdminEmailWhereUniqueInput
+  }
+
+  /**
+   * AdminEmail updateMany
+   */
+  export type AdminEmailUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AdminEmails.
+     */
+    data: XOR<AdminEmailUpdateManyMutationInput, AdminEmailUncheckedUpdateManyInput>
+    /**
+     * Filter which AdminEmails to update
+     */
+    where?: AdminEmailWhereInput
+    /**
+     * Limit how many AdminEmails to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminEmail updateManyAndReturn
+   */
+  export type AdminEmailUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminEmail
+     */
+    select?: AdminEmailSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminEmail
+     */
+    omit?: AdminEmailOmit<ExtArgs> | null
+    /**
+     * The data used to update AdminEmails.
+     */
+    data: XOR<AdminEmailUpdateManyMutationInput, AdminEmailUncheckedUpdateManyInput>
+    /**
+     * Filter which AdminEmails to update
+     */
+    where?: AdminEmailWhereInput
+    /**
+     * Limit how many AdminEmails to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminEmail upsert
+   */
+  export type AdminEmailUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminEmail
+     */
+    select?: AdminEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminEmail
+     */
+    omit?: AdminEmailOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AdminEmail to update in case it exists.
+     */
+    where: AdminEmailWhereUniqueInput
+    /**
+     * In case the AdminEmail found by the `where` argument doesn't exist, create a new AdminEmail with this data.
+     */
+    create: XOR<AdminEmailCreateInput, AdminEmailUncheckedCreateInput>
+    /**
+     * In case the AdminEmail was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdminEmailUpdateInput, AdminEmailUncheckedUpdateInput>
+  }
+
+  /**
+   * AdminEmail delete
+   */
+  export type AdminEmailDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminEmail
+     */
+    select?: AdminEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminEmail
+     */
+    omit?: AdminEmailOmit<ExtArgs> | null
+    /**
+     * Filter which AdminEmail to delete.
+     */
+    where: AdminEmailWhereUniqueInput
+  }
+
+  /**
+   * AdminEmail deleteMany
+   */
+  export type AdminEmailDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdminEmails to delete
+     */
+    where?: AdminEmailWhereInput
+    /**
+     * Limit how many AdminEmails to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdminEmail without action
+   */
+  export type AdminEmailDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminEmail
+     */
+    select?: AdminEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminEmail
+     */
+    omit?: AdminEmailOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -8241,6 +10566,7 @@ export namespace Prisma {
     quantity: 'quantity',
     amount: 'amount',
     status: 'status',
+    provider: 'provider',
     remark: 'remark',
     userId: 'userId',
     createdAt: 'createdAt',
@@ -8273,6 +10599,7 @@ export namespace Prisma {
     orderId: 'orderId',
     smmOrderId: 'smmOrderId',
     serviceId: 'serviceId',
+    provider: 'provider',
     link: 'link',
     quantity: 'quantity',
     status: 'status',
@@ -8309,12 +10636,37 @@ export namespace Prisma {
     serviceSlug: 'serviceSlug',
     title: 'title',
     badge: 'badge',
+    description: 'description',
+    serviceId: 'serviceId',
+    quantity: 'quantity',
+    price: 'price',
     active: 'active',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type SpecialOfferScalarFieldEnum = (typeof SpecialOfferScalarFieldEnum)[keyof typeof SpecialOfferScalarFieldEnum]
+
+
+  export const SpendScalarFieldEnum: {
+    id: 'id',
+    category: 'category',
+    amount: 'amount',
+    note: 'note',
+    date: 'date',
+    createdAt: 'createdAt'
+  };
+
+  export type SpendScalarFieldEnum = (typeof SpendScalarFieldEnum)[keyof typeof SpendScalarFieldEnum]
+
+
+  export const AdminEmailScalarFieldEnum: {
+    id: 'id',
+    email: 'email',
+    createdAt: 'createdAt'
+  };
+
+  export type AdminEmailScalarFieldEnum = (typeof AdminEmailScalarFieldEnum)[keyof typeof AdminEmailScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -8417,6 +10769,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'SmmProvider'
+   */
+  export type EnumSmmProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SmmProvider'>
+    
+
+
+  /**
+   * Reference to a field of type 'SmmProvider[]'
+   */
+  export type ListEnumSmmProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SmmProvider[]'>
+    
+
+
+  /**
    * Reference to a field of type 'PaymentStatus'
    */
   export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus'>
@@ -8505,6 +10871,7 @@ export namespace Prisma {
     quantity?: IntFilter<"Order"> | number
     amount?: FloatFilter<"Order"> | number
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+    provider?: EnumSmmProviderFilter<"Order"> | $Enums.SmmProvider
     remark?: StringNullableFilter<"Order"> | string | null
     userId?: StringNullableFilter<"Order"> | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
@@ -8521,6 +10888,7 @@ export namespace Prisma {
     quantity?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    provider?: SortOrder
     remark?: SortOrderInput | SortOrder
     userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -8540,6 +10908,7 @@ export namespace Prisma {
     quantity?: IntFilter<"Order"> | number
     amount?: FloatFilter<"Order"> | number
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+    provider?: EnumSmmProviderFilter<"Order"> | $Enums.SmmProvider
     remark?: StringNullableFilter<"Order"> | string | null
     userId?: StringNullableFilter<"Order"> | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
@@ -8556,6 +10925,7 @@ export namespace Prisma {
     quantity?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    provider?: SortOrder
     remark?: SortOrderInput | SortOrder
     userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -8577,6 +10947,7 @@ export namespace Prisma {
     quantity?: IntWithAggregatesFilter<"Order"> | number
     amount?: FloatWithAggregatesFilter<"Order"> | number
     status?: EnumOrderStatusWithAggregatesFilter<"Order"> | $Enums.OrderStatus
+    provider?: EnumSmmProviderWithAggregatesFilter<"Order"> | $Enums.SmmProvider
     remark?: StringNullableWithAggregatesFilter<"Order"> | string | null
     userId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
@@ -8683,6 +11054,7 @@ export namespace Prisma {
     orderId?: StringFilter<"SmmOrder"> | string
     smmOrderId?: StringNullableFilter<"SmmOrder"> | string | null
     serviceId?: IntFilter<"SmmOrder"> | number
+    provider?: EnumSmmProviderFilter<"SmmOrder"> | $Enums.SmmProvider
     link?: StringFilter<"SmmOrder"> | string
     quantity?: IntFilter<"SmmOrder"> | number
     status?: EnumOrderStatusFilter<"SmmOrder"> | $Enums.OrderStatus
@@ -8700,6 +11072,7 @@ export namespace Prisma {
     orderId?: SortOrder
     smmOrderId?: SortOrderInput | SortOrder
     serviceId?: SortOrder
+    provider?: SortOrder
     link?: SortOrder
     quantity?: SortOrder
     status?: SortOrder
@@ -8720,6 +11093,7 @@ export namespace Prisma {
     NOT?: SmmOrderWhereInput | SmmOrderWhereInput[]
     smmOrderId?: StringNullableFilter<"SmmOrder"> | string | null
     serviceId?: IntFilter<"SmmOrder"> | number
+    provider?: EnumSmmProviderFilter<"SmmOrder"> | $Enums.SmmProvider
     link?: StringFilter<"SmmOrder"> | string
     quantity?: IntFilter<"SmmOrder"> | number
     status?: EnumOrderStatusFilter<"SmmOrder"> | $Enums.OrderStatus
@@ -8737,6 +11111,7 @@ export namespace Prisma {
     orderId?: SortOrder
     smmOrderId?: SortOrderInput | SortOrder
     serviceId?: SortOrder
+    provider?: SortOrder
     link?: SortOrder
     quantity?: SortOrder
     status?: SortOrder
@@ -8761,6 +11136,7 @@ export namespace Prisma {
     orderId?: StringWithAggregatesFilter<"SmmOrder"> | string
     smmOrderId?: StringNullableWithAggregatesFilter<"SmmOrder"> | string | null
     serviceId?: IntWithAggregatesFilter<"SmmOrder"> | number
+    provider?: EnumSmmProviderWithAggregatesFilter<"SmmOrder"> | $Enums.SmmProvider
     link?: StringWithAggregatesFilter<"SmmOrder"> | string
     quantity?: IntWithAggregatesFilter<"SmmOrder"> | number
     status?: EnumOrderStatusWithAggregatesFilter<"SmmOrder"> | $Enums.OrderStatus
@@ -8864,6 +11240,10 @@ export namespace Prisma {
     serviceSlug?: StringFilter<"SpecialOffer"> | string
     title?: StringFilter<"SpecialOffer"> | string
     badge?: StringFilter<"SpecialOffer"> | string
+    description?: StringNullableFilter<"SpecialOffer"> | string | null
+    serviceId?: IntNullableFilter<"SpecialOffer"> | number | null
+    quantity?: IntNullableFilter<"SpecialOffer"> | number | null
+    price?: FloatNullableFilter<"SpecialOffer"> | number | null
     active?: BoolFilter<"SpecialOffer"> | boolean
     createdAt?: DateTimeFilter<"SpecialOffer"> | Date | string
     updatedAt?: DateTimeFilter<"SpecialOffer"> | Date | string
@@ -8874,6 +11254,10 @@ export namespace Prisma {
     serviceSlug?: SortOrder
     title?: SortOrder
     badge?: SortOrder
+    description?: SortOrderInput | SortOrder
+    serviceId?: SortOrderInput | SortOrder
+    quantity?: SortOrderInput | SortOrder
+    price?: SortOrderInput | SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8887,6 +11271,10 @@ export namespace Prisma {
     serviceSlug?: StringFilter<"SpecialOffer"> | string
     title?: StringFilter<"SpecialOffer"> | string
     badge?: StringFilter<"SpecialOffer"> | string
+    description?: StringNullableFilter<"SpecialOffer"> | string | null
+    serviceId?: IntNullableFilter<"SpecialOffer"> | number | null
+    quantity?: IntNullableFilter<"SpecialOffer"> | number | null
+    price?: FloatNullableFilter<"SpecialOffer"> | number | null
     active?: BoolFilter<"SpecialOffer"> | boolean
     createdAt?: DateTimeFilter<"SpecialOffer"> | Date | string
     updatedAt?: DateTimeFilter<"SpecialOffer"> | Date | string
@@ -8897,12 +11285,18 @@ export namespace Prisma {
     serviceSlug?: SortOrder
     title?: SortOrder
     badge?: SortOrder
+    description?: SortOrderInput | SortOrder
+    serviceId?: SortOrderInput | SortOrder
+    quantity?: SortOrderInput | SortOrder
+    price?: SortOrderInput | SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: SpecialOfferCountOrderByAggregateInput
+    _avg?: SpecialOfferAvgOrderByAggregateInput
     _max?: SpecialOfferMaxOrderByAggregateInput
     _min?: SpecialOfferMinOrderByAggregateInput
+    _sum?: SpecialOfferSumOrderByAggregateInput
   }
 
   export type SpecialOfferScalarWhereWithAggregatesInput = {
@@ -8913,9 +11307,114 @@ export namespace Prisma {
     serviceSlug?: StringWithAggregatesFilter<"SpecialOffer"> | string
     title?: StringWithAggregatesFilter<"SpecialOffer"> | string
     badge?: StringWithAggregatesFilter<"SpecialOffer"> | string
+    description?: StringNullableWithAggregatesFilter<"SpecialOffer"> | string | null
+    serviceId?: IntNullableWithAggregatesFilter<"SpecialOffer"> | number | null
+    quantity?: IntNullableWithAggregatesFilter<"SpecialOffer"> | number | null
+    price?: FloatNullableWithAggregatesFilter<"SpecialOffer"> | number | null
     active?: BoolWithAggregatesFilter<"SpecialOffer"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"SpecialOffer"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SpecialOffer"> | Date | string
+  }
+
+  export type SpendWhereInput = {
+    AND?: SpendWhereInput | SpendWhereInput[]
+    OR?: SpendWhereInput[]
+    NOT?: SpendWhereInput | SpendWhereInput[]
+    id?: StringFilter<"Spend"> | string
+    category?: StringFilter<"Spend"> | string
+    amount?: FloatFilter<"Spend"> | number
+    note?: StringNullableFilter<"Spend"> | string | null
+    date?: DateTimeFilter<"Spend"> | Date | string
+    createdAt?: DateTimeFilter<"Spend"> | Date | string
+  }
+
+  export type SpendOrderByWithRelationInput = {
+    id?: SortOrder
+    category?: SortOrder
+    amount?: SortOrder
+    note?: SortOrderInput | SortOrder
+    date?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SpendWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SpendWhereInput | SpendWhereInput[]
+    OR?: SpendWhereInput[]
+    NOT?: SpendWhereInput | SpendWhereInput[]
+    category?: StringFilter<"Spend"> | string
+    amount?: FloatFilter<"Spend"> | number
+    note?: StringNullableFilter<"Spend"> | string | null
+    date?: DateTimeFilter<"Spend"> | Date | string
+    createdAt?: DateTimeFilter<"Spend"> | Date | string
+  }, "id">
+
+  export type SpendOrderByWithAggregationInput = {
+    id?: SortOrder
+    category?: SortOrder
+    amount?: SortOrder
+    note?: SortOrderInput | SortOrder
+    date?: SortOrder
+    createdAt?: SortOrder
+    _count?: SpendCountOrderByAggregateInput
+    _avg?: SpendAvgOrderByAggregateInput
+    _max?: SpendMaxOrderByAggregateInput
+    _min?: SpendMinOrderByAggregateInput
+    _sum?: SpendSumOrderByAggregateInput
+  }
+
+  export type SpendScalarWhereWithAggregatesInput = {
+    AND?: SpendScalarWhereWithAggregatesInput | SpendScalarWhereWithAggregatesInput[]
+    OR?: SpendScalarWhereWithAggregatesInput[]
+    NOT?: SpendScalarWhereWithAggregatesInput | SpendScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Spend"> | string
+    category?: StringWithAggregatesFilter<"Spend"> | string
+    amount?: FloatWithAggregatesFilter<"Spend"> | number
+    note?: StringNullableWithAggregatesFilter<"Spend"> | string | null
+    date?: DateTimeWithAggregatesFilter<"Spend"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"Spend"> | Date | string
+  }
+
+  export type AdminEmailWhereInput = {
+    AND?: AdminEmailWhereInput | AdminEmailWhereInput[]
+    OR?: AdminEmailWhereInput[]
+    NOT?: AdminEmailWhereInput | AdminEmailWhereInput[]
+    id?: StringFilter<"AdminEmail"> | string
+    email?: StringFilter<"AdminEmail"> | string
+    createdAt?: DateTimeFilter<"AdminEmail"> | Date | string
+  }
+
+  export type AdminEmailOrderByWithRelationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AdminEmailWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    email?: string
+    AND?: AdminEmailWhereInput | AdminEmailWhereInput[]
+    OR?: AdminEmailWhereInput[]
+    NOT?: AdminEmailWhereInput | AdminEmailWhereInput[]
+    createdAt?: DateTimeFilter<"AdminEmail"> | Date | string
+  }, "id" | "email">
+
+  export type AdminEmailOrderByWithAggregationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+    _count?: AdminEmailCountOrderByAggregateInput
+    _max?: AdminEmailMaxOrderByAggregateInput
+    _min?: AdminEmailMinOrderByAggregateInput
+  }
+
+  export type AdminEmailScalarWhereWithAggregatesInput = {
+    AND?: AdminEmailScalarWhereWithAggregatesInput | AdminEmailScalarWhereWithAggregatesInput[]
+    OR?: AdminEmailScalarWhereWithAggregatesInput[]
+    NOT?: AdminEmailScalarWhereWithAggregatesInput | AdminEmailScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AdminEmail"> | string
+    email?: StringWithAggregatesFilter<"AdminEmail"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"AdminEmail"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -8985,6 +11484,7 @@ export namespace Prisma {
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
+    provider?: $Enums.SmmProvider
     remark?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9000,6 +11500,7 @@ export namespace Prisma {
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
+    provider?: $Enums.SmmProvider
     remark?: string | null
     userId?: string | null
     createdAt?: Date | string
@@ -9015,6 +11516,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9030,6 +11532,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9045,6 +11548,7 @@ export namespace Prisma {
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
+    provider?: $Enums.SmmProvider
     remark?: string | null
     userId?: string | null
     createdAt?: Date | string
@@ -9058,6 +11562,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9070,6 +11575,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9184,6 +11690,7 @@ export namespace Prisma {
     id?: string
     smmOrderId?: string | null
     serviceId: number
+    provider?: $Enums.SmmProvider
     link: string
     quantity: number
     status?: $Enums.OrderStatus
@@ -9201,6 +11708,7 @@ export namespace Prisma {
     orderId: string
     smmOrderId?: string | null
     serviceId: number
+    provider?: $Enums.SmmProvider
     link: string
     quantity: number
     status?: $Enums.OrderStatus
@@ -9216,6 +11724,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     smmOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     serviceId?: IntFieldUpdateOperationsInput | number
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -9233,6 +11742,7 @@ export namespace Prisma {
     orderId?: StringFieldUpdateOperationsInput | string
     smmOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     serviceId?: IntFieldUpdateOperationsInput | number
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -9249,6 +11759,7 @@ export namespace Prisma {
     orderId: string
     smmOrderId?: string | null
     serviceId: number
+    provider?: $Enums.SmmProvider
     link: string
     quantity: number
     status?: $Enums.OrderStatus
@@ -9264,6 +11775,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     smmOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     serviceId?: IntFieldUpdateOperationsInput | number
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -9280,6 +11792,7 @@ export namespace Prisma {
     orderId?: StringFieldUpdateOperationsInput | string
     smmOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     serviceId?: IntFieldUpdateOperationsInput | number
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -9394,6 +11907,10 @@ export namespace Prisma {
     serviceSlug: string
     title: string
     badge?: string
+    description?: string | null
+    serviceId?: number | null
+    quantity?: number | null
+    price?: number | null
     active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9404,6 +11921,10 @@ export namespace Prisma {
     serviceSlug: string
     title: string
     badge?: string
+    description?: string | null
+    serviceId?: number | null
+    quantity?: number | null
+    price?: number | null
     active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9414,6 +11935,10 @@ export namespace Prisma {
     serviceSlug?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     badge?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceId?: NullableIntFieldUpdateOperationsInput | number | null
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9424,6 +11949,10 @@ export namespace Prisma {
     serviceSlug?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     badge?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceId?: NullableIntFieldUpdateOperationsInput | number | null
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9434,6 +11963,10 @@ export namespace Prisma {
     serviceSlug: string
     title: string
     badge?: string
+    description?: string | null
+    serviceId?: number | null
+    quantity?: number | null
+    price?: number | null
     active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9444,6 +11977,10 @@ export namespace Prisma {
     serviceSlug?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     badge?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceId?: NullableIntFieldUpdateOperationsInput | number | null
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9454,9 +11991,118 @@ export namespace Prisma {
     serviceSlug?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     badge?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceId?: NullableIntFieldUpdateOperationsInput | number | null
+    quantity?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SpendCreateInput = {
+    id?: string
+    category: string
+    amount: number
+    note?: string | null
+    date: Date | string
+    createdAt?: Date | string
+  }
+
+  export type SpendUncheckedCreateInput = {
+    id?: string
+    category: string
+    amount: number
+    note?: string | null
+    date: Date | string
+    createdAt?: Date | string
+  }
+
+  export type SpendUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SpendUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SpendCreateManyInput = {
+    id?: string
+    category: string
+    amount: number
+    note?: string | null
+    date: Date | string
+    createdAt?: Date | string
+  }
+
+  export type SpendUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SpendUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminEmailCreateInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+  }
+
+  export type AdminEmailUncheckedCreateInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+  }
+
+  export type AdminEmailUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminEmailUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminEmailCreateManyInput = {
+    id?: string
+    email: string
+    createdAt?: Date | string
+  }
+
+  export type AdminEmailUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminEmailUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -9618,6 +12264,13 @@ export namespace Prisma {
     not?: NestedEnumOrderStatusFilter<$PrismaModel> | $Enums.OrderStatus
   }
 
+  export type EnumSmmProviderFilter<$PrismaModel = never> = {
+    equals?: $Enums.SmmProvider | EnumSmmProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.SmmProvider[] | ListEnumSmmProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SmmProvider[] | ListEnumSmmProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumSmmProviderFilter<$PrismaModel> | $Enums.SmmProvider
+  }
+
   export type UserNullableScalarRelationFilter = {
     is?: UserWhereInput | null
     isNot?: UserWhereInput | null
@@ -9640,6 +12293,7 @@ export namespace Prisma {
     quantity?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    provider?: SortOrder
     remark?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -9659,6 +12313,7 @@ export namespace Prisma {
     quantity?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    provider?: SortOrder
     remark?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -9672,6 +12327,7 @@ export namespace Prisma {
     quantity?: SortOrder
     amount?: SortOrder
     status?: SortOrder
+    provider?: SortOrder
     remark?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -9724,6 +12380,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumOrderStatusFilter<$PrismaModel>
     _max?: NestedEnumOrderStatusFilter<$PrismaModel>
+  }
+
+  export type EnumSmmProviderWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SmmProvider | EnumSmmProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.SmmProvider[] | ListEnumSmmProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SmmProvider[] | ListEnumSmmProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumSmmProviderWithAggregatesFilter<$PrismaModel> | $Enums.SmmProvider
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSmmProviderFilter<$PrismaModel>
+    _max?: NestedEnumSmmProviderFilter<$PrismaModel>
   }
 
   export type EnumPaymentStatusFilter<$PrismaModel = never> = {
@@ -9828,6 +12494,7 @@ export namespace Prisma {
     orderId?: SortOrder
     smmOrderId?: SortOrder
     serviceId?: SortOrder
+    provider?: SortOrder
     link?: SortOrder
     quantity?: SortOrder
     status?: SortOrder
@@ -9852,6 +12519,7 @@ export namespace Prisma {
     orderId?: SortOrder
     smmOrderId?: SortOrder
     serviceId?: SortOrder
+    provider?: SortOrder
     link?: SortOrder
     quantity?: SortOrder
     status?: SortOrder
@@ -9868,6 +12536,7 @@ export namespace Prisma {
     orderId?: SortOrder
     smmOrderId?: SortOrder
     serviceId?: SortOrder
+    provider?: SortOrder
     link?: SortOrder
     quantity?: SortOrder
     status?: SortOrder
@@ -9987,9 +12656,19 @@ export namespace Prisma {
     serviceSlug?: SortOrder
     title?: SortOrder
     badge?: SortOrder
+    description?: SortOrder
+    serviceId?: SortOrder
+    quantity?: SortOrder
+    price?: SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type SpecialOfferAvgOrderByAggregateInput = {
+    serviceId?: SortOrder
+    quantity?: SortOrder
+    price?: SortOrder
   }
 
   export type SpecialOfferMaxOrderByAggregateInput = {
@@ -9997,6 +12676,10 @@ export namespace Prisma {
     serviceSlug?: SortOrder
     title?: SortOrder
     badge?: SortOrder
+    description?: SortOrder
+    serviceId?: SortOrder
+    quantity?: SortOrder
+    price?: SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10007,9 +12690,72 @@ export namespace Prisma {
     serviceSlug?: SortOrder
     title?: SortOrder
     badge?: SortOrder
+    description?: SortOrder
+    serviceId?: SortOrder
+    quantity?: SortOrder
+    price?: SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type SpecialOfferSumOrderByAggregateInput = {
+    serviceId?: SortOrder
+    quantity?: SortOrder
+    price?: SortOrder
+  }
+
+  export type SpendCountOrderByAggregateInput = {
+    id?: SortOrder
+    category?: SortOrder
+    amount?: SortOrder
+    note?: SortOrder
+    date?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SpendAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type SpendMaxOrderByAggregateInput = {
+    id?: SortOrder
+    category?: SortOrder
+    amount?: SortOrder
+    note?: SortOrder
+    date?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SpendMinOrderByAggregateInput = {
+    id?: SortOrder
+    category?: SortOrder
+    amount?: SortOrder
+    note?: SortOrder
+    date?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SpendSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type AdminEmailCountOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AdminEmailMaxOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AdminEmailMinOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type OrderCreateNestedManyWithoutUserInput = {
@@ -10114,6 +12860,10 @@ export namespace Prisma {
 
   export type EnumOrderStatusFieldUpdateOperationsInput = {
     set?: $Enums.OrderStatus
+  }
+
+  export type EnumSmmProviderFieldUpdateOperationsInput = {
+    set?: $Enums.SmmProvider
   }
 
   export type UserUpdateOneWithoutOrdersNestedInput = {
@@ -10345,6 +13095,13 @@ export namespace Prisma {
     not?: NestedEnumOrderStatusFilter<$PrismaModel> | $Enums.OrderStatus
   }
 
+  export type NestedEnumSmmProviderFilter<$PrismaModel = never> = {
+    equals?: $Enums.SmmProvider | EnumSmmProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.SmmProvider[] | ListEnumSmmProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SmmProvider[] | ListEnumSmmProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumSmmProviderFilter<$PrismaModel> | $Enums.SmmProvider
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -10385,6 +13142,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumOrderStatusFilter<$PrismaModel>
     _max?: NestedEnumOrderStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSmmProviderWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SmmProvider | EnumSmmProviderFieldRefInput<$PrismaModel>
+    in?: $Enums.SmmProvider[] | ListEnumSmmProviderFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SmmProvider[] | ListEnumSmmProviderFieldRefInput<$PrismaModel>
+    not?: NestedEnumSmmProviderWithAggregatesFilter<$PrismaModel> | $Enums.SmmProvider
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSmmProviderFilter<$PrismaModel>
+    _max?: NestedEnumSmmProviderFilter<$PrismaModel>
   }
 
   export type NestedEnumPaymentStatusFilter<$PrismaModel = never> = {
@@ -10467,6 +13234,7 @@ export namespace Prisma {
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
+    provider?: $Enums.SmmProvider
     remark?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10481,6 +13249,7 @@ export namespace Prisma {
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
+    provider?: $Enums.SmmProvider
     remark?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10524,6 +13293,7 @@ export namespace Prisma {
     quantity?: IntFilter<"Order"> | number
     amount?: FloatFilter<"Order"> | number
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+    provider?: EnumSmmProviderFilter<"Order"> | $Enums.SmmProvider
     remark?: StringNullableFilter<"Order"> | string | null
     userId?: StringNullableFilter<"Order"> | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
@@ -10588,6 +13358,7 @@ export namespace Prisma {
     id?: string
     smmOrderId?: string | null
     serviceId: number
+    provider?: $Enums.SmmProvider
     link: string
     quantity: number
     status?: $Enums.OrderStatus
@@ -10603,6 +13374,7 @@ export namespace Prisma {
     id?: string
     smmOrderId?: string | null
     serviceId: number
+    provider?: $Enums.SmmProvider
     link: string
     quantity: number
     status?: $Enums.OrderStatus
@@ -10700,6 +13472,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     smmOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     serviceId?: IntFieldUpdateOperationsInput | number
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -10715,6 +13488,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     smmOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     serviceId?: IntFieldUpdateOperationsInput | number
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -10733,6 +13507,7 @@ export namespace Prisma {
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
+    provider?: $Enums.SmmProvider
     remark?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10747,6 +13522,7 @@ export namespace Prisma {
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
+    provider?: $Enums.SmmProvider
     remark?: string | null
     userId?: string | null
     createdAt?: Date | string
@@ -10777,6 +13553,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10791,6 +13568,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10805,6 +13583,7 @@ export namespace Prisma {
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
+    provider?: $Enums.SmmProvider
     remark?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10819,6 +13598,7 @@ export namespace Prisma {
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
+    provider?: $Enums.SmmProvider
     remark?: string | null
     userId?: string | null
     createdAt?: Date | string
@@ -10849,6 +13629,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10863,6 +13644,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10877,6 +13659,7 @@ export namespace Prisma {
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
+    provider?: $Enums.SmmProvider
     remark?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10889,6 +13672,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10903,6 +13687,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10917,6 +13702,7 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
