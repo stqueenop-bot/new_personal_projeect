@@ -13,8 +13,12 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Build TypeScript
-RUN npm run build
+# Declare build arguments (Railway/System Env injection)
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
+# Make build script executable and run it
+RUN chmod +x ./scripts/build.sh && ./scripts/build.sh
 
 
 # --- Production Stage ---
