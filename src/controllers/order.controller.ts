@@ -21,7 +21,7 @@ import { validateLinkForService, ServiceCategory } from '../services/instagram.v
 
 export const createOrderSchema = z.object({
     serviceId: z.number().int().positive('serviceId must be a positive integer'),
-    link: z.string().min(1, 'link cannot be empty'),
+    link: z.string().optional().default(''),
     quantity: z.number().int().min(1, 'quantity must be at least 1'),
     amount: z.number().positive('amount must be positive'),
     serviceCategory: z.enum(['followers', 'likes', 'comments', 'views'], {
@@ -33,7 +33,7 @@ export const createOrderSchema = z.object({
 });
 
 export const validateLinkSchema = z.object({
-    link: z.string().min(1, 'link cannot be empty'),
+    link: z.string().optional().default(''),
     serviceCategory: z.enum(['followers', 'likes', 'comments', 'views'], {
         errorMap: () => ({ message: 'serviceCategory must be one of: followers, likes, comments, views' }),
     }),

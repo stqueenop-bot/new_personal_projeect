@@ -10,17 +10,7 @@ import { PaymentSuccessMessage, PaymentFailedMessage } from '../types/index.js';
 import { getProviderForService, getCategoryForId } from '../utils/smm.mapper.js';
 import { validateLinkForService, ServiceCategory } from '../services/instagram.validator.js';
 
-/**
- * Returns true if the link belongs to Instagram.
- */
-function isInstagramLink(link: string): boolean {
-    try {
-        const hostname = new URL(link).hostname.replace('www.', '');
-        return hostname === 'instagram.com';
-    } catch {
-        return false;
-    }
-}
+
 
 /**
  * Handles a successful payment message from RabbitMQ.
@@ -64,10 +54,12 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
     sseService.broadcastStatus(data.orderId, OrderStatus.PROCESSING);
 
     // ──────────────────────────────────────────────────────────
-    // NON-INSTAGRAM: Complete immediately, no SMM call needed
+    // UNMAPPED SERVICES: Complete immediately, no SMM call needed
     // ──────────────────────────────────────────────────────────
-    if (!isInstagramLink(data.link)) {
-        logger.info(`[Worker] Non-Instagram order ${data.orderId}. Marking COMPLETED directly.`);
+    const serviceCategory = getCategoryForId(data.serviceId) as ServiceCategory | null;
+
+    if (!serviceCategory) {
+        logger.info(`[Worker] Unmapped service order ${data.orderId}. Bypassing SMM and marking COMPLETED directly.`);
 
         await prisma.order.update({
             where: { id: data.orderId },
@@ -86,16 +78,16 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
                 amount: data.amount,
                 utr: data.utr,
                 customerMobile: data.customerMobile,
-                provider: 'NON_INSTAGRAM',
+                provider: 'UNMAPPED_MANUAL',
             }
         });
 
-        logger.success(`[Worker] Non-Instagram order ${data.orderId} completed.`);
+        logger.success(`[Worker] Unmapped service order ${data.orderId} completed.`);
         return;
     }
 
     // ──────────────────────────────────────────────────────────
-    // INSTAGRAM: Place SMM order
+    // MAPPED SERVICES: Place SMM order
     // ──────────────────────────────────────────────────────────
     const provider = order.provider as SmmProvider;
     const currentSmmService = getSmmService(provider);
@@ -144,11 +136,9 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
         });
 
         // Post-SMM link validation (Feature 4)
-        // ONLY validate if the service is explicitly mapped in smm.mapper.ts
-        const serviceCategory = getCategoryForId(data.serviceId) as ServiceCategory | null;
-        if (serviceCategory) {
-            const linkCheck = validateLinkForService(data.link, serviceCategory);
-            if (!linkCheck.valid) {
+        // Since we are here, serviceCategory is guaranteed to exist
+        const linkCheck = validateLinkForService(data.link, serviceCategory);
+        if (!linkCheck.valid) {
                 // Mark order FAILED and alert admin — wrong link type for the mapped service
                 logger.warn(`[Worker] Post-SMM link validation failed for order ${data.orderId}: ${linkCheck.error}`);
 
@@ -172,7 +162,6 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
                 }).catch(tgErr => logger.warn(`[Worker] Telegram notify failed (non-fatal):`, tgErr));
                 return;
             }
-        }
 
         // All good — mark COMPLETED
         await prisma.order.update({
