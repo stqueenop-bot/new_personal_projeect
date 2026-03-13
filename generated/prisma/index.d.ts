@@ -6307,29 +6307,13 @@ export namespace Prisma {
 
   export type AggregateBanner = {
     _count: BannerCountAggregateOutputType | null
-    _avg: BannerAvgAggregateOutputType | null
-    _sum: BannerSumAggregateOutputType | null
     _min: BannerMinAggregateOutputType | null
     _max: BannerMaxAggregateOutputType | null
   }
 
-  export type BannerAvgAggregateOutputType = {
-    sortOrder: number | null
-  }
-
-  export type BannerSumAggregateOutputType = {
-    sortOrder: number | null
-  }
-
   export type BannerMinAggregateOutputType = {
     id: string | null
-    title: string | null
-    subtitle: string | null
-    buttonText: string | null
-    buttonLink: string | null
     imageUrl: string | null
-    backgroundColor: string | null
-    sortOrder: number | null
     active: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -6337,13 +6321,7 @@ export namespace Prisma {
 
   export type BannerMaxAggregateOutputType = {
     id: string | null
-    title: string | null
-    subtitle: string | null
-    buttonText: string | null
-    buttonLink: string | null
     imageUrl: string | null
-    backgroundColor: string | null
-    sortOrder: number | null
     active: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -6351,13 +6329,7 @@ export namespace Prisma {
 
   export type BannerCountAggregateOutputType = {
     id: number
-    title: number
-    subtitle: number
-    buttonText: number
-    buttonLink: number
     imageUrl: number
-    backgroundColor: number
-    sortOrder: number
     active: number
     createdAt: number
     updatedAt: number
@@ -6365,23 +6337,9 @@ export namespace Prisma {
   }
 
 
-  export type BannerAvgAggregateInputType = {
-    sortOrder?: true
-  }
-
-  export type BannerSumAggregateInputType = {
-    sortOrder?: true
-  }
-
   export type BannerMinAggregateInputType = {
     id?: true
-    title?: true
-    subtitle?: true
-    buttonText?: true
-    buttonLink?: true
     imageUrl?: true
-    backgroundColor?: true
-    sortOrder?: true
     active?: true
     createdAt?: true
     updatedAt?: true
@@ -6389,13 +6347,7 @@ export namespace Prisma {
 
   export type BannerMaxAggregateInputType = {
     id?: true
-    title?: true
-    subtitle?: true
-    buttonText?: true
-    buttonLink?: true
     imageUrl?: true
-    backgroundColor?: true
-    sortOrder?: true
     active?: true
     createdAt?: true
     updatedAt?: true
@@ -6403,13 +6355,7 @@ export namespace Prisma {
 
   export type BannerCountAggregateInputType = {
     id?: true
-    title?: true
-    subtitle?: true
-    buttonText?: true
-    buttonLink?: true
     imageUrl?: true
-    backgroundColor?: true
-    sortOrder?: true
     active?: true
     createdAt?: true
     updatedAt?: true
@@ -6454,18 +6400,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: BannerAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: BannerSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: BannerMinAggregateInputType
@@ -6496,27 +6430,17 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: BannerCountAggregateInputType | true
-    _avg?: BannerAvgAggregateInputType
-    _sum?: BannerSumAggregateInputType
     _min?: BannerMinAggregateInputType
     _max?: BannerMaxAggregateInputType
   }
 
   export type BannerGroupByOutputType = {
     id: string
-    title: string
-    subtitle: string
-    buttonText: string
-    buttonLink: string
-    imageUrl: string | null
-    backgroundColor: string
-    sortOrder: number
+    imageUrl: string
     active: boolean
     createdAt: Date
     updatedAt: Date
     _count: BannerCountAggregateOutputType | null
-    _avg: BannerAvgAggregateOutputType | null
-    _sum: BannerSumAggregateOutputType | null
     _min: BannerMinAggregateOutputType | null
     _max: BannerMaxAggregateOutputType | null
   }
@@ -6537,13 +6461,7 @@ export namespace Prisma {
 
   export type BannerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    title?: boolean
-    subtitle?: boolean
-    buttonText?: boolean
-    buttonLink?: boolean
     imageUrl?: boolean
-    backgroundColor?: boolean
-    sortOrder?: boolean
     active?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -6551,13 +6469,7 @@ export namespace Prisma {
 
   export type BannerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    title?: boolean
-    subtitle?: boolean
-    buttonText?: boolean
-    buttonLink?: boolean
     imageUrl?: boolean
-    backgroundColor?: boolean
-    sortOrder?: boolean
     active?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -6565,13 +6477,7 @@ export namespace Prisma {
 
   export type BannerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    title?: boolean
-    subtitle?: boolean
-    buttonText?: boolean
-    buttonLink?: boolean
     imageUrl?: boolean
-    backgroundColor?: boolean
-    sortOrder?: boolean
     active?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -6579,32 +6485,20 @@ export namespace Prisma {
 
   export type BannerSelectScalar = {
     id?: boolean
-    title?: boolean
-    subtitle?: boolean
-    buttonText?: boolean
-    buttonLink?: boolean
     imageUrl?: boolean
-    backgroundColor?: boolean
-    sortOrder?: boolean
     active?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type BannerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "subtitle" | "buttonText" | "buttonLink" | "imageUrl" | "backgroundColor" | "sortOrder" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["banner"]>
+  export type BannerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "imageUrl" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["banner"]>
 
   export type $BannerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Banner"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      title: string
-      subtitle: string
-      buttonText: string
-      buttonLink: string
-      imageUrl: string | null
-      backgroundColor: string
-      sortOrder: number
+      imageUrl: string
       active: boolean
       createdAt: Date
       updatedAt: Date
@@ -7032,13 +6926,7 @@ export namespace Prisma {
    */
   interface BannerFieldRefs {
     readonly id: FieldRef<"Banner", 'String'>
-    readonly title: FieldRef<"Banner", 'String'>
-    readonly subtitle: FieldRef<"Banner", 'String'>
-    readonly buttonText: FieldRef<"Banner", 'String'>
-    readonly buttonLink: FieldRef<"Banner", 'String'>
     readonly imageUrl: FieldRef<"Banner", 'String'>
-    readonly backgroundColor: FieldRef<"Banner", 'String'>
-    readonly sortOrder: FieldRef<"Banner", 'Int'>
     readonly active: FieldRef<"Banner", 'Boolean'>
     readonly createdAt: FieldRef<"Banner", 'DateTime'>
     readonly updatedAt: FieldRef<"Banner", 'DateTime'>
@@ -10616,13 +10504,7 @@ export namespace Prisma {
 
   export const BannerScalarFieldEnum: {
     id: 'id',
-    title: 'title',
-    subtitle: 'subtitle',
-    buttonText: 'buttonText',
-    buttonLink: 'buttonLink',
     imageUrl: 'imageUrl',
-    backgroundColor: 'backgroundColor',
-    sortOrder: 'sortOrder',
     active: 'active',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -11153,13 +11035,7 @@ export namespace Prisma {
     OR?: BannerWhereInput[]
     NOT?: BannerWhereInput | BannerWhereInput[]
     id?: StringFilter<"Banner"> | string
-    title?: StringFilter<"Banner"> | string
-    subtitle?: StringFilter<"Banner"> | string
-    buttonText?: StringFilter<"Banner"> | string
-    buttonLink?: StringFilter<"Banner"> | string
-    imageUrl?: StringNullableFilter<"Banner"> | string | null
-    backgroundColor?: StringFilter<"Banner"> | string
-    sortOrder?: IntFilter<"Banner"> | number
+    imageUrl?: StringFilter<"Banner"> | string
     active?: BoolFilter<"Banner"> | boolean
     createdAt?: DateTimeFilter<"Banner"> | Date | string
     updatedAt?: DateTimeFilter<"Banner"> | Date | string
@@ -11167,13 +11043,7 @@ export namespace Prisma {
 
   export type BannerOrderByWithRelationInput = {
     id?: SortOrder
-    title?: SortOrder
-    subtitle?: SortOrder
-    buttonText?: SortOrder
-    buttonLink?: SortOrder
-    imageUrl?: SortOrderInput | SortOrder
-    backgroundColor?: SortOrder
-    sortOrder?: SortOrder
+    imageUrl?: SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11184,13 +11054,7 @@ export namespace Prisma {
     AND?: BannerWhereInput | BannerWhereInput[]
     OR?: BannerWhereInput[]
     NOT?: BannerWhereInput | BannerWhereInput[]
-    title?: StringFilter<"Banner"> | string
-    subtitle?: StringFilter<"Banner"> | string
-    buttonText?: StringFilter<"Banner"> | string
-    buttonLink?: StringFilter<"Banner"> | string
-    imageUrl?: StringNullableFilter<"Banner"> | string | null
-    backgroundColor?: StringFilter<"Banner"> | string
-    sortOrder?: IntFilter<"Banner"> | number
+    imageUrl?: StringFilter<"Banner"> | string
     active?: BoolFilter<"Banner"> | boolean
     createdAt?: DateTimeFilter<"Banner"> | Date | string
     updatedAt?: DateTimeFilter<"Banner"> | Date | string
@@ -11198,21 +11062,13 @@ export namespace Prisma {
 
   export type BannerOrderByWithAggregationInput = {
     id?: SortOrder
-    title?: SortOrder
-    subtitle?: SortOrder
-    buttonText?: SortOrder
-    buttonLink?: SortOrder
-    imageUrl?: SortOrderInput | SortOrder
-    backgroundColor?: SortOrder
-    sortOrder?: SortOrder
+    imageUrl?: SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: BannerCountOrderByAggregateInput
-    _avg?: BannerAvgOrderByAggregateInput
     _max?: BannerMaxOrderByAggregateInput
     _min?: BannerMinOrderByAggregateInput
-    _sum?: BannerSumOrderByAggregateInput
   }
 
   export type BannerScalarWhereWithAggregatesInput = {
@@ -11220,13 +11076,7 @@ export namespace Prisma {
     OR?: BannerScalarWhereWithAggregatesInput[]
     NOT?: BannerScalarWhereWithAggregatesInput | BannerScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Banner"> | string
-    title?: StringWithAggregatesFilter<"Banner"> | string
-    subtitle?: StringWithAggregatesFilter<"Banner"> | string
-    buttonText?: StringWithAggregatesFilter<"Banner"> | string
-    buttonLink?: StringWithAggregatesFilter<"Banner"> | string
-    imageUrl?: StringNullableWithAggregatesFilter<"Banner"> | string | null
-    backgroundColor?: StringWithAggregatesFilter<"Banner"> | string
-    sortOrder?: IntWithAggregatesFilter<"Banner"> | number
+    imageUrl?: StringWithAggregatesFilter<"Banner"> | string
     active?: BoolWithAggregatesFilter<"Banner"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Banner"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Banner"> | Date | string
@@ -11806,13 +11656,7 @@ export namespace Prisma {
 
   export type BannerCreateInput = {
     id?: string
-    title: string
-    subtitle: string
-    buttonText: string
-    buttonLink: string
-    imageUrl?: string | null
-    backgroundColor?: string
-    sortOrder?: number
+    imageUrl: string
     active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11820,13 +11664,7 @@ export namespace Prisma {
 
   export type BannerUncheckedCreateInput = {
     id?: string
-    title: string
-    subtitle: string
-    buttonText: string
-    buttonLink: string
-    imageUrl?: string | null
-    backgroundColor?: string
-    sortOrder?: number
+    imageUrl: string
     active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11834,13 +11672,7 @@ export namespace Prisma {
 
   export type BannerUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    subtitle?: StringFieldUpdateOperationsInput | string
-    buttonText?: StringFieldUpdateOperationsInput | string
-    buttonLink?: StringFieldUpdateOperationsInput | string
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    backgroundColor?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
+    imageUrl?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11848,13 +11680,7 @@ export namespace Prisma {
 
   export type BannerUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    subtitle?: StringFieldUpdateOperationsInput | string
-    buttonText?: StringFieldUpdateOperationsInput | string
-    buttonLink?: StringFieldUpdateOperationsInput | string
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    backgroundColor?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
+    imageUrl?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11862,13 +11688,7 @@ export namespace Prisma {
 
   export type BannerCreateManyInput = {
     id?: string
-    title: string
-    subtitle: string
-    buttonText: string
-    buttonLink: string
-    imageUrl?: string | null
-    backgroundColor?: string
-    sortOrder?: number
+    imageUrl: string
     active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11876,13 +11696,7 @@ export namespace Prisma {
 
   export type BannerUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    subtitle?: StringFieldUpdateOperationsInput | string
-    buttonText?: StringFieldUpdateOperationsInput | string
-    buttonLink?: StringFieldUpdateOperationsInput | string
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    backgroundColor?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
+    imageUrl?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11890,13 +11704,7 @@ export namespace Prisma {
 
   export type BannerUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    subtitle?: StringFieldUpdateOperationsInput | string
-    buttonText?: StringFieldUpdateOperationsInput | string
-    buttonLink?: StringFieldUpdateOperationsInput | string
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    backgroundColor?: StringFieldUpdateOperationsInput | string
-    sortOrder?: IntFieldUpdateOperationsInput | number
+    imageUrl?: StringFieldUpdateOperationsInput | string
     active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12595,31 +12403,15 @@ export namespace Prisma {
 
   export type BannerCountOrderByAggregateInput = {
     id?: SortOrder
-    title?: SortOrder
-    subtitle?: SortOrder
-    buttonText?: SortOrder
-    buttonLink?: SortOrder
     imageUrl?: SortOrder
-    backgroundColor?: SortOrder
-    sortOrder?: SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type BannerAvgOrderByAggregateInput = {
-    sortOrder?: SortOrder
-  }
-
   export type BannerMaxOrderByAggregateInput = {
     id?: SortOrder
-    title?: SortOrder
-    subtitle?: SortOrder
-    buttonText?: SortOrder
-    buttonLink?: SortOrder
     imageUrl?: SortOrder
-    backgroundColor?: SortOrder
-    sortOrder?: SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -12627,20 +12419,10 @@ export namespace Prisma {
 
   export type BannerMinOrderByAggregateInput = {
     id?: SortOrder
-    title?: SortOrder
-    subtitle?: SortOrder
-    buttonText?: SortOrder
-    buttonLink?: SortOrder
     imageUrl?: SortOrder
-    backgroundColor?: SortOrder
-    sortOrder?: SortOrder
     active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type BannerSumOrderByAggregateInput = {
-    sortOrder?: SortOrder
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {

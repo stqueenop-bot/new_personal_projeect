@@ -176,13 +176,7 @@ exports.Prisma.SmmOrderScalarFieldEnum = {
 
 exports.Prisma.BannerScalarFieldEnum = {
   id: 'id',
-  title: 'title',
-  subtitle: 'subtitle',
-  buttonText: 'buttonText',
-  buttonLink: 'buttonLink',
   imageUrl: 'imageUrl',
-  backgroundColor: 'backgroundColor',
-  sortOrder: 'sortOrder',
   active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
