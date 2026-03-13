@@ -37,6 +37,7 @@ app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 // Health Check
 // ========================
 app.get('/health', (_req, res) => {
+    console.log(`[${new Date().toISOString()}] Health check requested`);
     const response: ApiResponse = {
         success: true,
         message: 'Server is healthy',

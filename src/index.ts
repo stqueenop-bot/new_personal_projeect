@@ -46,8 +46,8 @@ async function main() {
 
 
     // 3. Start Express server
-    const server = app.listen(PORT, () => {
-        logger.success(`✅ Server running at http://localhost:${PORT}`);
+    const server = app.listen(PORT, '0.0.0.0', () => {
+        logger.success(`✅ Server running at http://0.0.0.0:${PORT}`);
         logger.info(`📋 API Docs:`);
         logger.info(`   POST http://localhost:${PORT}/api/orders          ← Create SMM order`);
         logger.info(`   POST http://localhost:${PORT}/api/payments/create ← Create ZapUPI payment`);

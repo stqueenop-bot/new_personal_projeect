@@ -34,6 +34,7 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules ./node_modules
 
 ENV NODE_ENV=production
+EXPOSE 5000
 
 # Run prisma after Railway injects env variables
 CMD sh -c "npx prisma generate && npx prisma migrate deploy && npm start"
