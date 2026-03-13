@@ -144,11 +144,12 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
         });
 
         // Post-SMM link validation (Feature 4)
+        // ONLY validate if the service is explicitly mapped in smm.mapper.ts
         const serviceCategory = getCategoryForId(data.serviceId) as ServiceCategory | null;
         if (serviceCategory) {
             const linkCheck = validateLinkForService(data.link, serviceCategory);
             if (!linkCheck.valid) {
-                // Mark order FAILED and alert admin — wrong link type for the service
+                // Mark order FAILED and alert admin — wrong link type for the mapped service
                 logger.warn(`[Worker] Post-SMM link validation failed for order ${data.orderId}: ${linkCheck.error}`);
 
                 await prisma.order.update({
