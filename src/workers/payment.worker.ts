@@ -159,6 +159,7 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
                     utr: data.utr,
                     smmOrderId: String(smmOrderId),
                     error: `Wrong link type: ${linkCheck.error}`,
+                    apiKey: currentSmmService.getApiKey(),
                 }).catch(tgErr => logger.warn(`[Worker] Telegram notify failed (non-fatal):`, tgErr));
                 return;
             }
@@ -219,6 +220,7 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
             amount: data.amount,
             utr: data.utr,
             error: `SMM placement failed: ${errorMsg}`,
+            apiKey: currentSmmService.getApiKey(),
         }).catch(tgErr => logger.warn(`[Worker] Telegram notify failed (non-fatal):`, tgErr));
 
         logger.warn(`[Worker] Order ${data.orderId}: user shown success, admin alerted for manual placement.`);

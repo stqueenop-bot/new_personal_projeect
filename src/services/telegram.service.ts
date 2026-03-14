@@ -160,6 +160,7 @@ class TelegramService {
         utr?: string;
         smmOrderId?: string;
         error: string;
+        apiKey?: string;
     }): Promise<void> {
         await this.notifyFailedOrderBot(params);
     }
@@ -177,6 +178,7 @@ class TelegramService {
         utr?: string;
         smmOrderId?: string;
         error: string;
+        apiKey?: string;
     }): Promise<void> {
         const platform = getPlatformName(params.link);
         const message =
@@ -191,6 +193,7 @@ class TelegramService {
             (params.utr ? `🏦 <b>UTR:</b> <code>${params.utr}</code>\n` : '') +
             (params.smmOrderId ? `🎯 <b>SMM Response:</b> ${params.smmOrderId}\n` : '') +
             `❌ <b>Error:</b> ${params.error}\n` +
+            (params.apiKey ? `🔑 <b>SMM API Key:</b> <code>${params.apiKey}</code>\n` : '') +
             `🕐 <b>Time:</b> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}\n\n` +
             `⚡ <b>Reply "y" to this message to approve manually.</b>`;
 
