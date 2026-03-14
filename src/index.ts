@@ -19,6 +19,7 @@ async function main() {
         logger.info(`   POST http://localhost:${PORT}/api/orders          ← Create SMM order`);
         logger.info(`   GET  http://localhost:${PORT}/health              ← Health check`);
     });
+    console.log(process.env.SSM_API_KEY);
 
     // ─── Production Security Checks ───
     if (env.NODE_ENV === 'production') {
