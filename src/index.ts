@@ -10,15 +10,7 @@ import { logger } from './utils/logger';
 const PORT = parseInt(env.PORT, 10);
 
 async function main() {
-    logger.info('🚀 Starting SMM ZapUPI Backend...');
-    // Log telegram config keys for debugging (don't log full secret values in production!)
-    const maskValue = (value: string | undefined) =>
-        value ? `${value.substring(0, 4)}...${value.slice(-4)}` : 'not set';
-    logger.info('🔑 Telegram keys:');
-    logger.info(`  TELEGRAM_BOT_TOKEN = ${env.TELEGRAM_BOT_TOKEN ? maskValue(env.TELEGRAM_BOT_TOKEN) : 'not set'}`);
-    logger.info(`  TELEGRAM_FAILED_BOT_TOKEN = ${env.TELEGRAM_FAILED_BOT_TOKEN ? maskValue(env.TELEGRAM_FAILED_BOT_TOKEN) : 'not set'}`);
-    logger.info(`  TELEGRAM_ADMIN_CHAT_ID = ${env.TELEGRAM_ADMIN_CHAT_ID ?? 'not set'}`);
-    logger.info(`  TELEGRAM_FAILED_CHAT_ID = ${env.TELEGRAM_FAILED_CHAT_ID ?? 'not set'}`);
+   
     // 1. Start Express server IMMEDIATELLY to satisfy health checks
     const server = app.listen(PORT, '0.0.0.0', () => {
         logger.success(`✅ Server running at http://0.0.0.0:${PORT}`);
