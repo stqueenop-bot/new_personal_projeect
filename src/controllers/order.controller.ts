@@ -93,7 +93,10 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
         // Determine SMM provider based on serviceId
         const provider = getProviderForService(serviceId);
 
-        // --- LINK VALIDATION (Strict Safety) ---
+        // --- LINK VALIDATION (Moved to Post-Payment Worker) ---
+        // We no longer block order creation here to avoid preventing users from paying.
+        // The payment worker handles validation after success.
+        /*
         const linkCheck = validateLinkForService(link, serviceCategory as ServiceCategory);
         if (!linkCheck.valid) {
             logger.warn(`[OrderController] Blocking order creation due to invalid link: ${linkCheck.error}`);
@@ -104,6 +107,7 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
             });
             return;
         }
+        */
 
         // Create Order in DB
         const order = await prisma.order.create({
