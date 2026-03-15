@@ -17,6 +17,7 @@ RUN npm ci
 
 # Copy the rest of the source
 COPY tsconfig.json ./
+COPY prisma.config.ts ./
 COPY prisma ./prisma
 COPY src ./src
 COPY lib ./lib
@@ -47,6 +48,9 @@ RUN npm ci --omit=dev
 # Copy compiled output from builder
 COPY --from=builder /app/dist ./dist
 
+# Copy Prisma config (Prisma v7 reads prisma.config.ts for migrate deploy)
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+
 # Copy Prisma schema + migrations (needed for prisma migrate deploy at runtime)
 COPY --from=builder /app/prisma ./prisma
 
@@ -63,6 +67,7 @@ ENV NODE_ENV=production
 # Expose the port (documentation only — Render reads PORT from env)
 EXPOSE 5000
 
-# Run prisma migrate deploy to apply any pending migrations,
-# then start the compiled server
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/index.js"]
+# Prisma v7: pass --config explicitly so it finds prisma.config.ts
+# DATABASE_URL is injected by Render as a runtime env var — no .env needed
+CMD ["sh", "-c", "npx prisma migrate deploy --config prisma.config.ts && node dist/src/index.js"]
+
