@@ -16,10 +16,13 @@ import { validateLinkForService, ServiceCategory } from '../services/instagram.v
  * Handles a successful payment message from RabbitMQ.
  *
  * Flow:
- *  - Non-Instagram orders → mark COMPLETED immediately (no SMM calls)
- *  - Instagram orders     → place SMM order, then validate link type
- *      → SMM success  → check link type validity → COMPLETED or admin-flagged
- *      → SMM failure  → user sees COMPLETED (payment ok), admin gets manual-order alert
+ *  - Unmapped services → mark COMPLETED immediately (manual handling)
+ *  - Mapped services:
+ *      1. Validate link type BEFORE SMM call.
+ *      2. If link invalid → skip SMM, show COMPLETED to user, alert admin for manual fix.
+ *      3. If link valid   → place SMM order.
+ *          → SMM success  → mark COMPLETED.
+ *          → SMM failure  → show COMPLETED to user, alert admin for manual fix.
  */
 async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
     const data: PaymentSuccessMessage = JSON.parse(msg.content.toString());
@@ -87,12 +90,42 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
     }
 
     // ──────────────────────────────────────────────────────────
-    // MAPPED SERVICES: Place SMM order
+    // MAPPED SERVICES: Validation and SMM flow
     // ──────────────────────────────────────────────────────────
     const provider = order.provider as SmmProvider;
     const currentSmmService = getSmmService(provider);
 
-    // Upsert SmmOrder record (pending)
+    // 3. Link Validation (MAJOR HOTFIX: Done BEFORE SMM call)
+    const linkCheck = validateLinkForService(data.link, serviceCategory);
+    if (!linkCheck.valid) {
+        logger.warn(`[Worker] Link validation failed BEFORE SMM for order ${data.orderId}: ${linkCheck.error}`);
+
+        // Mark order COMPLETED (not FAILED) so user sees success.
+        // Payment was successful, so we will fix the link/order manually.
+        await prisma.order.update({
+            where: { id: data.orderId },
+            data: { status: OrderStatus.COMPLETED },
+        });
+
+        sseService.broadcastStatus(data.orderId, OrderStatus.COMPLETED);
+
+        // Alert admin on the failed-orders bot (crucial: NO SMM placement happened)
+        telegramService.notifyFailedOrderBot({
+            orderId: data.orderId,
+            serviceId: data.serviceId,
+            link: data.link,
+            quantity: data.quantity,
+            amount: data.amount,
+            utr: data.utr,
+            error: `Invalid Link Format: ${linkCheck.error} (SMM call skipped)`,
+            apiKey: currentSmmService.getApiKey(),
+        }).catch(tgErr => logger.warn(`[Worker] Telegram notify failed (non-fatal):`, tgErr));
+
+        logger.warn(`[Worker] Order ${data.orderId}: Link invalid, skipping SMM, alert sent to admin.`);
+        return;
+    }
+
+    // 4. Place SMM order (only if link is valid)
     await prisma.smmOrder.upsert({
         where: { orderId: data.orderId },
         create: {
@@ -110,7 +143,6 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
     });
 
     try {
-        // Place real order on the selected SMM panel
         const smmOrderId = await currentSmmService.placeOrder({
             serviceId: data.serviceId,
             link: data.link,
@@ -134,35 +166,6 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
                 charge,
             },
         });
-
-        // Post-SMM link validation (Feature 4)
-        // Since we are here, serviceCategory is guaranteed to exist
-        const linkCheck = validateLinkForService(data.link, serviceCategory);
-        if (!linkCheck.valid) {
-                // Mark order FAILED and alert admin — wrong link type for the mapped service
-                logger.warn(`[Worker] Post-SMM link validation failed for order ${data.orderId}: ${linkCheck.error}`);
-
-                await prisma.order.update({
-                    where: { id: data.orderId },
-                    data: { status: OrderStatus.FAILED },
-                });
-
-                sseService.broadcastStatus(data.orderId, OrderStatus.FAILED, { error: linkCheck.error });
-
-                // Fire-and-forget: Telegram failure must NOT affect order status
-                telegramService.notifyFailedOrderBot({
-                    orderId: data.orderId,
-                    serviceId: data.serviceId,
-                    link: data.link,
-                    quantity: data.quantity,
-                    amount: data.amount,
-                    utr: data.utr,
-                    smmOrderId: String(smmOrderId),
-                    error: `Wrong link type: ${linkCheck.error}`,
-                    apiKey: currentSmmService.getApiKey(),
-                }).catch(tgErr => logger.warn(`[Worker] Telegram notify failed (non-fatal):`, tgErr));
-                return;
-            }
 
         // All good — mark COMPLETED
         await prisma.order.update({
@@ -194,24 +197,19 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
         logger.error(`[Worker] ${provider} order placement failed for ${data.orderId}:`, errorMsg);
 
         // SMM failed BUT payment was received.
-        // User sees SUCCESS (payment went through — we'll fix manually).
-        // Admin is alerted on the failed-orders bot.
-
+        // User sees SUCCESS, admin handles manually.
         await prisma.smmOrder.update({
             where: { orderId: data.orderId },
             data: { status: OrderStatus.FAILED, errorMsg },
         });
 
-        // Mark order COMPLETED so user sees success in the UI
         await prisma.order.update({
             where: { id: data.orderId },
             data: { status: OrderStatus.COMPLETED },
         });
 
-        // Emit COMPLETED to frontend (payment was fine)
         sseService.broadcastStatus(data.orderId, OrderStatus.COMPLETED);
 
-        // Alert admin on the failed-orders bot — fire-and-forget, must NOT affect order status
         telegramService.notifyFailedOrderBot({
             orderId: data.orderId,
             serviceId: data.serviceId,
@@ -222,8 +220,6 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
             error: `SMM placement failed: ${errorMsg}`,
             apiKey: currentSmmService.getApiKey(),
         }).catch(tgErr => logger.warn(`[Worker] Telegram notify failed (non-fatal):`, tgErr));
-
-        logger.warn(`[Worker] Order ${data.orderId}: user shown success, admin alerted for manual placement.`);
     }
 }
 

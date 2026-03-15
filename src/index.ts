@@ -5,6 +5,7 @@ import { prisma } from '../lib/initiatePrisma';
 import { rabbitMQService } from './services/rabbitmq.service';
 import { startPaymentWorker } from './workers/payment.worker';
 import { startNotificationWorker } from './workers/notification.worker';
+import { startBotWorker, stopBotWorker } from './workers/bot.worker';
 import { logger } from './utils/logger';
 
 const PORT = parseInt(env.PORT, 10);
@@ -49,7 +50,8 @@ async function main() {
     try {
         await startPaymentWorker();
         await startNotificationWorker();
-        logger.success('✅ RabbitMQ workers started');
+        await startBotWorker();
+        logger.success('✅ Background workers started');
     } catch (error) {
         logger.error('❌ RabbitMQ connection failed:', error);
         logger.warn('⚠️  Server will start but processing may not work until RabbitMQ is available');
@@ -65,6 +67,7 @@ async function main() {
             logger.info('PostgreSQL disconnected');
             await rabbitMQService.close();
             logger.info('RabbitMQ disconnected');
+            stopBotWorker();
             process.exit(0);
         });
 
