@@ -58,6 +58,11 @@ export type AdminEmail = $Result.DefaultSelection<Prisma.$AdminEmailPayload>
  * 
  */
 export type ApprovedGroup = $Result.DefaultSelection<Prisma.$ApprovedGroupPayload>
+/**
+ * Model FailedOrderMessage
+ * 
+ */
+export type FailedOrderMessage = $Result.DefaultSelection<Prisma.$FailedOrderMessagePayload>
 
 /**
  * Enums
@@ -316,6 +321,16 @@ export class PrismaClient<
     * ```
     */
   get approvedGroup(): Prisma.ApprovedGroupDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.failedOrderMessage`: Exposes CRUD operations for the **FailedOrderMessage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FailedOrderMessages
+    * const failedOrderMessages = await prisma.failedOrderMessage.findMany()
+    * ```
+    */
+  get failedOrderMessage(): Prisma.FailedOrderMessageDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -758,7 +773,8 @@ export namespace Prisma {
     SpecialOffer: 'SpecialOffer',
     Spend: 'Spend',
     AdminEmail: 'AdminEmail',
-    ApprovedGroup: 'ApprovedGroup'
+    ApprovedGroup: 'ApprovedGroup',
+    FailedOrderMessage: 'FailedOrderMessage'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -774,7 +790,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "order" | "payment" | "smmOrder" | "banner" | "specialOffer" | "spend" | "adminEmail" | "approvedGroup"
+      modelProps: "user" | "order" | "payment" | "smmOrder" | "banner" | "specialOffer" | "spend" | "adminEmail" | "approvedGroup" | "failedOrderMessage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1444,6 +1460,80 @@ export namespace Prisma {
           }
         }
       }
+      FailedOrderMessage: {
+        payload: Prisma.$FailedOrderMessagePayload<ExtArgs>
+        fields: Prisma.FailedOrderMessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FailedOrderMessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FailedOrderMessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FailedOrderMessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FailedOrderMessagePayload>
+          }
+          findFirst: {
+            args: Prisma.FailedOrderMessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FailedOrderMessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FailedOrderMessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FailedOrderMessagePayload>
+          }
+          findMany: {
+            args: Prisma.FailedOrderMessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FailedOrderMessagePayload>[]
+          }
+          create: {
+            args: Prisma.FailedOrderMessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FailedOrderMessagePayload>
+          }
+          createMany: {
+            args: Prisma.FailedOrderMessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FailedOrderMessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FailedOrderMessagePayload>[]
+          }
+          delete: {
+            args: Prisma.FailedOrderMessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FailedOrderMessagePayload>
+          }
+          update: {
+            args: Prisma.FailedOrderMessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FailedOrderMessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.FailedOrderMessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FailedOrderMessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FailedOrderMessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FailedOrderMessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.FailedOrderMessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FailedOrderMessagePayload>
+          }
+          aggregate: {
+            args: Prisma.FailedOrderMessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFailedOrderMessage>
+          }
+          groupBy: {
+            args: Prisma.FailedOrderMessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FailedOrderMessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FailedOrderMessageCountArgs<ExtArgs>
+            result: $Utils.Optional<FailedOrderMessageCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1561,6 +1651,7 @@ export namespace Prisma {
     spend?: SpendOmit
     adminEmail?: AdminEmailOmit
     approvedGroup?: ApprovedGroupOmit
+    failedOrderMessage?: FailedOrderMessageOmit
   }
 
   /* Types for Logging */
@@ -11496,6 +11587,1009 @@ export namespace Prisma {
 
 
   /**
+   * Model FailedOrderMessage
+   */
+
+  export type AggregateFailedOrderMessage = {
+    _count: FailedOrderMessageCountAggregateOutputType | null
+    _avg: FailedOrderMessageAvgAggregateOutputType | null
+    _sum: FailedOrderMessageSumAggregateOutputType | null
+    _min: FailedOrderMessageMinAggregateOutputType | null
+    _max: FailedOrderMessageMaxAggregateOutputType | null
+  }
+
+  export type FailedOrderMessageAvgAggregateOutputType = {
+    messageId: number | null
+  }
+
+  export type FailedOrderMessageSumAggregateOutputType = {
+    messageId: number | null
+  }
+
+  export type FailedOrderMessageMinAggregateOutputType = {
+    messageId: number | null
+    orderId: string | null
+    createdAt: Date | null
+  }
+
+  export type FailedOrderMessageMaxAggregateOutputType = {
+    messageId: number | null
+    orderId: string | null
+    createdAt: Date | null
+  }
+
+  export type FailedOrderMessageCountAggregateOutputType = {
+    messageId: number
+    orderId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type FailedOrderMessageAvgAggregateInputType = {
+    messageId?: true
+  }
+
+  export type FailedOrderMessageSumAggregateInputType = {
+    messageId?: true
+  }
+
+  export type FailedOrderMessageMinAggregateInputType = {
+    messageId?: true
+    orderId?: true
+    createdAt?: true
+  }
+
+  export type FailedOrderMessageMaxAggregateInputType = {
+    messageId?: true
+    orderId?: true
+    createdAt?: true
+  }
+
+  export type FailedOrderMessageCountAggregateInputType = {
+    messageId?: true
+    orderId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type FailedOrderMessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FailedOrderMessage to aggregate.
+     */
+    where?: FailedOrderMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FailedOrderMessages to fetch.
+     */
+    orderBy?: FailedOrderMessageOrderByWithRelationInput | FailedOrderMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FailedOrderMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FailedOrderMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FailedOrderMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FailedOrderMessages
+    **/
+    _count?: true | FailedOrderMessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FailedOrderMessageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FailedOrderMessageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FailedOrderMessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FailedOrderMessageMaxAggregateInputType
+  }
+
+  export type GetFailedOrderMessageAggregateType<T extends FailedOrderMessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateFailedOrderMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFailedOrderMessage[P]>
+      : GetScalarType<T[P], AggregateFailedOrderMessage[P]>
+  }
+
+
+
+
+  export type FailedOrderMessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FailedOrderMessageWhereInput
+    orderBy?: FailedOrderMessageOrderByWithAggregationInput | FailedOrderMessageOrderByWithAggregationInput[]
+    by: FailedOrderMessageScalarFieldEnum[] | FailedOrderMessageScalarFieldEnum
+    having?: FailedOrderMessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FailedOrderMessageCountAggregateInputType | true
+    _avg?: FailedOrderMessageAvgAggregateInputType
+    _sum?: FailedOrderMessageSumAggregateInputType
+    _min?: FailedOrderMessageMinAggregateInputType
+    _max?: FailedOrderMessageMaxAggregateInputType
+  }
+
+  export type FailedOrderMessageGroupByOutputType = {
+    messageId: number
+    orderId: string
+    createdAt: Date
+    _count: FailedOrderMessageCountAggregateOutputType | null
+    _avg: FailedOrderMessageAvgAggregateOutputType | null
+    _sum: FailedOrderMessageSumAggregateOutputType | null
+    _min: FailedOrderMessageMinAggregateOutputType | null
+    _max: FailedOrderMessageMaxAggregateOutputType | null
+  }
+
+  type GetFailedOrderMessageGroupByPayload<T extends FailedOrderMessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FailedOrderMessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FailedOrderMessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FailedOrderMessageGroupByOutputType[P]>
+            : GetScalarType<T[P], FailedOrderMessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FailedOrderMessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    messageId?: boolean
+    orderId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["failedOrderMessage"]>
+
+  export type FailedOrderMessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    messageId?: boolean
+    orderId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["failedOrderMessage"]>
+
+  export type FailedOrderMessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    messageId?: boolean
+    orderId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["failedOrderMessage"]>
+
+  export type FailedOrderMessageSelectScalar = {
+    messageId?: boolean
+    orderId?: boolean
+    createdAt?: boolean
+  }
+
+  export type FailedOrderMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"messageId" | "orderId" | "createdAt", ExtArgs["result"]["failedOrderMessage"]>
+
+  export type $FailedOrderMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FailedOrderMessage"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      messageId: number
+      orderId: string
+      createdAt: Date
+    }, ExtArgs["result"]["failedOrderMessage"]>
+    composites: {}
+  }
+
+  type FailedOrderMessageGetPayload<S extends boolean | null | undefined | FailedOrderMessageDefaultArgs> = $Result.GetResult<Prisma.$FailedOrderMessagePayload, S>
+
+  type FailedOrderMessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FailedOrderMessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FailedOrderMessageCountAggregateInputType | true
+    }
+
+  export interface FailedOrderMessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FailedOrderMessage'], meta: { name: 'FailedOrderMessage' } }
+    /**
+     * Find zero or one FailedOrderMessage that matches the filter.
+     * @param {FailedOrderMessageFindUniqueArgs} args - Arguments to find a FailedOrderMessage
+     * @example
+     * // Get one FailedOrderMessage
+     * const failedOrderMessage = await prisma.failedOrderMessage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FailedOrderMessageFindUniqueArgs>(args: SelectSubset<T, FailedOrderMessageFindUniqueArgs<ExtArgs>>): Prisma__FailedOrderMessageClient<$Result.GetResult<Prisma.$FailedOrderMessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FailedOrderMessage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FailedOrderMessageFindUniqueOrThrowArgs} args - Arguments to find a FailedOrderMessage
+     * @example
+     * // Get one FailedOrderMessage
+     * const failedOrderMessage = await prisma.failedOrderMessage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FailedOrderMessageFindUniqueOrThrowArgs>(args: SelectSubset<T, FailedOrderMessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FailedOrderMessageClient<$Result.GetResult<Prisma.$FailedOrderMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FailedOrderMessage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FailedOrderMessageFindFirstArgs} args - Arguments to find a FailedOrderMessage
+     * @example
+     * // Get one FailedOrderMessage
+     * const failedOrderMessage = await prisma.failedOrderMessage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FailedOrderMessageFindFirstArgs>(args?: SelectSubset<T, FailedOrderMessageFindFirstArgs<ExtArgs>>): Prisma__FailedOrderMessageClient<$Result.GetResult<Prisma.$FailedOrderMessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FailedOrderMessage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FailedOrderMessageFindFirstOrThrowArgs} args - Arguments to find a FailedOrderMessage
+     * @example
+     * // Get one FailedOrderMessage
+     * const failedOrderMessage = await prisma.failedOrderMessage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FailedOrderMessageFindFirstOrThrowArgs>(args?: SelectSubset<T, FailedOrderMessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__FailedOrderMessageClient<$Result.GetResult<Prisma.$FailedOrderMessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FailedOrderMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FailedOrderMessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FailedOrderMessages
+     * const failedOrderMessages = await prisma.failedOrderMessage.findMany()
+     * 
+     * // Get first 10 FailedOrderMessages
+     * const failedOrderMessages = await prisma.failedOrderMessage.findMany({ take: 10 })
+     * 
+     * // Only select the `messageId`
+     * const failedOrderMessageWithMessageIdOnly = await prisma.failedOrderMessage.findMany({ select: { messageId: true } })
+     * 
+     */
+    findMany<T extends FailedOrderMessageFindManyArgs>(args?: SelectSubset<T, FailedOrderMessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FailedOrderMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FailedOrderMessage.
+     * @param {FailedOrderMessageCreateArgs} args - Arguments to create a FailedOrderMessage.
+     * @example
+     * // Create one FailedOrderMessage
+     * const FailedOrderMessage = await prisma.failedOrderMessage.create({
+     *   data: {
+     *     // ... data to create a FailedOrderMessage
+     *   }
+     * })
+     * 
+     */
+    create<T extends FailedOrderMessageCreateArgs>(args: SelectSubset<T, FailedOrderMessageCreateArgs<ExtArgs>>): Prisma__FailedOrderMessageClient<$Result.GetResult<Prisma.$FailedOrderMessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FailedOrderMessages.
+     * @param {FailedOrderMessageCreateManyArgs} args - Arguments to create many FailedOrderMessages.
+     * @example
+     * // Create many FailedOrderMessages
+     * const failedOrderMessage = await prisma.failedOrderMessage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FailedOrderMessageCreateManyArgs>(args?: SelectSubset<T, FailedOrderMessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FailedOrderMessages and returns the data saved in the database.
+     * @param {FailedOrderMessageCreateManyAndReturnArgs} args - Arguments to create many FailedOrderMessages.
+     * @example
+     * // Create many FailedOrderMessages
+     * const failedOrderMessage = await prisma.failedOrderMessage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FailedOrderMessages and only return the `messageId`
+     * const failedOrderMessageWithMessageIdOnly = await prisma.failedOrderMessage.createManyAndReturn({
+     *   select: { messageId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FailedOrderMessageCreateManyAndReturnArgs>(args?: SelectSubset<T, FailedOrderMessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FailedOrderMessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FailedOrderMessage.
+     * @param {FailedOrderMessageDeleteArgs} args - Arguments to delete one FailedOrderMessage.
+     * @example
+     * // Delete one FailedOrderMessage
+     * const FailedOrderMessage = await prisma.failedOrderMessage.delete({
+     *   where: {
+     *     // ... filter to delete one FailedOrderMessage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FailedOrderMessageDeleteArgs>(args: SelectSubset<T, FailedOrderMessageDeleteArgs<ExtArgs>>): Prisma__FailedOrderMessageClient<$Result.GetResult<Prisma.$FailedOrderMessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FailedOrderMessage.
+     * @param {FailedOrderMessageUpdateArgs} args - Arguments to update one FailedOrderMessage.
+     * @example
+     * // Update one FailedOrderMessage
+     * const failedOrderMessage = await prisma.failedOrderMessage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FailedOrderMessageUpdateArgs>(args: SelectSubset<T, FailedOrderMessageUpdateArgs<ExtArgs>>): Prisma__FailedOrderMessageClient<$Result.GetResult<Prisma.$FailedOrderMessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FailedOrderMessages.
+     * @param {FailedOrderMessageDeleteManyArgs} args - Arguments to filter FailedOrderMessages to delete.
+     * @example
+     * // Delete a few FailedOrderMessages
+     * const { count } = await prisma.failedOrderMessage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FailedOrderMessageDeleteManyArgs>(args?: SelectSubset<T, FailedOrderMessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FailedOrderMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FailedOrderMessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FailedOrderMessages
+     * const failedOrderMessage = await prisma.failedOrderMessage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FailedOrderMessageUpdateManyArgs>(args: SelectSubset<T, FailedOrderMessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FailedOrderMessages and returns the data updated in the database.
+     * @param {FailedOrderMessageUpdateManyAndReturnArgs} args - Arguments to update many FailedOrderMessages.
+     * @example
+     * // Update many FailedOrderMessages
+     * const failedOrderMessage = await prisma.failedOrderMessage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FailedOrderMessages and only return the `messageId`
+     * const failedOrderMessageWithMessageIdOnly = await prisma.failedOrderMessage.updateManyAndReturn({
+     *   select: { messageId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FailedOrderMessageUpdateManyAndReturnArgs>(args: SelectSubset<T, FailedOrderMessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FailedOrderMessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FailedOrderMessage.
+     * @param {FailedOrderMessageUpsertArgs} args - Arguments to update or create a FailedOrderMessage.
+     * @example
+     * // Update or create a FailedOrderMessage
+     * const failedOrderMessage = await prisma.failedOrderMessage.upsert({
+     *   create: {
+     *     // ... data to create a FailedOrderMessage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FailedOrderMessage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FailedOrderMessageUpsertArgs>(args: SelectSubset<T, FailedOrderMessageUpsertArgs<ExtArgs>>): Prisma__FailedOrderMessageClient<$Result.GetResult<Prisma.$FailedOrderMessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FailedOrderMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FailedOrderMessageCountArgs} args - Arguments to filter FailedOrderMessages to count.
+     * @example
+     * // Count the number of FailedOrderMessages
+     * const count = await prisma.failedOrderMessage.count({
+     *   where: {
+     *     // ... the filter for the FailedOrderMessages we want to count
+     *   }
+     * })
+    **/
+    count<T extends FailedOrderMessageCountArgs>(
+      args?: Subset<T, FailedOrderMessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FailedOrderMessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FailedOrderMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FailedOrderMessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FailedOrderMessageAggregateArgs>(args: Subset<T, FailedOrderMessageAggregateArgs>): Prisma.PrismaPromise<GetFailedOrderMessageAggregateType<T>>
+
+    /**
+     * Group by FailedOrderMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FailedOrderMessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FailedOrderMessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FailedOrderMessageGroupByArgs['orderBy'] }
+        : { orderBy?: FailedOrderMessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FailedOrderMessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFailedOrderMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FailedOrderMessage model
+   */
+  readonly fields: FailedOrderMessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FailedOrderMessage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FailedOrderMessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FailedOrderMessage model
+   */
+  interface FailedOrderMessageFieldRefs {
+    readonly messageId: FieldRef<"FailedOrderMessage", 'Float'>
+    readonly orderId: FieldRef<"FailedOrderMessage", 'String'>
+    readonly createdAt: FieldRef<"FailedOrderMessage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FailedOrderMessage findUnique
+   */
+  export type FailedOrderMessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FailedOrderMessage
+     */
+    select?: FailedOrderMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FailedOrderMessage
+     */
+    omit?: FailedOrderMessageOmit<ExtArgs> | null
+    /**
+     * Filter, which FailedOrderMessage to fetch.
+     */
+    where: FailedOrderMessageWhereUniqueInput
+  }
+
+  /**
+   * FailedOrderMessage findUniqueOrThrow
+   */
+  export type FailedOrderMessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FailedOrderMessage
+     */
+    select?: FailedOrderMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FailedOrderMessage
+     */
+    omit?: FailedOrderMessageOmit<ExtArgs> | null
+    /**
+     * Filter, which FailedOrderMessage to fetch.
+     */
+    where: FailedOrderMessageWhereUniqueInput
+  }
+
+  /**
+   * FailedOrderMessage findFirst
+   */
+  export type FailedOrderMessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FailedOrderMessage
+     */
+    select?: FailedOrderMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FailedOrderMessage
+     */
+    omit?: FailedOrderMessageOmit<ExtArgs> | null
+    /**
+     * Filter, which FailedOrderMessage to fetch.
+     */
+    where?: FailedOrderMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FailedOrderMessages to fetch.
+     */
+    orderBy?: FailedOrderMessageOrderByWithRelationInput | FailedOrderMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FailedOrderMessages.
+     */
+    cursor?: FailedOrderMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FailedOrderMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FailedOrderMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FailedOrderMessages.
+     */
+    distinct?: FailedOrderMessageScalarFieldEnum | FailedOrderMessageScalarFieldEnum[]
+  }
+
+  /**
+   * FailedOrderMessage findFirstOrThrow
+   */
+  export type FailedOrderMessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FailedOrderMessage
+     */
+    select?: FailedOrderMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FailedOrderMessage
+     */
+    omit?: FailedOrderMessageOmit<ExtArgs> | null
+    /**
+     * Filter, which FailedOrderMessage to fetch.
+     */
+    where?: FailedOrderMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FailedOrderMessages to fetch.
+     */
+    orderBy?: FailedOrderMessageOrderByWithRelationInput | FailedOrderMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FailedOrderMessages.
+     */
+    cursor?: FailedOrderMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FailedOrderMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FailedOrderMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FailedOrderMessages.
+     */
+    distinct?: FailedOrderMessageScalarFieldEnum | FailedOrderMessageScalarFieldEnum[]
+  }
+
+  /**
+   * FailedOrderMessage findMany
+   */
+  export type FailedOrderMessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FailedOrderMessage
+     */
+    select?: FailedOrderMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FailedOrderMessage
+     */
+    omit?: FailedOrderMessageOmit<ExtArgs> | null
+    /**
+     * Filter, which FailedOrderMessages to fetch.
+     */
+    where?: FailedOrderMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FailedOrderMessages to fetch.
+     */
+    orderBy?: FailedOrderMessageOrderByWithRelationInput | FailedOrderMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FailedOrderMessages.
+     */
+    cursor?: FailedOrderMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FailedOrderMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FailedOrderMessages.
+     */
+    skip?: number
+    distinct?: FailedOrderMessageScalarFieldEnum | FailedOrderMessageScalarFieldEnum[]
+  }
+
+  /**
+   * FailedOrderMessage create
+   */
+  export type FailedOrderMessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FailedOrderMessage
+     */
+    select?: FailedOrderMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FailedOrderMessage
+     */
+    omit?: FailedOrderMessageOmit<ExtArgs> | null
+    /**
+     * The data needed to create a FailedOrderMessage.
+     */
+    data: XOR<FailedOrderMessageCreateInput, FailedOrderMessageUncheckedCreateInput>
+  }
+
+  /**
+   * FailedOrderMessage createMany
+   */
+  export type FailedOrderMessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FailedOrderMessages.
+     */
+    data: FailedOrderMessageCreateManyInput | FailedOrderMessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FailedOrderMessage createManyAndReturn
+   */
+  export type FailedOrderMessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FailedOrderMessage
+     */
+    select?: FailedOrderMessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FailedOrderMessage
+     */
+    omit?: FailedOrderMessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many FailedOrderMessages.
+     */
+    data: FailedOrderMessageCreateManyInput | FailedOrderMessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FailedOrderMessage update
+   */
+  export type FailedOrderMessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FailedOrderMessage
+     */
+    select?: FailedOrderMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FailedOrderMessage
+     */
+    omit?: FailedOrderMessageOmit<ExtArgs> | null
+    /**
+     * The data needed to update a FailedOrderMessage.
+     */
+    data: XOR<FailedOrderMessageUpdateInput, FailedOrderMessageUncheckedUpdateInput>
+    /**
+     * Choose, which FailedOrderMessage to update.
+     */
+    where: FailedOrderMessageWhereUniqueInput
+  }
+
+  /**
+   * FailedOrderMessage updateMany
+   */
+  export type FailedOrderMessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FailedOrderMessages.
+     */
+    data: XOR<FailedOrderMessageUpdateManyMutationInput, FailedOrderMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which FailedOrderMessages to update
+     */
+    where?: FailedOrderMessageWhereInput
+    /**
+     * Limit how many FailedOrderMessages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FailedOrderMessage updateManyAndReturn
+   */
+  export type FailedOrderMessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FailedOrderMessage
+     */
+    select?: FailedOrderMessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FailedOrderMessage
+     */
+    omit?: FailedOrderMessageOmit<ExtArgs> | null
+    /**
+     * The data used to update FailedOrderMessages.
+     */
+    data: XOR<FailedOrderMessageUpdateManyMutationInput, FailedOrderMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which FailedOrderMessages to update
+     */
+    where?: FailedOrderMessageWhereInput
+    /**
+     * Limit how many FailedOrderMessages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FailedOrderMessage upsert
+   */
+  export type FailedOrderMessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FailedOrderMessage
+     */
+    select?: FailedOrderMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FailedOrderMessage
+     */
+    omit?: FailedOrderMessageOmit<ExtArgs> | null
+    /**
+     * The filter to search for the FailedOrderMessage to update in case it exists.
+     */
+    where: FailedOrderMessageWhereUniqueInput
+    /**
+     * In case the FailedOrderMessage found by the `where` argument doesn't exist, create a new FailedOrderMessage with this data.
+     */
+    create: XOR<FailedOrderMessageCreateInput, FailedOrderMessageUncheckedCreateInput>
+    /**
+     * In case the FailedOrderMessage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FailedOrderMessageUpdateInput, FailedOrderMessageUncheckedUpdateInput>
+  }
+
+  /**
+   * FailedOrderMessage delete
+   */
+  export type FailedOrderMessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FailedOrderMessage
+     */
+    select?: FailedOrderMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FailedOrderMessage
+     */
+    omit?: FailedOrderMessageOmit<ExtArgs> | null
+    /**
+     * Filter which FailedOrderMessage to delete.
+     */
+    where: FailedOrderMessageWhereUniqueInput
+  }
+
+  /**
+   * FailedOrderMessage deleteMany
+   */
+  export type FailedOrderMessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FailedOrderMessages to delete
+     */
+    where?: FailedOrderMessageWhereInput
+    /**
+     * Limit how many FailedOrderMessages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FailedOrderMessage without action
+   */
+  export type FailedOrderMessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FailedOrderMessage
+     */
+    select?: FailedOrderMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FailedOrderMessage
+     */
+    omit?: FailedOrderMessageOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -11632,6 +12726,15 @@ export namespace Prisma {
   };
 
   export type ApprovedGroupScalarFieldEnum = (typeof ApprovedGroupScalarFieldEnum)[keyof typeof ApprovedGroupScalarFieldEnum]
+
+
+  export const FailedOrderMessageScalarFieldEnum: {
+    messageId: 'messageId',
+    orderId: 'orderId',
+    createdAt: 'createdAt'
+  };
+
+  export type FailedOrderMessageScalarFieldEnum = (typeof FailedOrderMessageScalarFieldEnum)[keyof typeof FailedOrderMessageScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -12397,6 +13500,50 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ApprovedGroup"> | Date | string
   }
 
+  export type FailedOrderMessageWhereInput = {
+    AND?: FailedOrderMessageWhereInput | FailedOrderMessageWhereInput[]
+    OR?: FailedOrderMessageWhereInput[]
+    NOT?: FailedOrderMessageWhereInput | FailedOrderMessageWhereInput[]
+    messageId?: FloatFilter<"FailedOrderMessage"> | number
+    orderId?: StringFilter<"FailedOrderMessage"> | string
+    createdAt?: DateTimeFilter<"FailedOrderMessage"> | Date | string
+  }
+
+  export type FailedOrderMessageOrderByWithRelationInput = {
+    messageId?: SortOrder
+    orderId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FailedOrderMessageWhereUniqueInput = Prisma.AtLeast<{
+    messageId?: number
+    AND?: FailedOrderMessageWhereInput | FailedOrderMessageWhereInput[]
+    OR?: FailedOrderMessageWhereInput[]
+    NOT?: FailedOrderMessageWhereInput | FailedOrderMessageWhereInput[]
+    orderId?: StringFilter<"FailedOrderMessage"> | string
+    createdAt?: DateTimeFilter<"FailedOrderMessage"> | Date | string
+  }, "messageId">
+
+  export type FailedOrderMessageOrderByWithAggregationInput = {
+    messageId?: SortOrder
+    orderId?: SortOrder
+    createdAt?: SortOrder
+    _count?: FailedOrderMessageCountOrderByAggregateInput
+    _avg?: FailedOrderMessageAvgOrderByAggregateInput
+    _max?: FailedOrderMessageMaxOrderByAggregateInput
+    _min?: FailedOrderMessageMinOrderByAggregateInput
+    _sum?: FailedOrderMessageSumOrderByAggregateInput
+  }
+
+  export type FailedOrderMessageScalarWhereWithAggregatesInput = {
+    AND?: FailedOrderMessageScalarWhereWithAggregatesInput | FailedOrderMessageScalarWhereWithAggregatesInput[]
+    OR?: FailedOrderMessageScalarWhereWithAggregatesInput[]
+    NOT?: FailedOrderMessageScalarWhereWithAggregatesInput | FailedOrderMessageScalarWhereWithAggregatesInput[]
+    messageId?: FloatWithAggregatesFilter<"FailedOrderMessage"> | number
+    orderId?: StringWithAggregatesFilter<"FailedOrderMessage"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"FailedOrderMessage"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     mobile?: string | null
@@ -13092,6 +14239,48 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type FailedOrderMessageCreateInput = {
+    messageId: number
+    orderId: string
+    createdAt?: Date | string
+  }
+
+  export type FailedOrderMessageUncheckedCreateInput = {
+    messageId: number
+    orderId: string
+    createdAt?: Date | string
+  }
+
+  export type FailedOrderMessageUpdateInput = {
+    messageId?: FloatFieldUpdateOperationsInput | number
+    orderId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FailedOrderMessageUncheckedUpdateInput = {
+    messageId?: FloatFieldUpdateOperationsInput | number
+    orderId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FailedOrderMessageCreateManyInput = {
+    messageId: number
+    orderId: string
+    createdAt?: Date | string
+  }
+
+  export type FailedOrderMessageUpdateManyMutationInput = {
+    messageId?: FloatFieldUpdateOperationsInput | number
+    orderId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FailedOrderMessageUncheckedUpdateManyInput = {
+    messageId?: FloatFieldUpdateOperationsInput | number
+    orderId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -13738,6 +14927,32 @@ export namespace Prisma {
     chatId?: SortOrder
     title?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type FailedOrderMessageCountOrderByAggregateInput = {
+    messageId?: SortOrder
+    orderId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FailedOrderMessageAvgOrderByAggregateInput = {
+    messageId?: SortOrder
+  }
+
+  export type FailedOrderMessageMaxOrderByAggregateInput = {
+    messageId?: SortOrder
+    orderId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FailedOrderMessageMinOrderByAggregateInput = {
+    messageId?: SortOrder
+    orderId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FailedOrderMessageSumOrderByAggregateInput = {
+    messageId?: SortOrder
   }
 
   export type OrderCreateNestedManyWithoutUserInput = {
