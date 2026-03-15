@@ -11,6 +11,7 @@ import { createError } from '../middleware/errorHandler';
 import { logger } from '../utils/logger';
 import { env } from '../config/env';
 import { ApiResponse } from '../types';
+import { getPlatformNameFromUrl } from '../utils/platform.util';
 // In-memory cache to rate-limit ZapUPI status checks (max once per 30s per order)
 const zapupiCheckCache = new Map<string, number>();
 
@@ -41,6 +42,8 @@ export const validateLinkSchema = z.object({
 
 // ===================== Controllers =====================
 
+// ===================== Controllers =====================
+
 /**
  * POST /api/orders/validate-link
  * Validates an Instagram link against the selected service category.
@@ -58,6 +61,7 @@ export async function validateLink(req: Request, res: Response, next: NextFuncti
                 linkType: result.linkType,
                 valid: result.valid,
                 allowedServices: result.allowedServices,
+                platform: getPlatformNameFromUrl(link),
             },
         };
 

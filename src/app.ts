@@ -15,6 +15,7 @@ import orderRoutes from './routes/order.routes';
 import ssmRoutes from './routes/ssm.routes';
 import bannerRoutes from './routes/banner.routes';
 import offerRoutes from './routes/offer.routes';
+import dashboardRoutes from './routes/dashboard.routes';
 import { ApiResponse } from './types';
 
 const app = express();
@@ -33,8 +34,8 @@ app.use(helmet());
 // ========================
 // Rejects requests that don't carry Cloudflare's CF-Connecting-IP header.
 // Only active in production; dev traffic passes through freely.
-app.use(cloudflareOnly);
-
+// app.use(cloudflareOnly);
+console.log(process.env.SUPPORTIVE_SMM_API_KEY)
 // ========================
 // Global DDoS / Rate Limiting
 // ========================
@@ -85,6 +86,7 @@ app.use('/api/orders', sensitiveRateLimiter, orderRoutes);
 app.use('/api/ssm', apiRateLimiter, ssmRoutes);
 app.use('/api/banners', apiRateLimiter, bannerRoutes);
 app.use('/api/offers', apiRateLimiter, offerRoutes);
+app.use('/api/dashboard', apiRateLimiter, dashboardRoutes);
 app.get('/api/status/stream/:id', subscribeToOrderStatus);
 
 

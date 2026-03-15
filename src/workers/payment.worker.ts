@@ -147,6 +147,7 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
             serviceId: data.serviceId,
             link: data.link,
             quantity: data.quantity,
+            comments: serviceCategory === 'comments' ? (order.remark || undefined) : undefined,
         });
 
         // Optionally fetch charge

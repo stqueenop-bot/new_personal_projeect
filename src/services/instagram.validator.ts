@@ -1,3 +1,4 @@
+import { getPlatformNameFromUrl } from '../utils/platform.util';
 import { logger } from '../utils/logger';
 
 /**
@@ -99,12 +100,17 @@ export function validateLinkForService(url: string, serviceCategory: ServiceCate
     allowedServices?: ServiceCategory[];
 } {
     const linkType = detectInstagramLinkType(url);
+    const platform = getPlatformNameFromUrl(url);
 
     if (linkType === 'unknown') {
+        const errorMsg = platform !== 'Unknown' && platform !== 'Instagram'
+            ? `Detected platform: ${platform}. Currently, we only support Instagram services on this platform. Please provide a valid Instagram link.`
+            : 'Invalid Instagram URL. Please provide a valid Instagram profile, post, or reel link.';
+            
         return {
             valid: false,
             linkType,
-            error: 'Invalid Instagram URL. Please provide a valid Instagram profile, post, or reel link.',
+            error: errorMsg,
         };
     }
 

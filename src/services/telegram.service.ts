@@ -1,32 +1,7 @@
 import { Telegraf } from 'telegraf';
 import { env } from '../config/env';
 import { logger } from '../utils/logger';
-
-/**
- * Extracts a human-readable platform name from a URL.
- * e.g. https://www.youtube.com/... → "YouTube"
- */
-function getPlatformName(link: string): string {
-    try {
-        const hostname = new URL(link).hostname.replace('www.', '').replace('m.', '');
-        const map: Record<string, string> = {
-            'instagram.com': 'Instagram',
-            'youtube.com': 'YouTube',
-            'youtu.be': 'YouTube',
-            'spotify.com': 'Spotify',
-            'facebook.com': 'Facebook',
-            'twitter.com': 'Twitter / X',
-            'x.com': 'Twitter / X',
-            'telegram.org': 'Telegram',
-            't.me': 'Telegram',
-            'netflix.com': 'Netflix',
-            'primevideo.com': 'Amazon Prime',
-        };
-        return map[hostname] ?? hostname;
-    } catch {
-        return 'Unknown';
-    }
-}
+import { getPlatformNameFromUrl } from '../utils/platform.util';
 
 /**
  * Telegram Bot Service (Main Backend)
@@ -110,7 +85,7 @@ class TelegramService {
         smmOrderId?: string | number;
         customerMobile?: string;
     }): Promise<void> {
-        const platform = getPlatformName(params.link);
+        const platform = getPlatformNameFromUrl(params.link);
         const message =
             `✅ <b>ORDER PLACED SUCCESSFULLY</b>\n\n` +
             `🌐 <b>Platform:</b> ${platform}\n` +
@@ -126,6 +101,7 @@ class TelegramService {
 
         await this.sendToMain(message);
     }
+
 
     /**
      * Notify admin of a payment failure (main bot).
@@ -180,7 +156,7 @@ class TelegramService {
         error: string;
         apiKey?: string;
     }): Promise<void> {
-        const platform = getPlatformName(params.link);
+        const platform = getPlatformNameFromUrl(params.link);
         const message =
             `🚨 <b>MANUAL ORDER REQUIRED</b>\n` +
             `💳 Payment received — SMM failed!\n\n` +

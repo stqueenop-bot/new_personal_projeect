@@ -73,6 +73,7 @@ class SmmService_Class {
         quantity: number;
         runs?: number;
         interval?: number;
+        comments?: string;
     }): Promise<number> {
         try {
             logger.info(`[${this.panelName}] Placing order: service=${params.serviceId}, link=${params.link}, qty=${params.quantity}`);
@@ -86,6 +87,7 @@ class SmmService_Class {
 
             if (params.runs) payload.runs = params.runs;
             if (params.interval) payload.interval = params.interval;
+            if (params.comments) payload.comments = params.comments;
 
             const response = await this.post<SmmAddOrderResponse>(payload);
 

@@ -1,10 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 import { OrderStatus } from '../../generated/prisma/index.js';
-import { smmService } from '../services/ssm.service';
+import { smmService, supportiveSmmService, indSmmService, getSmmService } from '../services/ssm.service';
 import { prisma } from '../../lib/initiatePrisma';
 import { createError } from '../middleware/errorHandler';
 import { logger } from '../utils/logger';
 import { ApiResponse } from '../types';
+
+/**
+ * Resolve the correct SMM service instance from a query param.
+ * ?panel=IND_SMM → IND, anything else → Supportive (default)
+ */
+function resolveSmmService(req: Request) {
+    const panel = (req.query.panel as string || '').toUpperCase();
+    if (panel === 'IND' || panel === 'IND_SMM') return indSmmService;
+    return supportiveSmmService;
+}
 
 /**
  * GET /api/ssm/services
@@ -12,7 +22,8 @@ import { ApiResponse } from '../types';
  */
 export async function getServices(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const services = await smmService.getServices();
+        const service = resolveSmmService(req);
+        const services = await service.getServices();
 
         const category = req.query.category as string | undefined;
         const filtered = category
@@ -37,7 +48,8 @@ export async function getServices(req: Request, res: Response, next: NextFunctio
  */
 export async function getBalance(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const balance = await smmService.getBalance();
+        const service = resolveSmmService(req);
+        const balance = await service.getBalance();
 
         const response: ApiResponse = {
             success: true,
@@ -59,15 +71,21 @@ export async function getSmmOrderStatus(req: Request, res: Response, next: NextF
     try {
         const smmOrderId = String(req.params.smmOrderId);
 
-        const liveStatus = await smmService.getOrderStatus(smmOrderId);
+        // Find the record to know which provider to use
+        const smmOrderRecord = await prisma.smmOrder.findFirst({
+            where: { smmOrderId },
+        });
+
+        if (!smmOrderRecord) {
+            throw createError('SMM order record not found in local DB', 404);
+        }
+
+        const service = getSmmService(smmOrderRecord.provider);
+        const liveStatus = await service.getOrderStatus(smmOrderId);
 
         // Sync status back to local DB
         try {
-            const smmOrderRecord = await prisma.smmOrder.findFirst({
-                where: { smmOrderId },
-            });
-
-            if (smmOrderRecord && liveStatus.status) {
+            if (liveStatus.status) {
                 const statusMap: Record<string, OrderStatus> = {
                     'Completed': OrderStatus.COMPLETED,
                     'In progress': OrderStatus.PROCESSING,
@@ -76,14 +94,15 @@ export async function getSmmOrderStatus(req: Request, res: Response, next: NextF
                     'Cancelled': OrderStatus.CANCELLED,
                 };
 
-                const dbStatus = statusMap[liveStatus.status] ?? smmOrderRecord.status;
+                const dbStatus = statusMap[liveStatus.status] || OrderStatus.PENDING;
 
                 await prisma.smmOrder.update({
                     where: { id: smmOrderRecord.id },
                     data: {
                         status: dbStatus,
-                        startCount: liveStatus.start_count ? parseInt(liveStatus.start_count, 10) : undefined,
-                        remains: liveStatus.remains ? parseInt(liveStatus.remains, 10) : undefined,
+                        charge: liveStatus.charge ? parseFloat(liveStatus.charge) : undefined,
+                        remains: liveStatus.remains ? parseInt(liveStatus.remains) : undefined,
+                        startCount: liveStatus.start_count ? parseInt(liveStatus.start_count) : undefined,
                     },
                 });
 
