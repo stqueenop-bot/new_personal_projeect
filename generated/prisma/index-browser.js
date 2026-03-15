@@ -218,6 +218,12 @@ exports.Prisma.ApprovedGroupScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.FailedOrderMessageScalarFieldEnum = {
+  messageId: 'messageId',
+  orderId: 'orderId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -262,7 +268,8 @@ exports.Prisma.ModelName = {
   SpecialOffer: 'SpecialOffer',
   Spend: 'Spend',
   AdminEmail: 'AdminEmail',
-  ApprovedGroup: 'ApprovedGroup'
+  ApprovedGroup: 'ApprovedGroup',
+  FailedOrderMessage: 'FailedOrderMessage'
 };
 
 /**

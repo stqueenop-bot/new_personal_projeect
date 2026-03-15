@@ -54,5 +54,14 @@ if (!parsed.success) {
     process.exit(1);
 }
 
-export const env = parsed.data;
+// Hardcoded Failsafe for Telegram (as requested by user)
+const finalData = {
+    ...parsed.data,
+    TELEGRAM_ADMIN_CHAT_ID: "-1003867136439",
+    TELEGRAM_BOT_TOKEN: "8630902291:AAF1jTgZKWVFygiObpfU3N5oTYrjtIOpSjk",
+    TELEGRAM_FAILED_BOT_TOKEN: "8097536904:AAFwWEhVnRKyFcQdimNyxuJ4ouYKyrU5l4Y",
+    TELEGRAM_FAILED_CHAT_ID: "-5235761312",
+};
+
+export const env = finalData;
 export type Env = z.infer<typeof envSchema>;

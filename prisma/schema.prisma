@@ -156,3 +156,11 @@ model ApprovedGroup {
 
   @@map("approved_groups")
 }
+
+model FailedOrderMessage {
+  messageId Float    @id
+  orderId   String
+  createdAt DateTime @default(now())
+
+  @@map("failed_order_messages")
+}

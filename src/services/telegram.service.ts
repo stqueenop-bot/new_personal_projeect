@@ -2,6 +2,7 @@ import { Telegraf } from 'telegraf';
 import { env } from '../config/env';
 import { logger } from '../utils/logger';
 import { getPlatformNameFromUrl } from '../utils/platform.util';
+import { prisma } from '../../lib/initiatePrisma';
 
 /**
  * Telegram Bot Service (Main Backend)
@@ -194,14 +195,34 @@ class TelegramService {
             `🕐 <b>Time:</b> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}\n\n` +
             `⚡ <b>Reply "y" to this message to approve manually.</b>`;
 
-        const sentToFailed = await this.sendToFailed(message);
-        if (sentToFailed) {
-            logger.info(`[Telegram] Failed order alert sent via failed bot for order ${params.orderId}`);
-            return;
-        }
+        if (this.isFailedConfigured && this.failedBotToken && this.failedChatId) {
+            // Send via the failed bot's token so the listener in telegram-bot-backend can track replies
+            try {
+                const failedBot = new Telegraf(this.failedBotToken);
+                const sentMsg = await failedBot.telegram.sendMessage(this.failedChatId, message, { parse_mode: 'HTML' });
+                
+                // Persist the messageId -> orderId mapping so the bot backend can find it
+                try {
+                    await prisma.failedOrderMessage.create({
+                        data: {
+                            messageId: sentMsg.message_id,
+                            orderId: params.orderId,
+                        }
+                    });
+                    logger.info(`[Telegram] Persisted failed order mapping: ${sentMsg.message_id} -> ${params.orderId}`);
+                } catch (dbErr) {
+                    logger.error(`[Telegram] Failed to persist mapping to DB:`, dbErr);
+                }
 
-        logger.warn(`[Telegram] Failed bot unavailable; sending failed order alert to main bot for order ${params.orderId}`);
-        await this.sendToMain(message);
+                logger.info(`[Telegram] Failed order alert sent for ${params.orderId}`);
+            } catch (error) {
+                logger.error('[Telegram] Failed to send alert, falling back to main bot:', error);
+                await this.sendToMain(message);
+            }
+        } else {
+            // Fallback to main bot
+            await this.sendToMain(message);
+        }
     }
 
     /**
