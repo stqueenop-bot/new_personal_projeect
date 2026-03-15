@@ -25,8 +25,8 @@ const envSchema = z.object({
     TELEGRAM_FAILED_CHAT_ID: z.string().optional(),     // Admin chat for failed orders
 
     // SSM Panel (Supportive SMM)
-    SSM_API_URL: z.string().default('https://supportivesmm.com/api/v2'),
-    SSM_API_KEY: z.string().optional(),
+    SUPPORTIVE_SMM_API_URL: z.string().default('https://supportivesmm.com/api/v2'),
+    SUPPORTIVE_SMM_API_KEY: z.string().optional(),
 
     // IND SMM Panel
     IND_SMM_API_URL: z.string().default('https://indsmm.com/api/v2'),

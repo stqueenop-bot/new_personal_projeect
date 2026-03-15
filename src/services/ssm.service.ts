@@ -155,8 +155,8 @@ class SmmService_Class {
 // ─── Provider Instances ───
 
 export const supportiveSmmService = new SmmService_Class(
-    env.SSM_API_URL,
-    env.SSM_API_KEY || '',
+    env.SUPPORTIVE_SMM_API_URL,
+    env.SUPPORTIVE_SMM_API_KEY || '',
     'Supportive SMM'
 );
 
