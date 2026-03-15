@@ -53,6 +53,11 @@ export type Spend = $Result.DefaultSelection<Prisma.$SpendPayload>
  * 
  */
 export type AdminEmail = $Result.DefaultSelection<Prisma.$AdminEmailPayload>
+/**
+ * Model ApprovedGroup
+ * 
+ */
+export type ApprovedGroup = $Result.DefaultSelection<Prisma.$ApprovedGroupPayload>
 
 /**
  * Enums
@@ -301,6 +306,16 @@ export class PrismaClient<
     * ```
     */
   get adminEmail(): Prisma.AdminEmailDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.approvedGroup`: Exposes CRUD operations for the **ApprovedGroup** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ApprovedGroups
+    * const approvedGroups = await prisma.approvedGroup.findMany()
+    * ```
+    */
+  get approvedGroup(): Prisma.ApprovedGroupDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -742,7 +757,8 @@ export namespace Prisma {
     Banner: 'Banner',
     SpecialOffer: 'SpecialOffer',
     Spend: 'Spend',
-    AdminEmail: 'AdminEmail'
+    AdminEmail: 'AdminEmail',
+    ApprovedGroup: 'ApprovedGroup'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -758,7 +774,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "order" | "payment" | "smmOrder" | "banner" | "specialOffer" | "spend" | "adminEmail"
+      modelProps: "user" | "order" | "payment" | "smmOrder" | "banner" | "specialOffer" | "spend" | "adminEmail" | "approvedGroup"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1354,6 +1370,80 @@ export namespace Prisma {
           }
         }
       }
+      ApprovedGroup: {
+        payload: Prisma.$ApprovedGroupPayload<ExtArgs>
+        fields: Prisma.ApprovedGroupFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ApprovedGroupFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovedGroupPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ApprovedGroupFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovedGroupPayload>
+          }
+          findFirst: {
+            args: Prisma.ApprovedGroupFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovedGroupPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ApprovedGroupFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovedGroupPayload>
+          }
+          findMany: {
+            args: Prisma.ApprovedGroupFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovedGroupPayload>[]
+          }
+          create: {
+            args: Prisma.ApprovedGroupCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovedGroupPayload>
+          }
+          createMany: {
+            args: Prisma.ApprovedGroupCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ApprovedGroupCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovedGroupPayload>[]
+          }
+          delete: {
+            args: Prisma.ApprovedGroupDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovedGroupPayload>
+          }
+          update: {
+            args: Prisma.ApprovedGroupUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovedGroupPayload>
+          }
+          deleteMany: {
+            args: Prisma.ApprovedGroupDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ApprovedGroupUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ApprovedGroupUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovedGroupPayload>[]
+          }
+          upsert: {
+            args: Prisma.ApprovedGroupUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApprovedGroupPayload>
+          }
+          aggregate: {
+            args: Prisma.ApprovedGroupAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateApprovedGroup>
+          }
+          groupBy: {
+            args: Prisma.ApprovedGroupGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ApprovedGroupGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ApprovedGroupCountArgs<ExtArgs>
+            result: $Utils.Optional<ApprovedGroupCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1470,6 +1560,7 @@ export namespace Prisma {
     specialOffer?: SpecialOfferOmit
     spend?: SpendOmit
     adminEmail?: AdminEmailOmit
+    approvedGroup?: ApprovedGroupOmit
   }
 
   /* Types for Logging */
@@ -10423,6 +10514,988 @@ export namespace Prisma {
 
 
   /**
+   * Model ApprovedGroup
+   */
+
+  export type AggregateApprovedGroup = {
+    _count: ApprovedGroupCountAggregateOutputType | null
+    _min: ApprovedGroupMinAggregateOutputType | null
+    _max: ApprovedGroupMaxAggregateOutputType | null
+  }
+
+  export type ApprovedGroupMinAggregateOutputType = {
+    id: string | null
+    chatId: string | null
+    title: string | null
+    createdAt: Date | null
+  }
+
+  export type ApprovedGroupMaxAggregateOutputType = {
+    id: string | null
+    chatId: string | null
+    title: string | null
+    createdAt: Date | null
+  }
+
+  export type ApprovedGroupCountAggregateOutputType = {
+    id: number
+    chatId: number
+    title: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ApprovedGroupMinAggregateInputType = {
+    id?: true
+    chatId?: true
+    title?: true
+    createdAt?: true
+  }
+
+  export type ApprovedGroupMaxAggregateInputType = {
+    id?: true
+    chatId?: true
+    title?: true
+    createdAt?: true
+  }
+
+  export type ApprovedGroupCountAggregateInputType = {
+    id?: true
+    chatId?: true
+    title?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ApprovedGroupAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApprovedGroup to aggregate.
+     */
+    where?: ApprovedGroupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovedGroups to fetch.
+     */
+    orderBy?: ApprovedGroupOrderByWithRelationInput | ApprovedGroupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ApprovedGroupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovedGroups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovedGroups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ApprovedGroups
+    **/
+    _count?: true | ApprovedGroupCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApprovedGroupMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApprovedGroupMaxAggregateInputType
+  }
+
+  export type GetApprovedGroupAggregateType<T extends ApprovedGroupAggregateArgs> = {
+        [P in keyof T & keyof AggregateApprovedGroup]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApprovedGroup[P]>
+      : GetScalarType<T[P], AggregateApprovedGroup[P]>
+  }
+
+
+
+
+  export type ApprovedGroupGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApprovedGroupWhereInput
+    orderBy?: ApprovedGroupOrderByWithAggregationInput | ApprovedGroupOrderByWithAggregationInput[]
+    by: ApprovedGroupScalarFieldEnum[] | ApprovedGroupScalarFieldEnum
+    having?: ApprovedGroupScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ApprovedGroupCountAggregateInputType | true
+    _min?: ApprovedGroupMinAggregateInputType
+    _max?: ApprovedGroupMaxAggregateInputType
+  }
+
+  export type ApprovedGroupGroupByOutputType = {
+    id: string
+    chatId: string
+    title: string | null
+    createdAt: Date
+    _count: ApprovedGroupCountAggregateOutputType | null
+    _min: ApprovedGroupMinAggregateOutputType | null
+    _max: ApprovedGroupMaxAggregateOutputType | null
+  }
+
+  type GetApprovedGroupGroupByPayload<T extends ApprovedGroupGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ApprovedGroupGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ApprovedGroupGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ApprovedGroupGroupByOutputType[P]>
+            : GetScalarType<T[P], ApprovedGroupGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ApprovedGroupSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    chatId?: boolean
+    title?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["approvedGroup"]>
+
+  export type ApprovedGroupSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    chatId?: boolean
+    title?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["approvedGroup"]>
+
+  export type ApprovedGroupSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    chatId?: boolean
+    title?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["approvedGroup"]>
+
+  export type ApprovedGroupSelectScalar = {
+    id?: boolean
+    chatId?: boolean
+    title?: boolean
+    createdAt?: boolean
+  }
+
+  export type ApprovedGroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "chatId" | "title" | "createdAt", ExtArgs["result"]["approvedGroup"]>
+
+  export type $ApprovedGroupPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ApprovedGroup"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      chatId: string
+      title: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["approvedGroup"]>
+    composites: {}
+  }
+
+  type ApprovedGroupGetPayload<S extends boolean | null | undefined | ApprovedGroupDefaultArgs> = $Result.GetResult<Prisma.$ApprovedGroupPayload, S>
+
+  type ApprovedGroupCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ApprovedGroupFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ApprovedGroupCountAggregateInputType | true
+    }
+
+  export interface ApprovedGroupDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ApprovedGroup'], meta: { name: 'ApprovedGroup' } }
+    /**
+     * Find zero or one ApprovedGroup that matches the filter.
+     * @param {ApprovedGroupFindUniqueArgs} args - Arguments to find a ApprovedGroup
+     * @example
+     * // Get one ApprovedGroup
+     * const approvedGroup = await prisma.approvedGroup.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApprovedGroupFindUniqueArgs>(args: SelectSubset<T, ApprovedGroupFindUniqueArgs<ExtArgs>>): Prisma__ApprovedGroupClient<$Result.GetResult<Prisma.$ApprovedGroupPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ApprovedGroup that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApprovedGroupFindUniqueOrThrowArgs} args - Arguments to find a ApprovedGroup
+     * @example
+     * // Get one ApprovedGroup
+     * const approvedGroup = await prisma.approvedGroup.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApprovedGroupFindUniqueOrThrowArgs>(args: SelectSubset<T, ApprovedGroupFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApprovedGroupClient<$Result.GetResult<Prisma.$ApprovedGroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApprovedGroup that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovedGroupFindFirstArgs} args - Arguments to find a ApprovedGroup
+     * @example
+     * // Get one ApprovedGroup
+     * const approvedGroup = await prisma.approvedGroup.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApprovedGroupFindFirstArgs>(args?: SelectSubset<T, ApprovedGroupFindFirstArgs<ExtArgs>>): Prisma__ApprovedGroupClient<$Result.GetResult<Prisma.$ApprovedGroupPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApprovedGroup that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovedGroupFindFirstOrThrowArgs} args - Arguments to find a ApprovedGroup
+     * @example
+     * // Get one ApprovedGroup
+     * const approvedGroup = await prisma.approvedGroup.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApprovedGroupFindFirstOrThrowArgs>(args?: SelectSubset<T, ApprovedGroupFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApprovedGroupClient<$Result.GetResult<Prisma.$ApprovedGroupPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ApprovedGroups that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovedGroupFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApprovedGroups
+     * const approvedGroups = await prisma.approvedGroup.findMany()
+     * 
+     * // Get first 10 ApprovedGroups
+     * const approvedGroups = await prisma.approvedGroup.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const approvedGroupWithIdOnly = await prisma.approvedGroup.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ApprovedGroupFindManyArgs>(args?: SelectSubset<T, ApprovedGroupFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovedGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ApprovedGroup.
+     * @param {ApprovedGroupCreateArgs} args - Arguments to create a ApprovedGroup.
+     * @example
+     * // Create one ApprovedGroup
+     * const ApprovedGroup = await prisma.approvedGroup.create({
+     *   data: {
+     *     // ... data to create a ApprovedGroup
+     *   }
+     * })
+     * 
+     */
+    create<T extends ApprovedGroupCreateArgs>(args: SelectSubset<T, ApprovedGroupCreateArgs<ExtArgs>>): Prisma__ApprovedGroupClient<$Result.GetResult<Prisma.$ApprovedGroupPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ApprovedGroups.
+     * @param {ApprovedGroupCreateManyArgs} args - Arguments to create many ApprovedGroups.
+     * @example
+     * // Create many ApprovedGroups
+     * const approvedGroup = await prisma.approvedGroup.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ApprovedGroupCreateManyArgs>(args?: SelectSubset<T, ApprovedGroupCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ApprovedGroups and returns the data saved in the database.
+     * @param {ApprovedGroupCreateManyAndReturnArgs} args - Arguments to create many ApprovedGroups.
+     * @example
+     * // Create many ApprovedGroups
+     * const approvedGroup = await prisma.approvedGroup.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ApprovedGroups and only return the `id`
+     * const approvedGroupWithIdOnly = await prisma.approvedGroup.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ApprovedGroupCreateManyAndReturnArgs>(args?: SelectSubset<T, ApprovedGroupCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovedGroupPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ApprovedGroup.
+     * @param {ApprovedGroupDeleteArgs} args - Arguments to delete one ApprovedGroup.
+     * @example
+     * // Delete one ApprovedGroup
+     * const ApprovedGroup = await prisma.approvedGroup.delete({
+     *   where: {
+     *     // ... filter to delete one ApprovedGroup
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ApprovedGroupDeleteArgs>(args: SelectSubset<T, ApprovedGroupDeleteArgs<ExtArgs>>): Prisma__ApprovedGroupClient<$Result.GetResult<Prisma.$ApprovedGroupPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ApprovedGroup.
+     * @param {ApprovedGroupUpdateArgs} args - Arguments to update one ApprovedGroup.
+     * @example
+     * // Update one ApprovedGroup
+     * const approvedGroup = await prisma.approvedGroup.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ApprovedGroupUpdateArgs>(args: SelectSubset<T, ApprovedGroupUpdateArgs<ExtArgs>>): Prisma__ApprovedGroupClient<$Result.GetResult<Prisma.$ApprovedGroupPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ApprovedGroups.
+     * @param {ApprovedGroupDeleteManyArgs} args - Arguments to filter ApprovedGroups to delete.
+     * @example
+     * // Delete a few ApprovedGroups
+     * const { count } = await prisma.approvedGroup.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ApprovedGroupDeleteManyArgs>(args?: SelectSubset<T, ApprovedGroupDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApprovedGroups.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovedGroupUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApprovedGroups
+     * const approvedGroup = await prisma.approvedGroup.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ApprovedGroupUpdateManyArgs>(args: SelectSubset<T, ApprovedGroupUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApprovedGroups and returns the data updated in the database.
+     * @param {ApprovedGroupUpdateManyAndReturnArgs} args - Arguments to update many ApprovedGroups.
+     * @example
+     * // Update many ApprovedGroups
+     * const approvedGroup = await prisma.approvedGroup.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ApprovedGroups and only return the `id`
+     * const approvedGroupWithIdOnly = await prisma.approvedGroup.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ApprovedGroupUpdateManyAndReturnArgs>(args: SelectSubset<T, ApprovedGroupUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApprovedGroupPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ApprovedGroup.
+     * @param {ApprovedGroupUpsertArgs} args - Arguments to update or create a ApprovedGroup.
+     * @example
+     * // Update or create a ApprovedGroup
+     * const approvedGroup = await prisma.approvedGroup.upsert({
+     *   create: {
+     *     // ... data to create a ApprovedGroup
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApprovedGroup we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApprovedGroupUpsertArgs>(args: SelectSubset<T, ApprovedGroupUpsertArgs<ExtArgs>>): Prisma__ApprovedGroupClient<$Result.GetResult<Prisma.$ApprovedGroupPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ApprovedGroups.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovedGroupCountArgs} args - Arguments to filter ApprovedGroups to count.
+     * @example
+     * // Count the number of ApprovedGroups
+     * const count = await prisma.approvedGroup.count({
+     *   where: {
+     *     // ... the filter for the ApprovedGroups we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApprovedGroupCountArgs>(
+      args?: Subset<T, ApprovedGroupCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ApprovedGroupCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ApprovedGroup.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovedGroupAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApprovedGroupAggregateArgs>(args: Subset<T, ApprovedGroupAggregateArgs>): Prisma.PrismaPromise<GetApprovedGroupAggregateType<T>>
+
+    /**
+     * Group by ApprovedGroup.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApprovedGroupGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ApprovedGroupGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ApprovedGroupGroupByArgs['orderBy'] }
+        : { orderBy?: ApprovedGroupGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ApprovedGroupGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApprovedGroupGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ApprovedGroup model
+   */
+  readonly fields: ApprovedGroupFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ApprovedGroup.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ApprovedGroupClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ApprovedGroup model
+   */
+  interface ApprovedGroupFieldRefs {
+    readonly id: FieldRef<"ApprovedGroup", 'String'>
+    readonly chatId: FieldRef<"ApprovedGroup", 'String'>
+    readonly title: FieldRef<"ApprovedGroup", 'String'>
+    readonly createdAt: FieldRef<"ApprovedGroup", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ApprovedGroup findUnique
+   */
+  export type ApprovedGroupFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovedGroup
+     */
+    select?: ApprovedGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovedGroup
+     */
+    omit?: ApprovedGroupOmit<ExtArgs> | null
+    /**
+     * Filter, which ApprovedGroup to fetch.
+     */
+    where: ApprovedGroupWhereUniqueInput
+  }
+
+  /**
+   * ApprovedGroup findUniqueOrThrow
+   */
+  export type ApprovedGroupFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovedGroup
+     */
+    select?: ApprovedGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovedGroup
+     */
+    omit?: ApprovedGroupOmit<ExtArgs> | null
+    /**
+     * Filter, which ApprovedGroup to fetch.
+     */
+    where: ApprovedGroupWhereUniqueInput
+  }
+
+  /**
+   * ApprovedGroup findFirst
+   */
+  export type ApprovedGroupFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovedGroup
+     */
+    select?: ApprovedGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovedGroup
+     */
+    omit?: ApprovedGroupOmit<ExtArgs> | null
+    /**
+     * Filter, which ApprovedGroup to fetch.
+     */
+    where?: ApprovedGroupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovedGroups to fetch.
+     */
+    orderBy?: ApprovedGroupOrderByWithRelationInput | ApprovedGroupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApprovedGroups.
+     */
+    cursor?: ApprovedGroupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovedGroups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovedGroups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApprovedGroups.
+     */
+    distinct?: ApprovedGroupScalarFieldEnum | ApprovedGroupScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovedGroup findFirstOrThrow
+   */
+  export type ApprovedGroupFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovedGroup
+     */
+    select?: ApprovedGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovedGroup
+     */
+    omit?: ApprovedGroupOmit<ExtArgs> | null
+    /**
+     * Filter, which ApprovedGroup to fetch.
+     */
+    where?: ApprovedGroupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovedGroups to fetch.
+     */
+    orderBy?: ApprovedGroupOrderByWithRelationInput | ApprovedGroupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApprovedGroups.
+     */
+    cursor?: ApprovedGroupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovedGroups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovedGroups.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApprovedGroups.
+     */
+    distinct?: ApprovedGroupScalarFieldEnum | ApprovedGroupScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovedGroup findMany
+   */
+  export type ApprovedGroupFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovedGroup
+     */
+    select?: ApprovedGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovedGroup
+     */
+    omit?: ApprovedGroupOmit<ExtArgs> | null
+    /**
+     * Filter, which ApprovedGroups to fetch.
+     */
+    where?: ApprovedGroupWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApprovedGroups to fetch.
+     */
+    orderBy?: ApprovedGroupOrderByWithRelationInput | ApprovedGroupOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ApprovedGroups.
+     */
+    cursor?: ApprovedGroupWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApprovedGroups from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApprovedGroups.
+     */
+    skip?: number
+    distinct?: ApprovedGroupScalarFieldEnum | ApprovedGroupScalarFieldEnum[]
+  }
+
+  /**
+   * ApprovedGroup create
+   */
+  export type ApprovedGroupCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovedGroup
+     */
+    select?: ApprovedGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovedGroup
+     */
+    omit?: ApprovedGroupOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ApprovedGroup.
+     */
+    data: XOR<ApprovedGroupCreateInput, ApprovedGroupUncheckedCreateInput>
+  }
+
+  /**
+   * ApprovedGroup createMany
+   */
+  export type ApprovedGroupCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApprovedGroups.
+     */
+    data: ApprovedGroupCreateManyInput | ApprovedGroupCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApprovedGroup createManyAndReturn
+   */
+  export type ApprovedGroupCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovedGroup
+     */
+    select?: ApprovedGroupSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovedGroup
+     */
+    omit?: ApprovedGroupOmit<ExtArgs> | null
+    /**
+     * The data used to create many ApprovedGroups.
+     */
+    data: ApprovedGroupCreateManyInput | ApprovedGroupCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApprovedGroup update
+   */
+  export type ApprovedGroupUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovedGroup
+     */
+    select?: ApprovedGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovedGroup
+     */
+    omit?: ApprovedGroupOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ApprovedGroup.
+     */
+    data: XOR<ApprovedGroupUpdateInput, ApprovedGroupUncheckedUpdateInput>
+    /**
+     * Choose, which ApprovedGroup to update.
+     */
+    where: ApprovedGroupWhereUniqueInput
+  }
+
+  /**
+   * ApprovedGroup updateMany
+   */
+  export type ApprovedGroupUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApprovedGroups.
+     */
+    data: XOR<ApprovedGroupUpdateManyMutationInput, ApprovedGroupUncheckedUpdateManyInput>
+    /**
+     * Filter which ApprovedGroups to update
+     */
+    where?: ApprovedGroupWhereInput
+    /**
+     * Limit how many ApprovedGroups to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovedGroup updateManyAndReturn
+   */
+  export type ApprovedGroupUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovedGroup
+     */
+    select?: ApprovedGroupSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovedGroup
+     */
+    omit?: ApprovedGroupOmit<ExtArgs> | null
+    /**
+     * The data used to update ApprovedGroups.
+     */
+    data: XOR<ApprovedGroupUpdateManyMutationInput, ApprovedGroupUncheckedUpdateManyInput>
+    /**
+     * Filter which ApprovedGroups to update
+     */
+    where?: ApprovedGroupWhereInput
+    /**
+     * Limit how many ApprovedGroups to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovedGroup upsert
+   */
+  export type ApprovedGroupUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovedGroup
+     */
+    select?: ApprovedGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovedGroup
+     */
+    omit?: ApprovedGroupOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ApprovedGroup to update in case it exists.
+     */
+    where: ApprovedGroupWhereUniqueInput
+    /**
+     * In case the ApprovedGroup found by the `where` argument doesn't exist, create a new ApprovedGroup with this data.
+     */
+    create: XOR<ApprovedGroupCreateInput, ApprovedGroupUncheckedCreateInput>
+    /**
+     * In case the ApprovedGroup was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ApprovedGroupUpdateInput, ApprovedGroupUncheckedUpdateInput>
+  }
+
+  /**
+   * ApprovedGroup delete
+   */
+  export type ApprovedGroupDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovedGroup
+     */
+    select?: ApprovedGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovedGroup
+     */
+    omit?: ApprovedGroupOmit<ExtArgs> | null
+    /**
+     * Filter which ApprovedGroup to delete.
+     */
+    where: ApprovedGroupWhereUniqueInput
+  }
+
+  /**
+   * ApprovedGroup deleteMany
+   */
+  export type ApprovedGroupDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApprovedGroups to delete
+     */
+    where?: ApprovedGroupWhereInput
+    /**
+     * Limit how many ApprovedGroups to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApprovedGroup without action
+   */
+  export type ApprovedGroupDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApprovedGroup
+     */
+    select?: ApprovedGroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApprovedGroup
+     */
+    omit?: ApprovedGroupOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -10549,6 +11622,16 @@ export namespace Prisma {
   };
 
   export type AdminEmailScalarFieldEnum = (typeof AdminEmailScalarFieldEnum)[keyof typeof AdminEmailScalarFieldEnum]
+
+
+  export const ApprovedGroupScalarFieldEnum: {
+    id: 'id',
+    chatId: 'chatId',
+    title: 'title',
+    createdAt: 'createdAt'
+  };
+
+  export type ApprovedGroupScalarFieldEnum = (typeof ApprovedGroupScalarFieldEnum)[keyof typeof ApprovedGroupScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -11267,6 +12350,53 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"AdminEmail"> | Date | string
   }
 
+  export type ApprovedGroupWhereInput = {
+    AND?: ApprovedGroupWhereInput | ApprovedGroupWhereInput[]
+    OR?: ApprovedGroupWhereInput[]
+    NOT?: ApprovedGroupWhereInput | ApprovedGroupWhereInput[]
+    id?: StringFilter<"ApprovedGroup"> | string
+    chatId?: StringFilter<"ApprovedGroup"> | string
+    title?: StringNullableFilter<"ApprovedGroup"> | string | null
+    createdAt?: DateTimeFilter<"ApprovedGroup"> | Date | string
+  }
+
+  export type ApprovedGroupOrderByWithRelationInput = {
+    id?: SortOrder
+    chatId?: SortOrder
+    title?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ApprovedGroupWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    chatId?: string
+    AND?: ApprovedGroupWhereInput | ApprovedGroupWhereInput[]
+    OR?: ApprovedGroupWhereInput[]
+    NOT?: ApprovedGroupWhereInput | ApprovedGroupWhereInput[]
+    title?: StringNullableFilter<"ApprovedGroup"> | string | null
+    createdAt?: DateTimeFilter<"ApprovedGroup"> | Date | string
+  }, "id" | "chatId">
+
+  export type ApprovedGroupOrderByWithAggregationInput = {
+    id?: SortOrder
+    chatId?: SortOrder
+    title?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ApprovedGroupCountOrderByAggregateInput
+    _max?: ApprovedGroupMaxOrderByAggregateInput
+    _min?: ApprovedGroupMinOrderByAggregateInput
+  }
+
+  export type ApprovedGroupScalarWhereWithAggregatesInput = {
+    AND?: ApprovedGroupScalarWhereWithAggregatesInput | ApprovedGroupScalarWhereWithAggregatesInput[]
+    OR?: ApprovedGroupScalarWhereWithAggregatesInput[]
+    NOT?: ApprovedGroupScalarWhereWithAggregatesInput | ApprovedGroupScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ApprovedGroup"> | string
+    chatId?: StringWithAggregatesFilter<"ApprovedGroup"> | string
+    title?: StringNullableWithAggregatesFilter<"ApprovedGroup"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ApprovedGroup"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     mobile?: string | null
@@ -11913,6 +13043,55 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ApprovedGroupCreateInput = {
+    id?: string
+    chatId: string
+    title?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ApprovedGroupUncheckedCreateInput = {
+    id?: string
+    chatId: string
+    title?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ApprovedGroupUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovedGroupUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovedGroupCreateManyInput = {
+    id?: string
+    chatId: string
+    title?: string | null
+    createdAt?: Date | string
+  }
+
+  export type ApprovedGroupUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApprovedGroupUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -12537,6 +13716,27 @@ export namespace Prisma {
   export type AdminEmailMinOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ApprovedGroupCountOrderByAggregateInput = {
+    id?: SortOrder
+    chatId?: SortOrder
+    title?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ApprovedGroupMaxOrderByAggregateInput = {
+    id?: SortOrder
+    chatId?: SortOrder
+    title?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ApprovedGroupMinOrderByAggregateInput = {
+    id?: SortOrder
+    chatId?: SortOrder
+    title?: SortOrder
     createdAt?: SortOrder
   }
 

@@ -211,6 +211,13 @@ exports.Prisma.AdminEmailScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ApprovedGroupScalarFieldEnum = {
+  id: 'id',
+  chatId: 'chatId',
+  title: 'title',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -254,7 +261,8 @@ exports.Prisma.ModelName = {
   Banner: 'Banner',
   SpecialOffer: 'SpecialOffer',
   Spend: 'Spend',
-  AdminEmail: 'AdminEmail'
+  AdminEmail: 'AdminEmail',
+  ApprovedGroup: 'ApprovedGroup'
 };
 
 /**

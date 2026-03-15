@@ -1,6 +1,7 @@
 import { Telegraf } from 'telegraf';
 import { env } from '../config/env';
 import { logger } from '../utils/logger';
+import { prisma } from '../../lib/initiatePrisma';
 
 /**
  * Bot Worker — Group Join Approval
@@ -48,6 +49,7 @@ export async function startBotWorker(): Promise<void> {
         if (!isGroup || !isJoining) return;
 
         const groupId = chat.id;
+        const groupIdStr = String(groupId);
         const groupTitle = (chat as { title?: string }).title ?? 'Unknown Group';
         const addedBy = update.from;
         const addedByName =
@@ -55,14 +57,30 @@ export async function startBotWorker(): Promise<void> {
             addedBy.username ||
             `User #${addedBy.id}`;
 
-        logger.info(`[BotWorker] Bot added to group: "${groupTitle}" (${groupId}) by ${addedByName}`);
+        logger.info(`[BotWorker] Bot added to group: "${groupTitle}" (${groupIdStr}) by ${addedByName}`);
+
+        // ── Step 0: Check if group is already approved ────────────────
+        try {
+            const isApproved = await prisma.approvedGroup.findUnique({
+                where: { chatId: groupIdStr }
+            });
+
+            if (isApproved) {
+                logger.info(`[BotWorker] Group ${groupIdStr} is already approved. Staying in group.`);
+                // Optionally send a greeting if it's a new join
+                await ctx.telegram.sendMessage(groupId, `✅ Bot is active in this group.`);
+                return;
+            }
+        } catch (err) {
+            logger.error(`[BotWorker] Database check failed for group ${groupIdStr}:`, err);
+        }
 
         // ── Step 1: Leave the group immediately ────────────────────
         try {
             await ctx.telegram.leaveChat(groupId);
-            logger.info(`[BotWorker] Left group ${groupId} pending admin approval`);
+            logger.info(`[BotWorker] Left group ${groupIdStr} pending admin approval`);
         } catch (err) {
-            logger.warn(`[BotWorker] Could not leave group ${groupId}:`, err);
+            logger.warn(`[BotWorker] Could not leave group ${groupIdStr}:`, err);
         }
 
         // ── Step 2: Notify admin with approve/reject buttons ───────
@@ -112,22 +130,37 @@ export async function startBotWorker(): Promise<void> {
         await ctx.answerCbQuery();
 
         if (action === 'approve') {
-            logger.info(`[BotWorker] Admin approved group: "${groupTitle}" (${groupId})`);
+            logger.info(`[BotWorker] Admin approved group: "${groupTitle}" (${groupIdStr})`);
+
+            // Save approval to database
+            try {
+                await prisma.approvedGroup.upsert({
+                    where: { chatId: groupIdStr },
+                    update: { title: groupTitle },
+                    create: {
+                        chatId: groupIdStr,
+                        title: groupTitle,
+                    },
+                });
+                logger.info(`[BotWorker] Approval persisted to DB for ${groupIdStr}`);
+            } catch (err) {
+                logger.error(`[BotWorker] Failed to persist approval for ${groupIdStr}:`, err);
+            }
 
             // Update the approval message
             await ctx.editMessageText(
                 `✅ <b>Approved</b>\n\n` +
                 `📛 <b>Group:</b> ${groupTitle}\n` +
-                `🆔 <b>Group ID:</b> <code>${groupId}</code>\n\n` +
-                `The bot has been approved for this group.\n` +
-                `<i>Note: For private/invite-only groups, please manually re-add the bot. For public groups, the bot can be added via its username.</i>`,
+                `🆔 <b>Group ID:</b> <code>${groupIdStr}</code>\n\n` +
+                `The bot has been approved for this group and will stay if re-added.\n` +
+                `<i>Note: For private/invite-only groups, please manually re-add the bot.</i>`,
                 { parse_mode: 'HTML' }
             );
 
             // Attempt to unban/re-join the bot in the group (works for public/supergroups)
             try {
                 await ctx.telegram.unbanChatMember(groupId, ctx.botInfo.id, { only_if_banned: true });
-                logger.info(`[BotWorker] Unbanned bot in group ${groupId} — admin can now re-add it`);
+                logger.info(`[BotWorker] Unbanned bot in group ${groupIdStr} — admin can now re-add it`);
             } catch (err) {
                 // Non-fatal: bot was not banned or group is private — admin will handle manually
                 logger.debug(`[BotWorker] unbanChatMember skipped (expected for non-banned bots):`, err);

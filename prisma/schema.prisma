@@ -147,3 +147,12 @@ model AdminEmail {
 
   @@map("admin_emails")
 }
+
+model ApprovedGroup {
+  id        String   @id @default(uuid())
+  chatId    String   @unique
+  title     String?
+  createdAt DateTime @default(now())
+
+  @@map("approved_groups")
+}
