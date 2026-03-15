@@ -23,6 +23,11 @@ async function main() {
     const maskEnv = (val?: string) => (val ? `${val.slice(0, 4)}...${val.slice(-4)}` : 'not set');
     logger.info(`[Startup] TELEGRAM_BOT_TOKEN=${maskEnv(env.TELEGRAM_BOT_TOKEN)}, TELEGRAM_ADMIN_CHAT_ID=${env.TELEGRAM_ADMIN_CHAT_ID}`);
     logger.info(`[Startup] TELEGRAM_FAILED_BOT_TOKEN=${maskEnv(env.TELEGRAM_FAILED_BOT_TOKEN)}, TELEGRAM_FAILED_CHAT_ID=${env.TELEGRAM_FAILED_CHAT_ID}`);
+    logger.info(`[Startup] ENABLE_TELEGRAM=${env.ENABLE_TELEGRAM}, ENABLE_BOT_WORKER=${env.ENABLE_BOT_WORKER}`);
+
+    if (!env.ENABLE_TELEGRAM) {
+        logger.warn('[Startup] Telegram notifications are disabled by ENABLE_TELEGRAM=false. Success/failure alerts will be skipped.');
+    }
 
     // ─── Production Security Checks ───
     if (env.NODE_ENV === 'production') {

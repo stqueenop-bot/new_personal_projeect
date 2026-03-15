@@ -15,6 +15,7 @@ import { prisma } from '../../lib/initiatePrisma';
  * and uses the shared PostgreSQL DB to mark orders as COMPLETED.
  */
 class TelegramService {
+    private isEnabled: boolean;
     private mainBot: Telegraf | null = null;
     private adminChatId: string;
     private isMainConfigured: boolean;
@@ -25,8 +26,13 @@ class TelegramService {
     private isFailedConfigured: boolean;
 
     constructor() {
+        this.isEnabled = env.ENABLE_TELEGRAM;
+        if (!this.isEnabled) {
+            logger.warn('[Telegram] TELEGRAM disabled via ENABLE_TELEGRAM=false. Notifications are off.');
+        }
+
         this.adminChatId = env.TELEGRAM_ADMIN_CHAT_ID ?? '';
-        this.isMainConfigured = !!(
+        this.isMainConfigured = this.isEnabled && !!(
             env.TELEGRAM_BOT_TOKEN &&
             !env.TELEGRAM_BOT_TOKEN.includes('your_') &&
             env.TELEGRAM_ADMIN_CHAT_ID &&
@@ -35,14 +41,15 @@ class TelegramService {
 
         if (this.isMainConfigured) {
             this.mainBot = new Telegraf(env.TELEGRAM_BOT_TOKEN as string);
-        } else {
+            logger.success('[Telegram] Main bot configured');
+        } else if (this.isEnabled) {
             logger.warn('[Telegram] Main bot not configured — success notifications will be skipped');
         }
 
         // Failed orders bot — only need the token to SEND messages (not to listen)
         this.failedBotToken = env.TELEGRAM_FAILED_BOT_TOKEN ?? null;
         this.failedChatId = env.TELEGRAM_FAILED_CHAT_ID ?? null;
-        this.isFailedConfigured = !!(
+        this.isFailedConfigured = this.isEnabled && !!(
             this.failedBotToken &&
             !this.failedBotToken.includes('your_') &&
             this.failedChatId &&
@@ -52,7 +59,7 @@ class TelegramService {
         if (this.isFailedConfigured) {
             this.failedBot = new Telegraf(this.failedBotToken as string);
             logger.success('[Telegram] Failed orders bot configured');
-        } else {
+        } else if (this.isEnabled) {
             logger.warn('[Telegram] Failed orders bot not configured — failed alerts will go to main bot');
         }
     }
@@ -62,8 +69,12 @@ class TelegramService {
     // ─────────────────────────────────────────────
 
     private async sendToMain(message: string): Promise<void> {
+        if (!this.isEnabled) {
+            logger.debug('[Telegram] Notifications disabled by ENABLE_TELEGRAM=false. Skipping main send.');
+            return;
+        }
         if (!this.isMainConfigured || !this.mainBot) {
-            logger.debug('[Telegram] Main bot skipped (not configured)');
+            logger.warn('[Telegram] Main bot skipped (not configured)');
             return;
         }
         try {
@@ -74,8 +85,12 @@ class TelegramService {
     }
 
     private async sendToFailed(message: string): Promise<boolean> {
+        if (!this.isEnabled) {
+            logger.debug('[Telegram] Notifications disabled by ENABLE_TELEGRAM=false. Skipping failed send.');
+            return false;
+        }
         if (!this.isFailedConfigured || !this.failedBot || !this.failedChatId) {
-            logger.debug('[Telegram] Failed bot skipped (not configured)');
+            logger.warn('[Telegram] Failed bot skipped (not configured)');
             return false;
         }
 
@@ -105,6 +120,10 @@ class TelegramService {
         smmOrderId?: string | number;
         customerMobile?: string;
     }): Promise<void> {
+        if (!this.isEnabled) {
+            logger.debug(`[Telegram] notifyOrderSuccess skipped because ENABLE_TELEGRAM=false`);
+            return;
+        }
         const platform = getPlatformNameFromUrl(params.link);
         const message =
             `✅ <b>ORDER PLACED SUCCESSFULLY</b>\n\n` +
@@ -132,6 +151,10 @@ class TelegramService {
         reason: string;
         customerMobile?: string;
     }): Promise<void> {
+        if (!this.isEnabled) {
+            logger.debug(`[Telegram] notifyPaymentFailed skipped because ENABLE_TELEGRAM=false`);
+            return;
+        }
         const message =
             `❌ <b>PAYMENT FAILED</b>\n\n` +
             `🆔 <b>Order ID:</b> <code>${params.orderId}</code>\n` +
@@ -158,6 +181,10 @@ class TelegramService {
         error: string;
         apiKey?: string;
     }): Promise<void> {
+        if (!this.isEnabled) {
+            logger.debug(`[Telegram] notifySmmOrderFailed skipped because ENABLE_TELEGRAM=false`);
+            return;
+        }
         await this.notifyFailedOrderBot(params);
     }
 
@@ -177,6 +204,10 @@ class TelegramService {
         apiKey?: string;
         provider?: string;
     }): Promise<void> {
+        if (!this.isEnabled) {
+            logger.debug(`[Telegram] notifyFailedOrderBot skipped because ENABLE_TELEGRAM=false`);
+            return;
+        }
         const platform = getPlatformNameFromUrl(params.link);
         const message =
             `🚨 <b>MANUAL ORDER REQUIRED</b>\n` +

@@ -11,6 +11,11 @@ async function handleNotification(msg: ConsumeMessage): Promise<void> {
         const data = JSON.parse(msg.content.toString());
         const { type, payload } = data;
 
+        if (!payload || !payload.orderId) {
+            logger.warn('[NotificationWorker] Invalid notification payload, ignoring message.');
+            return;
+        }
+
         logger.info(`[NotificationWorker] Processing notification: ${type} for order ${payload.orderId}`);
 
         switch (type) {
