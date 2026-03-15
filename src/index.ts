@@ -18,7 +18,10 @@ async function main() {
         logger.info(`   POST http://localhost:${PORT}/api/orders          ← Create SMM order`);
         logger.info(`   GET  http://localhost:${PORT}/health              ← Health check`);
     });
-    console.log(process.env.SSM_API_KEY);
+
+    const maskEnv = (val?: string) => (val ? `${val.slice(0, 4)}...${val.slice(-4)}` : 'not set');
+    logger.info(`[Startup] TELEGRAM_BOT_TOKEN=${maskEnv(env.TELEGRAM_BOT_TOKEN)}, TELEGRAM_ADMIN_CHAT_ID=${env.TELEGRAM_ADMIN_CHAT_ID}`);
+    logger.info(`[Startup] TELEGRAM_FAILED_BOT_TOKEN=${maskEnv(env.TELEGRAM_FAILED_BOT_TOKEN)}, TELEGRAM_FAILED_CHAT_ID=${env.TELEGRAM_FAILED_CHAT_ID}`);
 
     // ─── Production Security Checks ───
     if (env.NODE_ENV === 'production') {

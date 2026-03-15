@@ -3,6 +3,13 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { errorHandler } from './middleware/errorHandler';
+import { cloudflareOnly } from './middleware/cloudflareOnly';
+import {
+    globalRateLimiter,
+    apiRateLimiter,
+    sensitiveRateLimiter,
+    webhookRateLimiter,
+} from './middleware/rateLimiter';
 import paymentRoutes from './routes/payment.routes';
 import orderRoutes from './routes/order.routes';
 import ssmRoutes from './routes/ssm.routes';
@@ -12,10 +19,27 @@ import { ApiResponse } from './types';
 
 const app = express();
 
+// Trust Render's (and proxies') X-Forwarded-For header so rate limiters
+// see the real client IP instead of Render's internal load balancer IP.
+app.set('trust proxy', 1);
+
 // ========================
 // Security Middleware
 // ========================
 app.use(helmet());
+
+// ========================
+// Cloudflare Guard — block direct Render URL access
+// ========================
+// Rejects requests that don't carry Cloudflare's CF-Connecting-IP header.
+// Only active in production; dev traffic passes through freely.
+app.use(cloudflareOnly);
+
+// ========================
+// Global DDoS / Rate Limiting
+// ========================
+// Applied first — before any parsing or routing — to drop floods early.
+app.use(globalRateLimiter);
 app.use(cors({
     origin: process.env.ALLOWED_ORIGINS?.split(',') ?? '*',
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
@@ -54,11 +78,13 @@ app.get('/health', (_req, res) => {
 // API Routes
 // ========================
 import { subscribeToOrderStatus } from './controllers/sse.controller';
-app.use('/api/payments', paymentRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/ssm', ssmRoutes);
-app.use('/api/banners', bannerRoutes);
-app.use('/api/offers', offerRoutes);
+// Sensitive endpoints: orders & payments — tight limit (20 req / 10 min)
+app.use('/api/payments', webhookRateLimiter, paymentRoutes);
+app.use('/api/orders', sensitiveRateLimiter, orderRoutes);
+// General API — moderate limit (60 req / min)
+app.use('/api/ssm', apiRateLimiter, ssmRoutes);
+app.use('/api/banners', apiRateLimiter, bannerRoutes);
+app.use('/api/offers', apiRateLimiter, offerRoutes);
 app.get('/api/status/stream/:id', subscribeToOrderStatus);
 
 
