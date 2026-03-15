@@ -1,31 +1,8 @@
-# Dependencies (reinstalled inside Docker)
 node_modules
-
-# Compiled output (rebuilt inside Docker)
 dist
-
-# Environment secrets — NEVER bake into image
 .env
-.env.*
-
-# Git & editor
 .git
-.gitignore
 .dockerignore
-
-# Docker files themselves
 Dockerfile
-docker-compose.yml
-
-# CI / deployment configs not needed at runtime
 railway.json
-.dockerignore
-
-# Test & dev files
 *.log
-test-*.ts
-scripts/
-
-# OS noise
-.DS_Store
-Thumbs.db
