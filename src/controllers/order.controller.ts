@@ -93,6 +93,18 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
         // Determine SMM provider based on serviceId
         const provider = getProviderForService(serviceId);
 
+        // --- LINK VALIDATION (Strict Safety) ---
+        const linkCheck = validateLinkForService(link, serviceCategory as ServiceCategory);
+        if (!linkCheck.valid) {
+            logger.warn(`[OrderController] Blocking order creation due to invalid link: ${linkCheck.error}`);
+            res.status(400).json({
+                success: false,
+                message: linkCheck.error || 'Invalid link for the selected service',
+                data: { linkType: linkCheck.linkType }
+            });
+            return;
+        }
+
         // Create Order in DB
         const order = await prisma.order.create({
             data: {
