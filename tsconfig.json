@@ -9,7 +9,9 @@
     "esModuleInterop": true,
     "allowJs": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node"]
   },
   "include": [
     "src/**/*"
