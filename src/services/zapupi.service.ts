@@ -33,65 +33,104 @@ export class ZapUPIService {
         redirectUrl?: string;
         remark?: string;
     }): Promise<ZapUPICreateOrderResponse> {
-        try {
-            logger.info(`[ZapUPI] Creating order: ${params.orderId}, amount: ${params.amount}`);
+        const MAX_RETRIES = 3;
+        let lastError: any;
 
-            const payload: Record<string, string | number> = {
-                token_key: this.tokenKey,
-                secret_key: this.secretKey,
-                amount: params.amount,
-                order_id: params.orderId,
-            };
-
-            if (params.customerMobile) payload.custumer_mobile = params.customerMobile;
-            if (params.redirectUrl) payload.redirect_url = params.redirectUrl;
-            if (params.remark) payload.remark = params.remark;
-
-            const response = await axios.post<ZapUPICreateOrderResponse>(
-                `${this.baseUrl}/create-order`,
-                qs.stringify(payload),
-                {
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    timeout: 15000,
+        for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                if (attempt > 1) {
+                    logger.warn(`[ZapUPI] Retrying createOrder (Attempt ${attempt}/${MAX_RETRIES})...`);
+                } else {
+                    logger.info(`[ZapUPI] Creating order: ${params.orderId}, amount: ${params.amount}`);
                 }
-            );
 
-            logger.info(`[ZapUPI] Order create response:`, response.data);
-            return response.data;
-        } catch (error) {
-            logger.error('[ZapUPI] Failed to create order:', error);
-            throw new Error(`ZapUPI createOrder failed: ${(error as Error).message}`);
+                const payload: Record<string, string | number> = {
+                    token_key: this.tokenKey,
+                    secret_key: this.secretKey,
+                    amount: params.amount,
+                    order_id: params.orderId,
+                };
+
+                if (params.customerMobile) payload.custumer_mobile = params.customerMobile;
+                if (params.redirectUrl) payload.redirect_url = params.redirectUrl;
+                if (params.remark) payload.remark = params.remark;
+
+                const response = await axios.post<ZapUPICreateOrderResponse>(
+                    `${this.baseUrl}/create-order`,
+                    qs.stringify(payload),
+                    {
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        timeout: 30000,
+                    }
+                );
+
+                logger.info(`[ZapUPI] Order create response:`, response.data);
+                return response.data;
+            } catch (error) {
+                lastError = error;
+                const isTimeout = (error as any).code === 'ECONNABORTED' || (error as any).message?.includes('timeout');
+                
+                if (!isTimeout || attempt === MAX_RETRIES) {
+                    logger.error(`[ZapUPI] Failed to create order (Final Attempt ${attempt}/${MAX_RETRIES}):`, error);
+                    break;
+                }
+                
+                logger.warn(`[ZapUPI] createOrder attempt ${attempt} timed out. Retrying...`);
+                // Wait briefly before retrying (exponential backoff not strictly needed but good practice)
+                await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+            }
         }
+
+        throw new Error(`ZapUPI createOrder failed after ${MAX_RETRIES} attempts: ${lastError.message}`);
     }
 
     /**
      * Check the status of an existing order.
      */
     async getOrderStatus(orderId: string): Promise<ZapUPIOrderStatusResponse> {
-        try {
-            logger.info(`[ZapUPI] Checking status for order: ${orderId}`);
+        const MAX_RETRIES = 3;
+        let lastError: any;
 
-            const payload = {
-                token_key: this.tokenKey,
-                secret_key: this.secretKey,
-                order_id: orderId,
-            };
-
-            const response = await axios.post<ZapUPIOrderStatusResponse>(
-                `${this.baseUrl}/order-status`,
-                qs.stringify(payload),
-                {
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    timeout: 15000,
+        for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                if (attempt > 1) {
+                    logger.warn(`[ZapUPI] Retrying getOrderStatus (Attempt ${attempt}/${MAX_RETRIES})...`);
+                } else {
+                    logger.info(`[ZapUPI] Checking status for order: ${orderId}`);
                 }
-            );
 
-            logger.info(`[ZapUPI] Order status:`, response.data);
-            return response.data;
-        } catch (error) {
-            logger.error('[ZapUPI] Failed to get order status:', error);
-            throw new Error(`ZapUPI getOrderStatus failed: ${(error as Error).message}`);
+                const payload = {
+                    token_key: this.tokenKey,
+                    secret_key: this.secretKey,
+                    order_id: orderId,
+                };
+
+                const response = await axios.post<ZapUPIOrderStatusResponse>(
+                    `${this.baseUrl}/order-status`,
+                    qs.stringify(payload),
+                    {
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        timeout: 30000,
+                    }
+                );
+
+                logger.info(`[ZapUPI] Order status:`, response.data);
+                return response.data;
+            } catch (error) {
+                lastError = error;
+                const isTimeout = (error as any).code === 'ECONNABORTED' || (error as any).message?.includes('timeout');
+
+                if (!isTimeout || attempt === MAX_RETRIES) {
+                    logger.error(`[ZapUPI] Failed to get order status (Final Attempt ${attempt}/${MAX_RETRIES}):`, error);
+                    break;
+                }
+
+                logger.warn(`[ZapUPI] getOrderStatus attempt ${attempt} timed out. Retrying...`);
+                await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+            }
         }
+
+        throw new Error(`ZapUPI getOrderStatus failed after ${MAX_RETRIES} attempts: ${lastError.message}`);
     }
 }
 

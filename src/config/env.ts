@@ -35,6 +35,11 @@ const envSchema = z.object({
     // Frontend
     FRONTEND_URL: z.string().default('http://localhost:3001'),
 
+    // Bot worker
+    ENABLE_BOT_WORKER: z.string().default('false').refine((v) => ['true', 'false'].includes(v.toLowerCase()), {
+        message: 'ENABLE_BOT_WORKER must be true or false',
+    }).transform((v) => v.toLowerCase() === 'true'),
+
     // Security
     API_AUTH_KEY: z.string().optional(),
     ZAPUPI_WEBHOOK_SECRET: z.string().optional(),

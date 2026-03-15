@@ -19,6 +19,11 @@ import { prisma } from '../../lib/initiatePrisma';
 let botWorkerInstance: Telegraf | null = null;
 
 export async function startBotWorker(): Promise<void> {
+    if (!env.ENABLE_BOT_WORKER) {
+        logger.warn('[BotWorker] ENABLE_BOT_WORKER is false — bot worker not started');
+        return;
+    }
+
     if (!env.TELEGRAM_BOT_TOKEN || env.TELEGRAM_BOT_TOKEN.includes('your_')) {
         logger.warn('[BotWorker] TELEGRAM_BOT_TOKEN not configured — group-join approval disabled');
         return;
