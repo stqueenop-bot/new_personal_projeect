@@ -50,7 +50,11 @@ async function main() {
     try {
         await startPaymentWorker();
         await startNotificationWorker();
-        await startBotWorker();
+        if (env.ENABLE_BOT_WORKER) {
+            await startBotWorker();
+        } else {
+            logger.info('[Startup] Bot worker disabled by ENABLE_BOT_WORKER=false');
+        }
         logger.success('✅ Background workers started');
     } catch (error) {
         logger.error('❌ RabbitMQ connection failed:', error);
