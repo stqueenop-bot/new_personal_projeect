@@ -119,6 +119,7 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
             utr: data.utr,
             error: `Invalid Link Format: ${linkCheck.error} (SMM call skipped)`,
             apiKey: currentSmmService.getApiKey(),
+            provider,
         }).catch(tgErr => logger.warn(`[Worker] Telegram notify failed (non-fatal):`, tgErr));
 
         logger.warn(`[Worker] Order ${data.orderId}: Link invalid, skipping SMM, alert sent to admin.`);
@@ -220,6 +221,7 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
             utr: data.utr,
             error: `SMM placement failed: ${errorMsg}`,
             apiKey: currentSmmService.getApiKey(),
+            provider,
         }).catch(tgErr => logger.warn(`[Worker] Telegram notify failed (non-fatal):`, tgErr));
     }
 }

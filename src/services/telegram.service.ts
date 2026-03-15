@@ -18,6 +18,7 @@ class TelegramService {
     private adminChatId: string;
     private isMainConfigured: boolean;
 
+    private failedBot: Telegraf | null = null;
     private failedBotToken: string | null = null;
     private failedChatId: string | null = null;
     private isFailedConfigured: boolean;
@@ -47,7 +48,10 @@ class TelegramService {
             !this.failedChatId.includes('your_')
         );
 
-        if (!this.isFailedConfigured) {
+        if (this.isFailedConfigured) {
+            this.failedBot = new Telegraf(this.failedBotToken as string);
+            logger.success('[Telegram] Failed orders bot configured');
+        } else {
             logger.warn('[Telegram] Failed orders bot not configured — failed alerts will go to main bot');
         }
     }
@@ -65,6 +69,21 @@ class TelegramService {
             await this.mainBot.telegram.sendMessage(this.adminChatId, message, { parse_mode: 'HTML' });
         } catch (error) {
             logger.error('[Telegram] Failed to send to main bot:', error);
+        }
+    }
+
+    private async sendToFailed(message: string): Promise<boolean> {
+        if (!this.isFailedConfigured || !this.failedBot || !this.failedChatId) {
+            logger.debug('[Telegram] Failed bot skipped (not configured)');
+            return false;
+        }
+
+        try {
+            await this.failedBot.telegram.sendMessage(this.failedChatId, message, { parse_mode: 'HTML' });
+            return true;
+        } catch (error) {
+            logger.error('[Telegram] Failed to send to failed bot:', error);
+            return false;
         }
     }
 
@@ -155,11 +174,13 @@ class TelegramService {
         smmOrderId?: string;
         error: string;
         apiKey?: string;
+        provider?: string;
     }): Promise<void> {
         const platform = getPlatformNameFromUrl(params.link);
         const message =
             `🚨 <b>MANUAL ORDER REQUIRED</b>\n` +
             `💳 Payment received — SMM failed!\n\n` +
+            (params.provider ? `🔧 <b>Provider:</b> ${params.provider}\n` : '') +
             `🌐 <b>Platform:</b> ${platform}\n` +
             `🆔 <b>Order ID:</b> <code>${params.orderId}</code>\n` +
             `📦 <b>Service ID:</b> ${params.serviceId}\n` +
@@ -173,20 +194,14 @@ class TelegramService {
             `🕐 <b>Time:</b> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}\n\n` +
             `⚡ <b>Reply "y" to this message to approve manually.</b>`;
 
-        if (this.isFailedConfigured && this.failedBotToken && this.failedChatId) {
-            // Send via the failed bot's token so the listener in telegram-bot-backend can track replies
-            try {
-                const failedBot = new Telegraf(this.failedBotToken);
-                await failedBot.telegram.sendMessage(this.failedChatId, message, { parse_mode: 'HTML' });
-                logger.info(`[Telegram] Failed order alert sent for ${params.orderId}`);
-            } catch (error) {
-                logger.error('[Telegram] Failed to send alert, falling back to main bot:', error);
-                await this.sendToMain(message);
-            }
-        } else {
-            // Fallback to main bot
-            await this.sendToMain(message);
+        const sentToFailed = await this.sendToFailed(message);
+        if (sentToFailed) {
+            logger.info(`[Telegram] Failed order alert sent via failed bot for order ${params.orderId}`);
+            return;
         }
+
+        logger.warn(`[Telegram] Failed bot unavailable; sending failed order alert to main bot for order ${params.orderId}`);
+        await this.sendToMain(message);
     }
 
     /**
