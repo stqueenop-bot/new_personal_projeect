@@ -40,6 +40,11 @@ const envSchema = z.object({
         message: 'ENABLE_TELEGRAM must be true or false',
     }).transform((v) => v.toLowerCase() === 'true'),
 
+    // Payment timeout in minutes for pending payments
+    PAYMENT_TIMEOUT_MINUTES: z.string().default('5').refine((v) => /^[0-9]+$/.test(v) && Number(v) > 0, {
+        message: 'PAYMENT_TIMEOUT_MINUTES must be a positive integer',
+    }).transform((v) => Number(v)),
+
     // Bot worker
     ENABLE_BOT_WORKER: z.string().default('false').refine((v) => ['true', 'false'].includes(v.toLowerCase()), {
         message: 'ENABLE_BOT_WORKER must be true or false',

@@ -12,11 +12,44 @@ import { logger } from '../utils/logger';
 import { env } from '../config/env';
 import { ApiResponse } from '../types';
 import { getPlatformNameFromUrl } from '../utils/platform.util';
-// In-memory cache to rate-limit ZapUPI status checks (max once per 30s per order)
-const zapupiCheckCache = new Map<string, number>();
-
 import { getProviderForService, getCategoryForId, getServiceNameForId } from '../utils/smm.mapper';
 import { validateLinkForService, ServiceCategory } from '../services/instagram.validator';
+
+const zapupiCheckCache = new Map<string, number>();
+
+const PAYMENT_TIMEOUT_MS = env.PAYMENT_TIMEOUT_MINUTES * 60 * 1000;
+
+async function expireStalePaymentsForOrder(orderId: string): Promise<void> {
+    const payment = await prisma.payment.findUnique({
+        where: { orderId },
+        include: { order: true },
+    });
+    if (!payment || payment.status !== 'PENDING') return;
+
+    const elapsed = Date.now() - new Date(payment.createdAt).getTime();
+    if (elapsed < PAYMENT_TIMEOUT_MS) return;
+
+    await prisma.payment.update({
+        where: { id: payment.id },
+        data: { status: 'EXPIRED', failureReason: 'Payment timeout exceeded' },
+    });
+    await prisma.order.update({
+        where: { id: orderId },
+        data: { status: 'FAILED' },
+    });
+
+    try {
+        await rabbitMQService.publishToQueue(QUEUES.PAYMENT_FAILED, {
+            orderId,
+            paymentId: payment.id,
+            amount: payment.amount,
+            reason: 'Payment timed out',
+            timestamp: new Date().toISOString(),
+        });
+    } catch (err) {
+        logger.error('[OrderController] Failed to publish PAYMENT_FAILED for expired payment in order retrieval:', err);
+    }
+}
 
 // ===================== Validation Schemas =====================
 
@@ -211,11 +244,34 @@ export async function getOrder(req: Request, res: Response, next: NextFunction):
             return next(createError('Order not found', 404));
         }
 
-        // AUTO-SYNC: If payment is PENDING, check ZapUPI (rate-limited: once per 30s per order)
+        // AUTO-SYNC: If payment is PENDING, check ZapUPI
         if (order.payment && order.payment.status === 'PENDING') {
-            const PAYMENT_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes
+            const timeoutMs = env.PAYMENT_TIMEOUT_MINUTES * 60 * 1000;
             const paymentAge = Date.now() - new Date(order.payment.createdAt).getTime();
 
+            // 1. Check for Expiry FIRST (Always, no cache bottleneck)
+            if (paymentAge > timeoutMs) {
+                logger.info(`[OrderController] Payment expired (${Math.round(paymentAge / 1000)}s old) for order ${id}, auto-failing`);
+
+                await prisma.payment.update({
+                    where: { id: order.payment.id },
+                    data: { status: 'FAILED', failureReason: `Payment expired (${env.PAYMENT_TIMEOUT_MINUTES} min timeout)` },
+                });
+
+                await prisma.order.update({
+                    where: { id },
+                    data: { status: 'FAILED' },
+                });
+
+                const updated = await prisma.order.findUnique({
+                    where: { id },
+                    include: { payment: true, smmOrder: true, user: true },
+                });
+                res.json({ success: true, message: 'Payment expired', data: updated });
+                return;
+            }
+
+            // 2. Poll ZapUPI for Live Status (Rate-limited to 30s)
             const cacheKey = `zapupi-check-${id}`;
             const lastCheck = zapupiCheckCache.get(cacheKey);
             const now = Date.now();
@@ -246,7 +302,6 @@ export async function getOrder(req: Request, res: Response, next: NextFunction):
                                 data: { status: 'PROCESSING' },
                             });
 
-                            // Publish to RabbitMQ — worker handles SMM order placement (async)
                             try {
                                 await rabbitMQService.publishToQueue(QUEUES.PAYMENT_SUCCESS, {
                                     orderId: id,
@@ -263,7 +318,6 @@ export async function getOrder(req: Request, res: Response, next: NextFunction):
                                 logger.error('[OrderController] RabbitMQ publish failed:', mqErr);
                             }
 
-                            // Remove from cache since payment is no longer PENDING
                             zapupiCheckCache.delete(cacheKey);
 
                             const updated = await prisma.order.findUnique({
@@ -295,30 +349,6 @@ export async function getOrder(req: Request, res: Response, next: NextFunction):
                             res.json({ success: true, message: 'Order retrieved (payment failed)', data: updated });
                             return;
                         }
-                        // If ZapUPI status is still 'pending', check if payment has expired (>5 min)
-                        if (paymentAge > PAYMENT_EXPIRY_MS) {
-                            logger.info(`[OrderController] Payment expired (${Math.round(paymentAge / 1000)}s old) for order ${id}, auto-failing`);
-
-                            await prisma.payment.update({
-                                where: { id: order.payment.id },
-                                data: { status: 'FAILED', failureReason: 'Payment expired (5 min timeout)' },
-                            });
-
-                            await prisma.order.update({
-                                where: { id },
-                                data: { status: 'FAILED' },
-                            });
-
-                            zapupiCheckCache.delete(cacheKey);
-
-                            const updated = await prisma.order.findUnique({
-                                where: { id },
-                                include: { payment: true, smmOrder: true, user: true },
-                            });
-                            res.json({ success: true, message: 'Payment expired', data: updated });
-                            return;
-                        }
-                        // Otherwise still pending within timeout, fall through
                     }
                 } catch (syncErr) {
                     logger.warn(`[OrderController] ZapUPI status check failed for order ${id}:`, syncErr);

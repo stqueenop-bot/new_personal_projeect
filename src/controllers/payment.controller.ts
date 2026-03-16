@@ -7,8 +7,7 @@ import { rabbitMQService, QUEUES } from '../services/rabbitmq.service';
 import { createError } from '../middleware/errorHandler';
 import { logger } from '../utils/logger.js';
 import { PaymentSuccessMessage, PaymentFailedMessage, ApiResponse } from '../types';
-import { prisma } from '../../lib/initiatePrisma';
-
+import { prisma } from '../../lib/initiatePrisma';import { env } from '../config/env';
 // ===================== Validation Schemas =====================
 
 export const createPaymentSchema = z.object({
@@ -194,6 +193,12 @@ export async function handleWebhook(req: Request, res: Response, next: NextFunct
                 data: { status: PaymentStatus.SUCCESS, utr: utr ?? '', zapupiTxnId: txn_id },
             });
 
+            // Ensure order moves to PROCESSING after verified payment success
+            await prisma.order.update({
+                where: { id: payment.orderId },
+                data: { status: OrderStatus.PROCESSING },
+            });
+
             const message: PaymentSuccessMessage = {
                 orderId: payment.orderId,
                 paymentId: payment.id,
@@ -214,6 +219,11 @@ export async function handleWebhook(req: Request, res: Response, next: NextFunct
             await prisma.payment.update({
                 where: { id: payment.id },
                 data: { status: PaymentStatus.FAILED, failureReason },
+            });
+
+            await prisma.order.update({
+                where: { id: payment.orderId },
+                data: { status: OrderStatus.FAILED },
             });
 
             const message: PaymentFailedMessage = {
@@ -239,8 +249,53 @@ export async function handleWebhook(req: Request, res: Response, next: NextFunct
  * GET /api/payments/status/:orderId
  * Check live payment status from ZapUPI API.
  */
+async function expireStalePayments(): Promise<void> {
+    const timeoutMs = env.PAYMENT_TIMEOUT_MINUTES * 60 * 1000;
+    const cutoff = new Date(Date.now() - timeoutMs);
+
+    const stalePendingPayments = await prisma.payment.findMany({
+        where: {
+            status: 'PENDING',
+            createdAt: { lt: cutoff },
+        },
+        include: { order: true },
+    });
+
+    for (const payment of stalePendingPayments) {
+        logger.warn(`[PaymentController] Expiring stale payment ${payment.id} for order ${payment.orderId}`);
+
+        await prisma.payment.update({
+            where: { id: payment.id },
+            data: {
+                status: 'EXPIRED',
+                failureReason: 'Payment timeout exceeded',
+            },
+        });
+
+        if (payment.order && ['PENDING', 'PROCESSING'].includes(payment.order.status)) {
+            await prisma.order.update({
+                where: { id: payment.orderId },
+                data: { status: 'FAILED' },
+            });
+            try {
+                await rabbitMQService.publishToQueue(QUEUES.PAYMENT_FAILED, {
+                    orderId: payment.orderId,
+                    paymentId: payment.id,
+                    amount: payment.amount,
+                    reason: 'Payment timed out',
+                    timestamp: new Date().toISOString(),
+                });
+            } catch (mqErr) {
+                logger.error('[PaymentController] Failed to publish PAYMENT_FAILED for expired payment:', mqErr);
+            }
+        }
+    }
+}
+
 export async function getPaymentStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+        await expireStalePayments();
+
         const orderId = String(req.params.orderId);
 
         const payment = await prisma.payment.findFirst({

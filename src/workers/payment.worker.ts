@@ -104,7 +104,7 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
         // Payment was successful, so we will fix the link/order manually.
         await prisma.order.update({
             where: { id: data.orderId },
-            data: { status: OrderStatus.COMPLETED },
+            data: { status: OrderStatus.FAILED },
         });
 
         sseService.broadcastStatus(data.orderId, OrderStatus.COMPLETED);
@@ -207,7 +207,7 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
 
         await prisma.order.update({
             where: { id: data.orderId },
-            data: { status: OrderStatus.COMPLETED },
+            data: { status: OrderStatus.FAILED },
         });
 
         sseService.broadcastStatus(data.orderId, OrderStatus.COMPLETED);
