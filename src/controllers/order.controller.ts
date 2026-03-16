@@ -263,6 +263,21 @@ export async function getOrder(req: Request, res: Response, next: NextFunction):
                     data: { status: 'FAILED' },
                 });
 
+                // Notify Bot via RabbitMQ
+                try {
+                    await rabbitMQService.publishToQueue(QUEUES.PAYMENT_FAILED, {
+                        orderId: id,
+                        paymentId: order.payment.id,
+                        amount: order.payment.amount,
+                        reason: `Payment expired (${env.PAYMENT_TIMEOUT_MINUTES} min timeout)`,
+                        customerMobile: order.payment.customerMobile || undefined,
+                        timestamp: new Date().toISOString(),
+                    });
+                    logger.info(`[OrderController] Published PAYMENT_FAILED for expired order ${id}`);
+                } catch (mqErr) {
+                    logger.error('[OrderController] RabbitMQ publish failed for expired order:', mqErr);
+                }
+
                 const updated = await prisma.order.findUnique({
                     where: { id },
                     include: { payment: true, smmOrder: true, user: true },

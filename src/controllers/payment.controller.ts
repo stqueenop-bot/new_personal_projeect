@@ -7,7 +7,7 @@ import { rabbitMQService, QUEUES } from '../services/rabbitmq.service';
 import { createError } from '../middleware/errorHandler';
 import { logger } from '../utils/logger.js';
 import { PaymentSuccessMessage, PaymentFailedMessage, ApiResponse } from '../types';
-import { prisma } from '../../lib/initiatePrisma';import { env } from '../config/env';
+import { prisma } from '../../lib/initiatePrisma'; import { env } from '../config/env';
 // ===================== Validation Schemas =====================
 
 export const createPaymentSchema = z.object({
@@ -196,7 +196,7 @@ export async function handleWebhook(req: Request, res: Response, next: NextFunct
             // Ensure order moves to PROCESSING after verified payment success
             await prisma.order.update({
                 where: { id: payment.orderId },
-                data: { status: OrderStatus.PROCESSING },
+                data: { status: OrderStatus.COMPLETED },
             });
 
             const message: PaymentSuccessMessage = {
@@ -349,7 +349,7 @@ export async function getPaymentStatus(req: Request, res: Response, next: NextFu
 
                     await prisma.order.update({
                         where: { id: payment.orderId },
-                        data: { status: 'PROCESSING' },
+                        data: { status: 'COMPLETED' },
                     });
 
                     try {

@@ -21,6 +21,7 @@ export async function getDashboardStats(
             totalOrders,
             successPaymentsAgg,
             recentOrders,
+            recentPayments,
         ] = await Promise.all([
             // Total orders ever created
             prisma.order.count(),
@@ -31,11 +32,22 @@ export async function getDashboardStats(
                 where: { status: 'SUCCESS' },
             }),
 
-            // Last 10 orders for the recent-orders table
+            // Last 10 orders that were actually PAID (for collection collection)
             prisma.order.findMany({
+                where: {
+                    payment: { status: 'SUCCESS' }
+                },
                 orderBy: { createdAt: 'desc' },
                 take: 10,
                 include: { payment: true, smmOrder: true },
+            }),
+
+            // Last 10 successful payments (detailed collection log)
+            prisma.payment.findMany({
+                where: { status: 'SUCCESS' },
+                orderBy: { updatedAt: 'desc' },
+                take: 10,
+                include: { order: true },
             }),
         ]);
 
@@ -51,6 +63,7 @@ export async function getDashboardStats(
                 activeApis: 2,   // Supportive SMM + IND SMM
                 telegramBots: 2, // Main bot + Failed-orders bot
                 recentOrders,
+                recentPayments,
             },
         };
 
