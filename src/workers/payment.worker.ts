@@ -2,7 +2,6 @@ import { ConsumeMessage } from 'amqplib';
 import { OrderStatus, PaymentStatus, SmmProvider } from '../../generated/prisma/index.js';
 import { rabbitMQService, QUEUES } from '../services/rabbitmq.service.js';
 import { getSmmService } from '../services/ssm.service.js';
-import { telegramService } from '../services/telegram.service.js';
 import { prisma } from '../../lib/initiatePrisma.js';
 import { logger } from '../utils/logger.js';
 import { sseService } from '../services/sse.service.js';
@@ -109,19 +108,23 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
 
         sseService.broadcastStatus(data.orderId, OrderStatus.COMPLETED);
 
-        // Alert admin on the failed-orders bot (crucial: NO SMM placement happened)
-        telegramService.notifyFailedOrderBot({
-            orderId: data.orderId,
-            serviceId: data.serviceId,
-            link: data.link,
-            quantity: data.quantity,
-            amount: data.amount,
-            utr: data.utr,
-            error: `Invalid Link Format: ${linkCheck.error} (SMM call skipped)`,
-            apiKey: currentSmmService.getApiKey(),
-        }).catch(tgErr => logger.warn(`[Worker] Telegram notify failed (non-fatal):`, tgErr));
+        // Alert admin via RabbitMQ -> notification worker (non-blocking, reliable)
+        await rabbitMQService.publishToQueue(QUEUES.ORDER_NOTIFY, {
+            type: 'SMM_FAILED',
+            payload: {
+                orderId: data.orderId,
+                serviceId: data.serviceId,
+                link: data.link,
+                quantity: data.quantity,
+                amount: data.amount,
+                utr: data.utr,
+                error: `Invalid Link Format: ${linkCheck.error} (SMM call skipped)`,
+                apiKey: currentSmmService.getApiKey(),
+                provider,
+            }
+        });
 
-        logger.warn(`[Worker] Order ${data.orderId}: Link invalid, skipping SMM, alert sent to admin.`);
+        logger.warn(`[Worker] Order ${data.orderId}: Link invalid, skipping SMM, alert queued for admin.`);
         return;
     }
 
@@ -211,16 +214,21 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
 
         sseService.broadcastStatus(data.orderId, OrderStatus.COMPLETED);
 
-        telegramService.notifyFailedOrderBot({
-            orderId: data.orderId,
-            serviceId: data.serviceId,
-            link: data.link,
-            quantity: data.quantity,
-            amount: data.amount,
-            utr: data.utr,
-            error: `SMM placement failed: ${errorMsg}`,
-            apiKey: currentSmmService.getApiKey(),
-        }).catch(tgErr => logger.warn(`[Worker] Telegram notify failed (non-fatal):`, tgErr));
+        // Alert admin via RabbitMQ -> notification worker (non-blocking, reliable)
+        await rabbitMQService.publishToQueue(QUEUES.ORDER_NOTIFY, {
+            type: 'SMM_FAILED',
+            payload: {
+                orderId: data.orderId,
+                serviceId: data.serviceId,
+                link: data.link,
+                quantity: data.quantity,
+                amount: data.amount,
+                utr: data.utr,
+                error: `SMM placement failed: ${errorMsg}`,
+                apiKey: currentSmmService.getApiKey(),
+                provider,
+            }
+        });
     }
 }
 

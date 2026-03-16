@@ -16,11 +16,10 @@ import { prisma } from '../../lib/initiatePrisma';
  */
 class TelegramService {
     private mainBot: Telegraf | null = null;
+    private failedBot: Telegraf | null = null;
     private adminChatId: string;
-    private isMainConfigured: boolean;
-
-    private failedBotToken: string | null = null;
     private failedChatId: string | null = null;
+    private isMainConfigured: boolean;
     private isFailedConfigured: boolean;
 
     constructor() {
@@ -38,17 +37,20 @@ class TelegramService {
             logger.warn('[Telegram] Main bot not configured — success notifications will be skipped');
         }
 
-        // Failed orders bot — only need the token to SEND messages (not to listen)
-        this.failedBotToken = env.TELEGRAM_FAILED_BOT_TOKEN ?? null;
+        // Failed orders bot — create ONCE, reuse for every notification (singleton)
+        const failedBotToken = env.TELEGRAM_FAILED_BOT_TOKEN ?? null;
         this.failedChatId = env.TELEGRAM_FAILED_CHAT_ID ?? null;
         this.isFailedConfigured = !!(
-            this.failedBotToken &&
-            !this.failedBotToken.includes('your_') &&
+            failedBotToken &&
+            !failedBotToken.includes('your_') &&
             this.failedChatId &&
             !this.failedChatId.includes('your_')
         );
 
-        if (!this.isFailedConfigured) {
+        if (this.isFailedConfigured) {
+            this.failedBot = new Telegraf(failedBotToken as string);
+            logger.info('[Telegram] Failed orders bot initialized (singleton)');
+        } else {
             logger.warn('[Telegram] Failed orders bot not configured — failed alerts will go to main bot');
         }
     }
@@ -174,11 +176,10 @@ class TelegramService {
             `🕐 <b>Time:</b> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}\n\n` +
             `⚡ <b>Reply "y" to this message to approve manually.</b>`;
 
-        if (this.isFailedConfigured && this.failedBotToken && this.failedChatId) {
-            // Send via the failed bot's token so the listener in telegram-bot-backend can track replies
+        if (this.isFailedConfigured && this.failedBot && this.failedChatId) {
+            // Send via the singleton failed bot instance (reused connection)
             try {
-                const failedBot = new Telegraf(this.failedBotToken);
-                const sentMsg = await failedBot.telegram.sendMessage(this.failedChatId, message, { parse_mode: 'HTML' });
+                const sentMsg = await this.failedBot.telegram.sendMessage(this.failedChatId, message, { parse_mode: 'HTML' });
                 
                 // Persist the messageId -> orderId mapping so the bot backend can find it
                 try {
@@ -195,7 +196,7 @@ class TelegramService {
 
                 logger.info(`[Telegram] Failed order alert sent for ${params.orderId}`);
             } catch (error) {
-                logger.error('[Telegram] Failed to send alert, falling back to main bot:', error);
+                logger.error('[Telegram] Failed to send alert via failed bot, falling back to main bot:', error);
                 await this.sendToMain(message);
             }
         } else {
