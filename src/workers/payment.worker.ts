@@ -119,7 +119,6 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
                 amount: data.amount,
                 utr: data.utr,
                 error: `Invalid Link Format: ${linkCheck.error} (SMM call skipped)`,
-                apiKey: currentSmmService.getApiKey(),
                 provider,
             }
         });
@@ -225,7 +224,6 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
                 amount: data.amount,
                 utr: data.utr,
                 error: `SMM placement failed: ${errorMsg}`,
-                apiKey: currentSmmService.getApiKey(),
                 provider,
             }
         });

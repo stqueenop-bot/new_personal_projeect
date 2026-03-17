@@ -20,10 +20,6 @@ class SmmService_Class {
         private readonly panelName: string
     ) { }
 
-    getApiKey(): string {
-        return this.apiKey;
-    }
-
     /**
      * Generic helper to post to the SSM panel API.
      */

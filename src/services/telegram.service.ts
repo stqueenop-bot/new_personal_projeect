@@ -179,7 +179,6 @@ class TelegramService {
         utr?: string;
         smmOrderId?: string;
         error: string;
-        apiKey?: string;
     }): Promise<void> {
         if (!this.isEnabled) {
             logger.debug(`[Telegram] notifySmmOrderFailed skipped because ENABLE_TELEGRAM=false`);
@@ -201,7 +200,6 @@ class TelegramService {
         utr?: string;
         smmOrderId?: string;
         error: string;
-        apiKey?: string;
         provider?: string;
     }): Promise<void> {
         if (!this.isEnabled) {
@@ -223,7 +221,6 @@ class TelegramService {
             (params.utr ? `🏦 <b>UTR:</b> <code>${params.utr}</code>\n` : '') +
             (params.smmOrderId ? `🎯 <b>SMM Response:</b> ${params.smmOrderId}\n` : '') +
             `❌ <b>Error:</b> ${params.error}\n` +
-            (params.apiKey ? `🔑 <b>SMM API Key:</b> <code>${params.apiKey}</code>\n` : '') +
             `🕐 <b>Time:</b> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}\n\n` +
             `⚡ <b>Reply "y" to this message to approve manually.</b>`;
 
