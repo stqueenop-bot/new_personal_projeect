@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
-import { OrderStatus, PaymentStatus } from '../../generated/prisma/index.js';
+import { OrderStatus, PaymentStatus } from '../../generated/prisma/index';
 import { prisma } from '../../lib/initiatePrisma';
 import { zapUPIService } from '../services/zapupi.service';
 import { smmService } from '../services/ssm.service';
@@ -314,7 +314,7 @@ export async function getOrder(req: Request, res: Response, next: NextFunction):
 
                             await prisma.order.update({
                                 where: { id },
-                                data: { status: 'PROCESSING' },
+                                data: { status: OrderStatus.PROCESSING },
                             });
 
                             try {

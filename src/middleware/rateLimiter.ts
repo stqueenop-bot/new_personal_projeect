@@ -18,10 +18,10 @@ export const globalRateLimiter = rateLimit({
 });
 
 // ─── API Rate Limiter ─────────────────────────────────────────────────────────
-// Tighter limit for general API endpoints: 60 req / IP / minute
+// Tighter limit for general API endpoints: 100 req / IP / minute
 export const apiRateLimiter = rateLimit({
     windowMs: 1 * 60 * 1000,
-    max: 60,
+    max: 100,
     standardHeaders: 'draft-7',
     legacyHeaders: false,
     message: {
@@ -31,10 +31,10 @@ export const apiRateLimiter = rateLimit({
 });
 
 // ─── Order / Payment Rate Limiter ─────────────────────────────────────────────
-// Aggressive: 20 order/payment submissions per IP per 10 minutes
+// Aggressive: 100 order/payment submissions per IP per 5 minutes
 export const sensitiveRateLimiter = rateLimit({
-    windowMs: 10 * 60 * 1000,          // 10 minute window
-    max: 20,
+    windowMs: 5 * 60 * 1000,          // 5 minute window
+    max: 100,
     standardHeaders: 'draft-7',
     legacyHeaders: false,
     message: {

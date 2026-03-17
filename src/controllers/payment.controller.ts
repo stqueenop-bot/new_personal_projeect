@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
-import { OrderStatus, PaymentStatus } from '../../generated/prisma/index.js';
+import { OrderStatus, PaymentStatus } from '../../generated/prisma/index';
 import { zapUPIService } from '../services/zapupi.service';
 import { rabbitMQService, QUEUES } from '../services/rabbitmq.service';
 import { createError } from '../middleware/errorHandler';
-import { logger } from '../utils/logger.js';
+import { logger } from '../utils/logger';
 import { PaymentSuccessMessage, PaymentFailedMessage, ApiResponse } from '../types';
 import { prisma } from '../../lib/initiatePrisma'; import { env } from '../config/env';
 // ===================== Validation Schemas =====================
@@ -196,7 +196,7 @@ export async function handleWebhook(req: Request, res: Response, next: NextFunct
             // Ensure order moves to PROCESSING after verified payment success
             await prisma.order.update({
                 where: { id: payment.orderId },
-                data: { status: OrderStatus.COMPLETED },
+                data: { status: OrderStatus.PROCESSING },
             });
 
             const message: PaymentSuccessMessage = {
@@ -349,7 +349,7 @@ export async function getPaymentStatus(req: Request, res: Response, next: NextFu
 
                     await prisma.order.update({
                         where: { id: payment.orderId },
-                        data: { status: 'COMPLETED' },
+                        data: { status: 'PROCESSING' },
                     });
 
                     try {

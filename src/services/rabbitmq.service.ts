@@ -13,6 +13,12 @@ type ConsumeMessage = amqplib.ConsumeMessage;
 
 export type { ConsumeMessage };
 
+interface Consumer {
+    queue: string;
+    handler: (message: ConsumeMessage) => Promise<void>;
+    prefetchCount: number;
+}
+
 /**
  * RabbitMQ Service
  * Manages connection, publishing, and consuming messages.
@@ -21,10 +27,10 @@ class RabbitMQService {
     private connection: AmqpConnection | null = null;
     private channel: Channel | null = null;
     private reconnecting = false;
+    private consumers: Consumer[] = [];
 
     async connect(): Promise<void> {
         try {
-            logger.info('[RabbitMQ] Connecting to:', env.RABBITMQ_URL);
             this.connection = await amqplib.connect(env.RABBITMQ_URL);
             this.channel = await this.connection.createChannel();
 
@@ -35,6 +41,14 @@ class RabbitMQService {
 
             this.reconnecting = false;
             logger.success('[RabbitMQ] Connected and queues asserted');
+
+            // Re-register consumers if any
+            if (this.consumers.length > 0) {
+                logger.info(`[RabbitMQ] Re-registering ${this.consumers.length} consumers...`);
+                for (const consumer of this.consumers) {
+                    await this.setupConsumer(consumer);
+                }
+            }
 
             // Handle connection errors and close events
             (this.connection as unknown as NodeJS.EventEmitter).on('error', (err: Error) => {
@@ -101,22 +115,30 @@ class RabbitMQService {
         handler: (message: ConsumeMessage) => Promise<void>,
         prefetchCount = 1
     ): Promise<void> {
-        if (!this.channel) {
-            throw new Error('RabbitMQ channel is not initialized');
+        const consumer: Consumer = { queue, handler, prefetchCount };
+        this.consumers.push(consumer);
+
+        if (this.channel) {
+            await this.setupConsumer(consumer);
         }
+    }
 
-        const channel = this.channel;
-        channel.prefetch(prefetchCount);
+    private async setupConsumer(consumer: Consumer): Promise<void> {
+        if (!this.channel) return;
 
-        await channel.consume(queue, async (msg) => {
+        const { queue, handler, prefetchCount } = consumer;
+        await this.channel.prefetch(prefetchCount);
+
+        await this.channel.consume(queue, async (msg) => {
             if (!msg) return;
 
             try {
                 await handler(msg);
-                channel.ack(msg);
+                this.channel?.ack(msg);
             } catch (error) {
                 logger.error(`[RabbitMQ] Error processing message from "${queue}":`, error);
-                channel.nack(msg, false, false);
+                // nack without requeue to avoid infinite loops on bad messages
+                this.channel?.nack(msg, false, false);
             }
         });
 

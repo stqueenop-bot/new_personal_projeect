@@ -11,7 +11,7 @@ import { logger } from './utils/logger';
 const PORT = parseInt(env.PORT, 10);
 
 async function main() {
-   
+
     // 1. Start Express server IMMEDIATELLY to satisfy health checks
     const server = app.listen(PORT, '0.0.0.0', () => {
         logger.success(`✅ Server running at http://0.0.0.0:${PORT}`);
@@ -20,10 +20,6 @@ async function main() {
         logger.info(`   GET  http://localhost:${PORT}/health              ← Health check`);
     });
 
-    const maskEnv = (val?: string) => (val ? `${val.slice(0, 4)}...${val.slice(-4)}` : 'not set');
-    logger.info(`[Startup] TELEGRAM_BOT_TOKEN=${maskEnv(env.TELEGRAM_BOT_TOKEN)}, TELEGRAM_ADMIN_CHAT_ID=${env.TELEGRAM_ADMIN_CHAT_ID}`);
-    logger.info(`[Startup] TELEGRAM_FAILED_BOT_TOKEN=${maskEnv(env.TELEGRAM_FAILED_BOT_TOKEN)}, TELEGRAM_FAILED_CHAT_ID=${env.TELEGRAM_FAILED_CHAT_ID}`);
-    logger.info(`[Startup] ENABLE_TELEGRAM=${env.ENABLE_TELEGRAM}, ENABLE_BOT_WORKER=${env.ENABLE_BOT_WORKER}`);
 
     if (!env.ENABLE_TELEGRAM) {
         logger.warn('[Startup] Telegram notifications are disabled by ENABLE_TELEGRAM=false. Success/failure alerts will be skipped.');
