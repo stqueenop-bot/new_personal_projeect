@@ -6,6 +6,8 @@ import { ApiResponse } from '../types';
 import { OrderStatus, PaymentStatus } from '../../generated/prisma/index';
 import { rabbitMQService, QUEUES } from '../services/rabbitmq.service';
 import { getProviderForService, getCategoryForId, getServiceNameForId } from '../utils/smm.mapper';
+import { sseService } from '../services/sse.service';
+import { telegramService } from '../services/telegram.service';
 
 /**
  * GET /api/internal/reports/collection
@@ -480,31 +482,64 @@ export async function removeFailedOrderMessage(req: Request, res: Response, next
 export async function approveOrderManual(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         const id = String(req.params.id);
-        const order = await prisma.order.findUnique({ where: { id } });
+        const order = await prisma.order.findUnique({ 
+            where: { id },
+            include: { smmOrder: true }
+        });
 
         if (!order) {
             res.status(404).json({ success: false, message: 'Order not found' });
             return;
         }
 
-        // Update main order
+        // 1. Mark the main order as COMPLETED
         await prisma.order.update({
             where: { id },
-            data: { status: OrderStatus.PROCESSING },
+            data: { status: OrderStatus.COMPLETED },
         });
 
-        // Trigger SMM placement
-        await rabbitMQService.publishToQueue(QUEUES.PAYMENT_SUCCESS, {
-            orderId: order.id,
+        // 2. Upsert SmmOrder record to indicate manual success
+        if (order.smmOrder) {
+            await prisma.smmOrder.update({
+                where: { id: order.smmOrder.id },
+                data: {
+                    smmOrderId: order.smmOrder.smmOrderId || 'MANUAL',
+                    status: OrderStatus.COMPLETED,
+                    errorMsg: 'Manually marked success via Bot',
+                    updatedAt: new Date(),
+                },
+            });
+        } else {
+            await prisma.smmOrder.create({
+                data: {
+                    orderId: id,
+                    smmOrderId: 'MANUAL',
+                    serviceId: order.serviceId,
+                    link: order.link,
+                    quantity: order.quantity,
+                    provider: order.provider,
+                    status: OrderStatus.COMPLETED,
+                    errorMsg: 'Manually marked success via Bot',
+                },
+            });
+        }
+
+        // 3. Broadcast status to UI
+        sseService.broadcastStatus(id, OrderStatus.COMPLETED);
+
+        // 4. Notify admin via Telegram (Centralized)
+        await telegramService.notifyOrderSuccess({
+            orderId: id,
             serviceId: order.serviceId,
+            serviceName: order.serviceName ?? undefined,
             link: order.link,
             quantity: order.quantity,
             amount: order.amount,
             utr: 'MANUAL_APPROVAL',
-            timestamp: new Date().toISOString(),
+            apiStatus: 'Manually Approved',
         });
 
-        res.json({ success: true, message: 'Order approved and queued' });
+        res.json({ success: true, message: 'Order manually marked as COMPLETED' });
     } catch (error) {
         next(error);
     }
