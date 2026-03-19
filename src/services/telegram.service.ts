@@ -112,31 +112,35 @@ class TelegramService {
     async notifyOrderSuccess(params: {
         orderId: string;
         serviceId: number;
+        serviceName?: string;
         link: string;
         quantity: number;
         amount: number;
         utr: string;
         smmOrderId?: string | number;
         customerMobile?: string;
+        apiStatus?: string;
     }): Promise<void> {
         if (!this.isEnabled) {
             logger.debug(`[Telegram] notifyOrderSuccess skipped because ENABLE_TELEGRAM=false`);
             return;
         }
-        const serviceName = getServiceNameForId(params.serviceId);
+        
+        const serviceName = params.serviceName || getServiceNameForId(params.serviceId);
         const platform = getPlatformNameFromUrl(params.link);
+        const isClickableLink = params.link.startsWith('http://') || params.link.startsWith('https://');
+        const formattedLink = isClickableLink ? params.link : `<code>${params.link}</code>`;
+        const apiStatus = params.apiStatus || (params.smmOrderId ? 'Successfully Placed' : 'Order Not Placed');
+
         const message =
-            `✅ <b>ORDER PLACED SUCCESSFULLY</b>\n\n` +
-            `🌐 <b>Platform:</b> ${platform}\n` +
-            `🆔 <b>Order ID:</b> <code>${params.orderId}</code>\n` +
-            `📦 <b>Service:</b> ${serviceName ? `${serviceName} (${params.serviceId})` : params.serviceId}\n` +
-            `🔗 <b>Link:</b> <code>${params.link}</code>\n` +
-            `📊 <b>Quantity:</b> ${params.quantity}\n` +
-            `💰 <b>Amount:</b> ₹${params.amount}\n` +
-            `🏦 <b>UTR:</b> <code>${params.utr}</code>\n` +
-            (params.smmOrderId ? `🎯 <b>SMM Order ID:</b> ${params.smmOrderId}\n` : '') +
-            (params.customerMobile ? `📱 <b>Customer Mobile:</b> ${params.customerMobile}\n` : '') +
-            `🕐 <b>Time:</b> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`;
+            `New Order Received\n\n` +
+            `Order ID: <code>${params.orderId}</code>\n` +
+            `Quality : ${params.quantity}\n` +
+            `Link : ${formattedLink}\n` +
+            `Amount : ₹${params.amount}\n` +
+            `Service: ${serviceName || params.serviceId}\n` +
+            `Created AT Today, (${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })})\n\n` +
+            `API Status: ${apiStatus}`;
 
         await this.sendToMain(message);
     }
@@ -155,15 +159,23 @@ class TelegramService {
             logger.debug(`[Telegram] notifyPaymentFailed skipped because ENABLE_TELEGRAM=false`);
             return;
         }
+
+        // If it's a timeout/expiry, route to failed bot instead of main bot
+        const isExpiry = params.reason.toLowerCase().includes('timeout') || params.reason.toLowerCase().includes('expire');
+        
         const message =
             `❌ <b>PAYMENT FAILED</b>\n\n` +
             `🆔 <b>Order ID:</b> <code>${params.orderId}</code>\n` +
             `💰 <b>Amount:</b> ₹${params.amount}\n` +
             `⚠️ <b>Reason:</b> ${params.reason}\n` +
             (params.customerMobile ? `📱 <b>Customer Mobile:</b> ${params.customerMobile}\n` : '') +
-            `🕐 <b>Time:</b> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`;
+            `🕐 <b>Time:</b> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
 
-        await this.sendToMain(message);
+        if (isExpiry) {
+            await this.sendToFailed(message);
+        } else {
+            await this.sendToMain(message);
+        }
     }
 
     /**
@@ -194,6 +206,7 @@ class TelegramService {
     async notifyFailedOrderBot(params: {
         orderId: string;
         serviceId: number;
+        serviceName?: string;
         link: string;
         quantity: number;
         amount: number;
@@ -201,28 +214,30 @@ class TelegramService {
         smmOrderId?: string;
         error: string;
         provider?: string;
+        apiStatus?: string;
     }): Promise<void> {
         if (!this.isEnabled) {
             logger.debug(`[Telegram] notifyFailedOrderBot skipped because ENABLE_TELEGRAM=false`);
             return;
         }
-        const serviceName = getServiceNameForId(params.serviceId);
+        
+        const serviceName = params.serviceName || getServiceNameForId(params.serviceId);
         const platform = getPlatformNameFromUrl(params.link);
+        const isClickableLink = params.link.startsWith('http://') || params.link.startsWith('https://');
+        const formattedLink = isClickableLink ? params.link : `<code>${params.link}</code>`;
+        const apiStatus = params.apiStatus || 'Order Not Placed';
+
         const message =
-            `🚨 <b>MANUAL ORDER REQUIRED</b>\n` +
-            `💳 Payment received — SMM failed!\n\n` +
-            (params.provider ? `🔧 <b>Provider:</b> ${params.provider}\n` : '') +
-            `🌐 <b>Platform:</b> ${platform}\n` +
-            `🆔 <b>Order ID:</b> <code>${params.orderId}</code>\n` +
-            `📦 <b>Service:</b> ${serviceName ? `${serviceName} (${params.serviceId})` : params.serviceId}\n` +
-            `🔗 <b>Link:</b> <code>${params.link}</code>\n` +
-            `📊 <b>Quantity:</b> ${params.quantity}\n` +
-            `💰 <b>Amount:</b> ₹${params.amount}\n` +
-            (params.utr ? `🏦 <b>UTR:</b> <code>${params.utr}</code>\n` : '') +
-            (params.smmOrderId ? `🎯 <b>SMM Response:</b> ${params.smmOrderId}\n` : '') +
-            `❌ <b>Error:</b> ${params.error}\n` +
-            `🕐 <b>Time:</b> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}\n\n` +
-            `⚡ <b>Reply "y" to this message to approve manually.</b>`;
+            `New Order Received\n\n` +
+            `Order ID: <code>${params.orderId}</code>\n` +
+            `Quality : ${params.quantity}\n` +
+            `Link : ${formattedLink}\n` +
+            `Amount : ₹${params.amount}\n` +
+            `Service: ${serviceName || params.serviceId}\n` +
+            `Created AT Today, (${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })})\n\n` +
+            `API Status: ${apiStatus}\n` +
+            `Error: ${params.error}\n\n` +
+            `Reply "y" to this message to approve manually.`;
 
         if (this.isFailedConfigured && this.failedBot && this.failedChatId) {
             // Send via the singleton failed bot instance (reused connection)

@@ -44,17 +44,18 @@ model User {
 }
 
 model Order {
-  id        String      @id @default(uuid())
-  serviceId Int
-  link      String
-  quantity  Int
-  amount    Float
-  status    OrderStatus @default(PENDING)
-  provider  SmmProvider @default(SUPPORTIVE)
-  remark    String?
-  userId    String?
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id          String      @id @default(uuid())
+  serviceId   Int
+  serviceName String?
+  link        String
+  quantity    Int
+  amount      Float
+  status      OrderStatus @default(PENDING)
+  remark      String?
+  userId      String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  provider    SmmProvider @default(SUPPORTIVE)
 
   user     User?     @relation(fields: [userId], references: [id])
   payment  Payment?

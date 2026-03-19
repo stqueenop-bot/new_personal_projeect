@@ -68,6 +68,12 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
             
         logger.info(`[Worker] ${reason}. Bypassing SMM and marking COMPLETED directly.`);
 
+        // Fetch service name from DB if available
+        const order = await prisma.order.findUnique({
+            where: { id: data.orderId },
+            select: { serviceName: true }
+        });
+
         await prisma.order.update({
             where: { id: data.orderId },
             data: { status: OrderStatus.COMPLETED },
@@ -75,20 +81,42 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
 
         sseService.broadcastStatus(data.orderId, OrderStatus.COMPLETED);
 
-        // Alert admin via RabbitMQ -> notification worker (non-blocking, reliable)
-        await rabbitMQService.publishToQueue(QUEUES.ORDER_NOTIFY, {
-            type: 'SMM_FAILED',
-            payload: {
-                orderId: data.orderId,
-                serviceId: data.serviceId,
-                link: data.link,
-                quantity: data.quantity,
-                amount: data.amount,
-                utr: data.utr,
-                error: reason,
-                provider: 'MANUAL_REQUIRED',
-            }
-        });
+        // If it's just an invalid quantity, send to SUCCESS bot (main bot) as requested
+        // but with a flag that it was not placed on SMM.
+        if (serviceCategory && !isValidQuantity(data.serviceId, data.quantity)) {
+            await rabbitMQService.publishToQueue(QUEUES.ORDER_NOTIFY, {
+                type: 'SUCCESS',
+                payload: {
+                    orderId: data.orderId,
+                    serviceId: data.serviceId,
+                    serviceName: order?.serviceName ?? undefined,
+                    link: data.link,
+                    quantity: data.quantity,
+                    amount: data.amount,
+                    utr: data.utr,
+                    customerMobile: data.customerMobile,
+                    provider: 'MANUAL_REQUIRED',
+                    apiStatus: 'Order Not Placed'
+                }
+            });
+        } else {
+            // For truly unmapped services, route to failed bot for safety or keep as SMM_FAILED
+            await rabbitMQService.publishToQueue(QUEUES.ORDER_NOTIFY, {
+                type: 'SMM_FAILED',
+                payload: {
+                    orderId: data.orderId,
+                    serviceId: data.serviceId,
+                    serviceName: order?.serviceName ?? undefined,
+                    link: data.link,
+                    quantity: data.quantity,
+                    amount: data.amount,
+                    utr: data.utr,
+                    error: reason,
+                    provider: 'MANUAL_REQUIRED',
+                    apiStatus: 'Order Not Placed'
+                }
+            });
+        }
 
         logger.success(`[Worker] Order ${data.orderId} skipped (manual required).`);
         return;

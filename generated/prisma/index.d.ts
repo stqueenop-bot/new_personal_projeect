@@ -2859,43 +2859,46 @@ export namespace Prisma {
   export type OrderMinAggregateOutputType = {
     id: string | null
     serviceId: number | null
+    serviceName: string | null
     link: string | null
     quantity: number | null
     amount: number | null
     status: $Enums.OrderStatus | null
-    provider: $Enums.SmmProvider | null
     remark: string | null
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    provider: $Enums.SmmProvider | null
   }
 
   export type OrderMaxAggregateOutputType = {
     id: string | null
     serviceId: number | null
+    serviceName: string | null
     link: string | null
     quantity: number | null
     amount: number | null
     status: $Enums.OrderStatus | null
-    provider: $Enums.SmmProvider | null
     remark: string | null
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    provider: $Enums.SmmProvider | null
   }
 
   export type OrderCountAggregateOutputType = {
     id: number
     serviceId: number
+    serviceName: number
     link: number
     quantity: number
     amount: number
     status: number
-    provider: number
     remark: number
     userId: number
     createdAt: number
     updatedAt: number
+    provider: number
     _all: number
   }
 
@@ -2915,43 +2918,46 @@ export namespace Prisma {
   export type OrderMinAggregateInputType = {
     id?: true
     serviceId?: true
+    serviceName?: true
     link?: true
     quantity?: true
     amount?: true
     status?: true
-    provider?: true
     remark?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
+    provider?: true
   }
 
   export type OrderMaxAggregateInputType = {
     id?: true
     serviceId?: true
+    serviceName?: true
     link?: true
     quantity?: true
     amount?: true
     status?: true
-    provider?: true
     remark?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
+    provider?: true
   }
 
   export type OrderCountAggregateInputType = {
     id?: true
     serviceId?: true
+    serviceName?: true
     link?: true
     quantity?: true
     amount?: true
     status?: true
-    provider?: true
     remark?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
+    provider?: true
     _all?: true
   }
 
@@ -3044,15 +3050,16 @@ export namespace Prisma {
   export type OrderGroupByOutputType = {
     id: string
     serviceId: number
+    serviceName: string | null
     link: string
     quantity: number
     amount: number
     status: $Enums.OrderStatus
-    provider: $Enums.SmmProvider
     remark: string | null
     userId: string | null
     createdAt: Date
     updatedAt: Date
+    provider: $Enums.SmmProvider
     _count: OrderCountAggregateOutputType | null
     _avg: OrderAvgAggregateOutputType | null
     _sum: OrderSumAggregateOutputType | null
@@ -3077,15 +3084,16 @@ export namespace Prisma {
   export type OrderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     serviceId?: boolean
+    serviceName?: boolean
     link?: boolean
     quantity?: boolean
     amount?: boolean
     status?: boolean
-    provider?: boolean
     remark?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    provider?: boolean
     user?: boolean | Order$userArgs<ExtArgs>
     payment?: boolean | Order$paymentArgs<ExtArgs>
     smmOrder?: boolean | Order$smmOrderArgs<ExtArgs>
@@ -3094,48 +3102,51 @@ export namespace Prisma {
   export type OrderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     serviceId?: boolean
+    serviceName?: boolean
     link?: boolean
     quantity?: boolean
     amount?: boolean
     status?: boolean
-    provider?: boolean
     remark?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    provider?: boolean
     user?: boolean | Order$userArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
   export type OrderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     serviceId?: boolean
+    serviceName?: boolean
     link?: boolean
     quantity?: boolean
     amount?: boolean
     status?: boolean
-    provider?: boolean
     remark?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    provider?: boolean
     user?: boolean | Order$userArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
   export type OrderSelectScalar = {
     id?: boolean
     serviceId?: boolean
+    serviceName?: boolean
     link?: boolean
     quantity?: boolean
     amount?: boolean
     status?: boolean
-    provider?: boolean
     remark?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    provider?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "serviceId" | "link" | "quantity" | "amount" | "status" | "provider" | "remark" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "serviceId" | "serviceName" | "link" | "quantity" | "amount" | "status" | "remark" | "userId" | "createdAt" | "updatedAt" | "provider", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Order$userArgs<ExtArgs>
     payment?: boolean | Order$paymentArgs<ExtArgs>
@@ -3158,15 +3169,16 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       serviceId: number
+      serviceName: string | null
       link: string
       quantity: number
       amount: number
       status: $Enums.OrderStatus
-      provider: $Enums.SmmProvider
       remark: string | null
       userId: string | null
       createdAt: Date
       updatedAt: Date
+      provider: $Enums.SmmProvider
     }, ExtArgs["result"]["order"]>
     composites: {}
   }
@@ -3595,15 +3607,16 @@ export namespace Prisma {
   interface OrderFieldRefs {
     readonly id: FieldRef<"Order", 'String'>
     readonly serviceId: FieldRef<"Order", 'Int'>
+    readonly serviceName: FieldRef<"Order", 'String'>
     readonly link: FieldRef<"Order", 'String'>
     readonly quantity: FieldRef<"Order", 'Int'>
     readonly amount: FieldRef<"Order", 'Float'>
     readonly status: FieldRef<"Order", 'OrderStatus'>
-    readonly provider: FieldRef<"Order", 'SmmProvider'>
     readonly remark: FieldRef<"Order", 'String'>
     readonly userId: FieldRef<"Order", 'String'>
     readonly createdAt: FieldRef<"Order", 'DateTime'>
     readonly updatedAt: FieldRef<"Order", 'DateTime'>
+    readonly provider: FieldRef<"Order", 'SmmProvider'>
   }
     
 
@@ -12617,15 +12630,16 @@ export namespace Prisma {
   export const OrderScalarFieldEnum: {
     id: 'id',
     serviceId: 'serviceId',
+    serviceName: 'serviceName',
     link: 'link',
     quantity: 'quantity',
     amount: 'amount',
     status: 'status',
-    provider: 'provider',
     remark: 'remark',
     userId: 'userId',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    provider: 'provider'
   };
 
   export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
@@ -12935,15 +12949,16 @@ export namespace Prisma {
     NOT?: OrderWhereInput | OrderWhereInput[]
     id?: StringFilter<"Order"> | string
     serviceId?: IntFilter<"Order"> | number
+    serviceName?: StringNullableFilter<"Order"> | string | null
     link?: StringFilter<"Order"> | string
     quantity?: IntFilter<"Order"> | number
     amount?: FloatFilter<"Order"> | number
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
-    provider?: EnumSmmProviderFilter<"Order"> | $Enums.SmmProvider
     remark?: StringNullableFilter<"Order"> | string | null
     userId?: StringNullableFilter<"Order"> | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
+    provider?: EnumSmmProviderFilter<"Order"> | $Enums.SmmProvider
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     payment?: XOR<PaymentNullableScalarRelationFilter, PaymentWhereInput> | null
     smmOrder?: XOR<SmmOrderNullableScalarRelationFilter, SmmOrderWhereInput> | null
@@ -12952,15 +12967,16 @@ export namespace Prisma {
   export type OrderOrderByWithRelationInput = {
     id?: SortOrder
     serviceId?: SortOrder
+    serviceName?: SortOrderInput | SortOrder
     link?: SortOrder
     quantity?: SortOrder
     amount?: SortOrder
     status?: SortOrder
-    provider?: SortOrder
     remark?: SortOrderInput | SortOrder
     userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    provider?: SortOrder
     user?: UserOrderByWithRelationInput
     payment?: PaymentOrderByWithRelationInput
     smmOrder?: SmmOrderOrderByWithRelationInput
@@ -12972,15 +12988,16 @@ export namespace Prisma {
     OR?: OrderWhereInput[]
     NOT?: OrderWhereInput | OrderWhereInput[]
     serviceId?: IntFilter<"Order"> | number
+    serviceName?: StringNullableFilter<"Order"> | string | null
     link?: StringFilter<"Order"> | string
     quantity?: IntFilter<"Order"> | number
     amount?: FloatFilter<"Order"> | number
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
-    provider?: EnumSmmProviderFilter<"Order"> | $Enums.SmmProvider
     remark?: StringNullableFilter<"Order"> | string | null
     userId?: StringNullableFilter<"Order"> | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
+    provider?: EnumSmmProviderFilter<"Order"> | $Enums.SmmProvider
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     payment?: XOR<PaymentNullableScalarRelationFilter, PaymentWhereInput> | null
     smmOrder?: XOR<SmmOrderNullableScalarRelationFilter, SmmOrderWhereInput> | null
@@ -12989,15 +13006,16 @@ export namespace Prisma {
   export type OrderOrderByWithAggregationInput = {
     id?: SortOrder
     serviceId?: SortOrder
+    serviceName?: SortOrderInput | SortOrder
     link?: SortOrder
     quantity?: SortOrder
     amount?: SortOrder
     status?: SortOrder
-    provider?: SortOrder
     remark?: SortOrderInput | SortOrder
     userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    provider?: SortOrder
     _count?: OrderCountOrderByAggregateInput
     _avg?: OrderAvgOrderByAggregateInput
     _max?: OrderMaxOrderByAggregateInput
@@ -13011,15 +13029,16 @@ export namespace Prisma {
     NOT?: OrderScalarWhereWithAggregatesInput | OrderScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Order"> | string
     serviceId?: IntWithAggregatesFilter<"Order"> | number
+    serviceName?: StringNullableWithAggregatesFilter<"Order"> | string | null
     link?: StringWithAggregatesFilter<"Order"> | string
     quantity?: IntWithAggregatesFilter<"Order"> | number
     amount?: FloatWithAggregatesFilter<"Order"> | number
     status?: EnumOrderStatusWithAggregatesFilter<"Order"> | $Enums.OrderStatus
-    provider?: EnumSmmProviderWithAggregatesFilter<"Order"> | $Enums.SmmProvider
     remark?: StringNullableWithAggregatesFilter<"Order"> | string | null
     userId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
+    provider?: EnumSmmProviderWithAggregatesFilter<"Order"> | $Enums.SmmProvider
   }
 
   export type PaymentWhereInput = {
@@ -13607,14 +13626,15 @@ export namespace Prisma {
   export type OrderCreateInput = {
     id?: string
     serviceId: number
+    serviceName?: string | null
     link: string
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
-    provider?: $Enums.SmmProvider
     remark?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    provider?: $Enums.SmmProvider
     user?: UserCreateNestedOneWithoutOrdersInput
     payment?: PaymentCreateNestedOneWithoutOrderInput
     smmOrder?: SmmOrderCreateNestedOneWithoutOrderInput
@@ -13623,15 +13643,16 @@ export namespace Prisma {
   export type OrderUncheckedCreateInput = {
     id?: string
     serviceId: number
+    serviceName?: string | null
     link: string
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
-    provider?: $Enums.SmmProvider
     remark?: string | null
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    provider?: $Enums.SmmProvider
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
     smmOrder?: SmmOrderUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -13639,14 +13660,15 @@ export namespace Prisma {
   export type OrderUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     serviceId?: IntFieldUpdateOperationsInput | number
+    serviceName?: NullableStringFieldUpdateOperationsInput | string | null
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
-    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     user?: UserUpdateOneWithoutOrdersNestedInput
     payment?: PaymentUpdateOneWithoutOrderNestedInput
     smmOrder?: SmmOrderUpdateOneWithoutOrderNestedInput
@@ -13655,15 +13677,16 @@ export namespace Prisma {
   export type OrderUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     serviceId?: IntFieldUpdateOperationsInput | number
+    serviceName?: NullableStringFieldUpdateOperationsInput | string | null
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
-    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
     smmOrder?: SmmOrderUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -13671,42 +13694,45 @@ export namespace Prisma {
   export type OrderCreateManyInput = {
     id?: string
     serviceId: number
+    serviceName?: string | null
     link: string
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
-    provider?: $Enums.SmmProvider
     remark?: string | null
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    provider?: $Enums.SmmProvider
   }
 
   export type OrderUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     serviceId?: IntFieldUpdateOperationsInput | number
+    serviceName?: NullableStringFieldUpdateOperationsInput | string | null
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
-    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
   }
 
   export type OrderUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     serviceId?: IntFieldUpdateOperationsInput | number
+    serviceName?: NullableStringFieldUpdateOperationsInput | string | null
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
-    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
   }
 
   export type PaymentCreateInput = {
@@ -14465,15 +14491,16 @@ export namespace Prisma {
   export type OrderCountOrderByAggregateInput = {
     id?: SortOrder
     serviceId?: SortOrder
+    serviceName?: SortOrder
     link?: SortOrder
     quantity?: SortOrder
     amount?: SortOrder
     status?: SortOrder
-    provider?: SortOrder
     remark?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    provider?: SortOrder
   }
 
   export type OrderAvgOrderByAggregateInput = {
@@ -14485,29 +14512,31 @@ export namespace Prisma {
   export type OrderMaxOrderByAggregateInput = {
     id?: SortOrder
     serviceId?: SortOrder
+    serviceName?: SortOrder
     link?: SortOrder
     quantity?: SortOrder
     amount?: SortOrder
     status?: SortOrder
-    provider?: SortOrder
     remark?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    provider?: SortOrder
   }
 
   export type OrderMinOrderByAggregateInput = {
     id?: SortOrder
     serviceId?: SortOrder
+    serviceName?: SortOrder
     link?: SortOrder
     quantity?: SortOrder
     amount?: SortOrder
     status?: SortOrder
-    provider?: SortOrder
     remark?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    provider?: SortOrder
   }
 
   export type OrderSumOrderByAggregateInput = {
@@ -15427,14 +15456,15 @@ export namespace Prisma {
   export type OrderCreateWithoutUserInput = {
     id?: string
     serviceId: number
+    serviceName?: string | null
     link: string
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
-    provider?: $Enums.SmmProvider
     remark?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    provider?: $Enums.SmmProvider
     payment?: PaymentCreateNestedOneWithoutOrderInput
     smmOrder?: SmmOrderCreateNestedOneWithoutOrderInput
   }
@@ -15442,14 +15472,15 @@ export namespace Prisma {
   export type OrderUncheckedCreateWithoutUserInput = {
     id?: string
     serviceId: number
+    serviceName?: string | null
     link: string
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
-    provider?: $Enums.SmmProvider
     remark?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    provider?: $Enums.SmmProvider
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
     smmOrder?: SmmOrderUncheckedCreateNestedOneWithoutOrderInput
   }
@@ -15486,15 +15517,16 @@ export namespace Prisma {
     NOT?: OrderScalarWhereInput | OrderScalarWhereInput[]
     id?: StringFilter<"Order"> | string
     serviceId?: IntFilter<"Order"> | number
+    serviceName?: StringNullableFilter<"Order"> | string | null
     link?: StringFilter<"Order"> | string
     quantity?: IntFilter<"Order"> | number
     amount?: FloatFilter<"Order"> | number
     status?: EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
-    provider?: EnumSmmProviderFilter<"Order"> | $Enums.SmmProvider
     remark?: StringNullableFilter<"Order"> | string | null
     userId?: StringNullableFilter<"Order"> | string | null
     createdAt?: DateTimeFilter<"Order"> | Date | string
     updatedAt?: DateTimeFilter<"Order"> | Date | string
+    provider?: EnumSmmProviderFilter<"Order"> | $Enums.SmmProvider
   }
 
   export type UserCreateWithoutOrdersInput = {
@@ -15700,14 +15732,15 @@ export namespace Prisma {
   export type OrderCreateWithoutPaymentInput = {
     id?: string
     serviceId: number
+    serviceName?: string | null
     link: string
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
-    provider?: $Enums.SmmProvider
     remark?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    provider?: $Enums.SmmProvider
     user?: UserCreateNestedOneWithoutOrdersInput
     smmOrder?: SmmOrderCreateNestedOneWithoutOrderInput
   }
@@ -15715,15 +15748,16 @@ export namespace Prisma {
   export type OrderUncheckedCreateWithoutPaymentInput = {
     id?: string
     serviceId: number
+    serviceName?: string | null
     link: string
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
-    provider?: $Enums.SmmProvider
     remark?: string | null
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    provider?: $Enums.SmmProvider
     smmOrder?: SmmOrderUncheckedCreateNestedOneWithoutOrderInput
   }
 
@@ -15746,14 +15780,15 @@ export namespace Prisma {
   export type OrderUpdateWithoutPaymentInput = {
     id?: StringFieldUpdateOperationsInput | string
     serviceId?: IntFieldUpdateOperationsInput | number
+    serviceName?: NullableStringFieldUpdateOperationsInput | string | null
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
-    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     user?: UserUpdateOneWithoutOrdersNestedInput
     smmOrder?: SmmOrderUpdateOneWithoutOrderNestedInput
   }
@@ -15761,29 +15796,31 @@ export namespace Prisma {
   export type OrderUncheckedUpdateWithoutPaymentInput = {
     id?: StringFieldUpdateOperationsInput | string
     serviceId?: IntFieldUpdateOperationsInput | number
+    serviceName?: NullableStringFieldUpdateOperationsInput | string | null
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
-    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     smmOrder?: SmmOrderUncheckedUpdateOneWithoutOrderNestedInput
   }
 
   export type OrderCreateWithoutSmmOrderInput = {
     id?: string
     serviceId: number
+    serviceName?: string | null
     link: string
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
-    provider?: $Enums.SmmProvider
     remark?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    provider?: $Enums.SmmProvider
     user?: UserCreateNestedOneWithoutOrdersInput
     payment?: PaymentCreateNestedOneWithoutOrderInput
   }
@@ -15791,15 +15828,16 @@ export namespace Prisma {
   export type OrderUncheckedCreateWithoutSmmOrderInput = {
     id?: string
     serviceId: number
+    serviceName?: string | null
     link: string
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
-    provider?: $Enums.SmmProvider
     remark?: string | null
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    provider?: $Enums.SmmProvider
     payment?: PaymentUncheckedCreateNestedOneWithoutOrderInput
   }
 
@@ -15822,14 +15860,15 @@ export namespace Prisma {
   export type OrderUpdateWithoutSmmOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
     serviceId?: IntFieldUpdateOperationsInput | number
+    serviceName?: NullableStringFieldUpdateOperationsInput | string | null
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
-    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     user?: UserUpdateOneWithoutOrdersNestedInput
     payment?: PaymentUpdateOneWithoutOrderNestedInput
   }
@@ -15837,42 +15876,45 @@ export namespace Prisma {
   export type OrderUncheckedUpdateWithoutSmmOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
     serviceId?: IntFieldUpdateOperationsInput | number
+    serviceName?: NullableStringFieldUpdateOperationsInput | string | null
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
-    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
   }
 
   export type OrderCreateManyUserInput = {
     id?: string
     serviceId: number
+    serviceName?: string | null
     link: string
     quantity: number
     amount: number
     status?: $Enums.OrderStatus
-    provider?: $Enums.SmmProvider
     remark?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    provider?: $Enums.SmmProvider
   }
 
   export type OrderUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     serviceId?: IntFieldUpdateOperationsInput | number
+    serviceName?: NullableStringFieldUpdateOperationsInput | string | null
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
-    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     payment?: PaymentUpdateOneWithoutOrderNestedInput
     smmOrder?: SmmOrderUpdateOneWithoutOrderNestedInput
   }
@@ -15880,14 +15922,15 @@ export namespace Prisma {
   export type OrderUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     serviceId?: IntFieldUpdateOperationsInput | number
+    serviceName?: NullableStringFieldUpdateOperationsInput | string | null
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
-    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     payment?: PaymentUncheckedUpdateOneWithoutOrderNestedInput
     smmOrder?: SmmOrderUncheckedUpdateOneWithoutOrderNestedInput
   }
@@ -15895,14 +15938,15 @@ export namespace Prisma {
   export type OrderUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     serviceId?: IntFieldUpdateOperationsInput | number
+    serviceName?: NullableStringFieldUpdateOperationsInput | string | null
     link?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
     status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
-    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: EnumSmmProviderFieldUpdateOperationsInput | $Enums.SmmProvider
   }
 
 
