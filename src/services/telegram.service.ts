@@ -130,7 +130,7 @@ class TelegramService {
             `🌐 <b>Platform:</b> ${platform}\n` +
             `🆔 <b>Order ID:</b> <code>${params.orderId}</code>\n` +
             `📦 <b>Service:</b> ${serviceName ? `${serviceName} (${params.serviceId})` : params.serviceId}\n` +
-            `🔗 <b>Link:</b> ${params.link}\n` +
+            `🔗 <b>Link:</b> <code>${params.link}</code>\n` +
             `📊 <b>Quantity:</b> ${params.quantity}\n` +
             `💰 <b>Amount:</b> ₹${params.amount}\n` +
             `🏦 <b>UTR:</b> <code>${params.utr}</code>\n` +
@@ -215,7 +215,7 @@ class TelegramService {
             `🌐 <b>Platform:</b> ${platform}\n` +
             `🆔 <b>Order ID:</b> <code>${params.orderId}</code>\n` +
             `📦 <b>Service:</b> ${serviceName ? `${serviceName} (${params.serviceId})` : params.serviceId}\n` +
-            `🔗 <b>Link:</b> ${params.link}\n` +
+            `🔗 <b>Link:</b> <code>${params.link}</code>\n` +
             `📊 <b>Quantity:</b> ${params.quantity}\n` +
             `💰 <b>Amount:</b> ₹${params.amount}\n` +
             (params.utr ? `🏦 <b>UTR:</b> <code>${params.utr}</code>\n` : '') +

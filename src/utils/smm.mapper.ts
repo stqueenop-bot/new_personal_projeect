@@ -35,6 +35,17 @@ const SERVICE_CATEGORY_MAP: Record<number, ServiceCategory> = {
 };
 
 /**
+ * Maps Service IDs to their allowed quantities.
+ * Only orders with these quantities will be placed on the SMM panel.
+ */
+const ALLOWED_SERVICE_QUANTITIES: Record<number, number[]> = {
+    602: [5000, 10000, 25000],
+    670: [100],
+    3924: [1000],
+    3822: [50, 100, 200],
+};
+
+/**
  * Determines the SMM Provider for a given Service ID.
  * Defaults to SUPPORTIVE if not found.
  */
@@ -54,6 +65,15 @@ export function getServiceNameForId(serviceId: number): string | null {
  */
 export function getCategoryForId(serviceId: number): ServiceCategory | null {
     return SERVICE_CATEGORY_MAP[serviceId] || null;
+}
+
+/**
+ * Checks if a given quantity is allowed for a the specific Service ID.
+ */
+export function isValidQuantity(serviceId: number, quantity: number): boolean {
+    const allowed = ALLOWED_SERVICE_QUANTITIES[serviceId];
+    if (!allowed) return false;
+    return allowed.includes(quantity);
 }
 
 /**

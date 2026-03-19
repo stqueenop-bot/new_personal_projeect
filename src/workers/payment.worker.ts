@@ -6,7 +6,7 @@ import { prisma } from '../../lib/initiatePrisma';
 import { logger } from '../utils/logger';
 import { sseService } from '../services/sse.service';
 import { PaymentSuccessMessage, PaymentFailedMessage } from '../types/index.js';
-import { getProviderForService, getCategoryForId } from '../utils/smm.mapper.js';
+import { getProviderForService, getCategoryForId, isValidQuantity } from '../utils/smm.mapper.js';
 import { validateLinkForService, ServiceCategory } from '../services/instagram.validator.js';
 
 
@@ -56,12 +56,17 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
     sseService.broadcastStatus(data.orderId, OrderStatus.PROCESSING);
 
     // ──────────────────────────────────────────────────────────
-    // UNMAPPED SERVICES: Complete immediately, no SMM call needed
+    // MAPPED SERVICES: Validation and SMM flow
     // ──────────────────────────────────────────────────────────
     const serviceCategory = getCategoryForId(data.serviceId) as ServiceCategory | null;
 
-    if (!serviceCategory) {
-        logger.info(`[Worker] Unmapped service order ${data.orderId}. Bypassing SMM and marking COMPLETED directly.`);
+    // 1. Check if Service is Mapped and Quantity is Valid
+    if (!serviceCategory || !isValidQuantity(data.serviceId, data.quantity)) {
+        const reason = !serviceCategory 
+            ? `Unmapped service ID: ${data.serviceId}` 
+            : `Manual order required: Invalid quantity ${data.quantity} for service ${data.serviceId}`;
+            
+        logger.info(`[Worker] ${reason}. Bypassing SMM and marking COMPLETED directly.`);
 
         await prisma.order.update({
             where: { id: data.orderId },
@@ -70,8 +75,9 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
 
         sseService.broadcastStatus(data.orderId, OrderStatus.COMPLETED);
 
+        // Alert admin via RabbitMQ -> notification worker (non-blocking, reliable)
         await rabbitMQService.publishToQueue(QUEUES.ORDER_NOTIFY, {
-            type: 'SUCCESS',
+            type: 'SMM_FAILED',
             payload: {
                 orderId: data.orderId,
                 serviceId: data.serviceId,
@@ -79,12 +85,12 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
                 quantity: data.quantity,
                 amount: data.amount,
                 utr: data.utr,
-                customerMobile: data.customerMobile,
-                provider: 'UNMAPPED_MANUAL',
+                error: reason,
+                provider: 'MANUAL_REQUIRED',
             }
         });
 
-        logger.success(`[Worker] Unmapped service order ${data.orderId} completed.`);
+        logger.success(`[Worker] Order ${data.orderId} skipped (manual required).`);
         return;
     }
 
