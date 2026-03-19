@@ -288,17 +288,26 @@ async function handlePaymentFailed(msg: ConsumeMessage): Promise<void> {
 
     sseService.broadcastStatus(data.orderId, OrderStatus.FAILED, { error: data.reason });
 
-    await rabbitMQService.publishToQueue(QUEUES.ORDER_NOTIFY, {
-        type: 'PAYMENT_FAILED',
-        payload: {
-            orderId: data.orderId,
-            amount: data.amount,
-            reason: data.reason,
-            customerMobile: data.customerMobile,
-        }
-    });
+    // ─── TELEGRAM NOTIFICATION ───
+    // Only notify if it's NOT a timeout/expiration
+    const isExpiry = data.reason?.toLowerCase().includes('timeout') || 
+                     data.reason?.toLowerCase().includes('timed out') || 
+                     data.reason?.toLowerCase().includes('expire');
 
-    logger.info(`[Worker] Payment failure handled for order: ${data.orderId}`);
+    if (!isExpiry) {
+        await rabbitMQService.publishToQueue(QUEUES.ORDER_NOTIFY, {
+            type: 'PAYMENT_FAILED',
+            payload: {
+                orderId: data.orderId,
+                amount: data.amount,
+                reason: data.reason,
+                customerMobile: data.customerMobile,
+            }
+        });
+        logger.info(`[Worker] Payment failure notification queued for order: ${data.orderId}`);
+    } else {
+        logger.info(`[Worker] Skipping Telegram alert for expired payment: ${data.orderId}`);
+    }
 }
 
 

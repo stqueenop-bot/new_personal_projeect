@@ -16,6 +16,7 @@ import ssmRoutes from './routes/ssm.routes';
 import bannerRoutes from './routes/banner.routes';
 import offerRoutes from './routes/offer.routes';
 import dashboardRoutes from './routes/dashboard.routes';
+import internalRoutes from './routes/internal.routes';
 import { ApiResponse } from './types';
 
 const app = express();
@@ -87,6 +88,7 @@ app.use('/api/ssm', apiRateLimiter, ssmRoutes);
 app.use('/api/banners', apiRateLimiter, bannerRoutes);
 app.use('/api/offers', apiRateLimiter, offerRoutes);
 app.use('/api/dashboard', apiRateLimiter, dashboardRoutes);
+app.use('/api/internal', internalRoutes);
 app.get('/api/status/stream/:id', subscribeToOrderStatus);
 
 

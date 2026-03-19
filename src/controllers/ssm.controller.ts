@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { OrderStatus } from '../../generated/prisma/index.js';
-import { smmService } from '../services/ssm.service';
+import { smmService, getSmmService } from '../services/ssm.service';
 import { prisma } from '../../lib/initiatePrisma';
 import { createError } from '../middleware/errorHandler';
 import { logger } from '../utils/logger';
@@ -33,16 +33,22 @@ export async function getServices(req: Request, res: Response, next: NextFunctio
 
 /**
  * GET /api/ssm/balance
- * Check the SMM panel account balance.
+ * Check account balances for all supported SMM panels.
  */
 export async function getBalance(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const balance = await smmService.getBalance();
+        const [supportive, ind] = await Promise.all([
+            smmService.getBalance().catch(err => ({ balance: 'Error', currency: '', error: err.message })),
+            getSmmService('IND').getBalance().catch(err => ({ balance: 'Error', currency: '', error: err.message })),
+        ]);
 
         const response: ApiResponse = {
             success: true,
-            message: 'Balance retrieved',
-            data: balance,
+            message: 'Balances retrieved',
+            data: {
+                supportive,
+                ind,
+            },
         };
 
         res.json(response);

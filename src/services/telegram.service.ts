@@ -125,7 +125,7 @@ class TelegramService {
             logger.debug(`[Telegram] notifyOrderSuccess skipped because ENABLE_TELEGRAM=false`);
             return;
         }
-        
+
         const serviceName = params.serviceName || getServiceNameForId(params.serviceId);
         const platform = getPlatformNameFromUrl(params.link);
         const isClickableLink = params.link.startsWith('http://') || params.link.startsWith('https://');
@@ -161,8 +161,8 @@ class TelegramService {
         }
 
         // If it's a timeout/expiry, route to failed bot instead of main bot
-        const isExpiry = params.reason.toLowerCase().includes('timeout') || params.reason.toLowerCase().includes('expire');
-        
+        // const isExpiry = params.reason.toLowerCase().includes('timeout') || params.reason.toLowerCase().includes('expire');
+
         const message =
             `❌ <b>PAYMENT FAILED</b>\n\n` +
             `🆔 <b>Order ID:</b> <code>${params.orderId}</code>\n` +
@@ -171,11 +171,7 @@ class TelegramService {
             (params.customerMobile ? `📱 <b>Customer Mobile:</b> ${params.customerMobile}\n` : '') +
             `🕐 <b>Time:</b> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
 
-        if (isExpiry) {
-            await this.sendToFailed(message);
-        } else {
-            await this.sendToMain(message);
-        }
+        logger.error("Failure in payment", message);
     }
 
     /**
@@ -220,7 +216,7 @@ class TelegramService {
             logger.debug(`[Telegram] notifyFailedOrderBot skipped because ENABLE_TELEGRAM=false`);
             return;
         }
-        
+
         const serviceName = params.serviceName || getServiceNameForId(params.serviceId);
         const platform = getPlatformNameFromUrl(params.link);
         const isClickableLink = params.link.startsWith('http://') || params.link.startsWith('https://');
