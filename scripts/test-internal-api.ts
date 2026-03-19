@@ -4,13 +4,13 @@ import * as path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-const API_BASE_URL = 'http://localhost:5000/api/internal';
-const API_KEY = process.env.API_AUTH_KEY || 'admin_secret_8a2f4c9b7e1d3f6a';
+const API_BASE_URL = 'http://localhost:3000/api/internal';
+const API_KEY = process.env.API_AUTH_KEY;
 
 const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
     headers: {
-        'x-api-key': API_KEY,
+        'Authorization': `Bearer ${API_KEY}`,
         'Content-Type': 'application/json',
     },
 });

@@ -214,3 +214,298 @@ export async function removeGroup(req: Request, res: Response, next: NextFunctio
         next(error);
     }
 }
+
+/**
+ * GET /api/internal/stats
+ * Dashboard overview: total orders, revenue, active APIs count, recent orders.
+ */
+export async function getDashboardStats(_req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const [totalOrders, recentOrders, recentPayments, revenueResult] = await Promise.all([
+            prisma.order.count(),
+            prisma.order.findMany({
+                orderBy: { createdAt: 'desc' },
+                take: 10,
+                include: { payment: true, smmOrder: true },
+            }),
+            prisma.payment.findMany({
+                where: { status: 'SUCCESS' },
+                orderBy: { updatedAt: 'desc' },
+                take: 20,
+                include: { order: true },
+            }),
+            prisma.payment.aggregate({
+                where: { status: 'SUCCESS' },
+                _sum: { amount: true },
+            }),
+        ]);
+
+        const totalRevenue = revenueResult._sum.amount ?? 0;
+
+        res.json({
+            success: true,
+            message: 'Internal dashboard stats retrieved',
+            data: {
+                totalOrders,
+                totalRevenue,
+                activeApis: 2,
+                telegramBots: 1,
+                recentOrders,
+                recentPayments,
+            },
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/**
+ * GET /api/internal/orders
+ * List orders with pagination (Admin).
+ */
+export async function getOrders(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const page = parseInt(String(req.query.page ?? '1'), 10);
+        const limit = Math.min(parseInt(String(req.query.limit ?? '20'), 10), 100);
+        const skip = (page - 1) * limit;
+        const status = req.query.status as OrderStatus | undefined;
+
+        const [orders, total] = await Promise.all([
+            prisma.order.findMany({
+                where: status ? { status } : undefined,
+                include: { payment: true, smmOrder: true },
+                orderBy: { createdAt: 'desc' },
+                skip,
+                take: limit,
+            }),
+            prisma.order.count({ where: status ? { status } : undefined }),
+        ]);
+
+        res.json({
+            success: true,
+            message: 'Orders retrieved',
+            data: {
+                orders,
+                pagination: {
+                    total,
+                    page,
+                    limit,
+                    totalPages: Math.ceil(total / limit),
+                },
+            },
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/**
+ * GET /api/internal/orders/:id
+ * Get single order detail.
+ */
+export async function getOrder(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const id = String(req.params.id);
+        const order = await prisma.order.findUnique({
+            where: { id },
+            include: { payment: true, smmOrder: true, user: true },
+        });
+
+        if (!order) {
+            res.status(404).json({ success: false, message: 'Order not found' });
+            return;
+        }
+
+        res.json({ success: true, message: 'Order retrieved', data: order });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/**
+ * POST /api/internal/orders (Admin Manual Create)
+ */
+export async function createAdminOrder(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const { serviceId, link, quantity, amount, remark, customerMobile } = req.body;
+
+        const provider = getProviderForService(serviceId);
+        const serviceName = getServiceNameForId(serviceId);
+
+        const order = await prisma.order.create({
+            data: {
+                serviceId,
+                serviceName,
+                link,
+                quantity,
+                amount,
+                provider,
+                remark: remark || `Admin Manual: ${serviceName || serviceId}`,
+                status: OrderStatus.PROCESSING,
+                payment: {
+                    create: {
+                        zapupiOrderId: `ADMIN-${Date.now()}`,
+                        amount,
+                        status: PaymentStatus.SUCCESS,
+                        customerMobile: customerMobile || 'ADMIN',
+                        utr: 'MANUAL',
+                    },
+                },
+            },
+        });
+
+        // Trigger SMM placement
+        await rabbitMQService.publishToQueue(QUEUES.PAYMENT_SUCCESS, {
+            orderId: order.id,
+            serviceId,
+            link,
+            quantity,
+            amount,
+            utr: 'MANUAL',
+            timestamp: new Date().toISOString(),
+        });
+
+        res.status(201).json({ success: true, message: 'Admin order created', data: order });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/**
+ * GET /api/internal/spends
+ */
+export async function getSpends(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const spends = await prisma.spend.findMany({
+            orderBy: { date: 'desc' },
+            take: 50,
+        });
+        res.json({ success: true, message: 'Spends retrieved', data: spends });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/**
+ * POST /api/internal/spends
+ */
+export async function createSpend(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const { category, amount, note, date } = req.body;
+        const spend = await prisma.spend.create({
+            data: {
+                category,
+                amount,
+                note,
+                date: date ? new Date(date) : new Date(),
+            },
+        });
+        res.status(201).json({ success: true, message: 'Spend recorded', data: spend });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/**
+ * POST /api/internal/auth/login
+ */
+const loginSchema = z.object({
+    email: z.string().email(),
+});
+
+export async function login(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const { email } = loginSchema.parse(req.body);
+        const admin = await prisma.adminEmail.findUnique({
+            where: { email: email.toLowerCase() },
+        });
+
+        if (!admin) {
+            res.status(401).json({ success: false, message: 'Access denied' });
+            return;
+        }
+
+        res.json({ success: true, message: 'Login successful', data: { email: admin.email, id: admin.id } });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/**
+ * GET /api/internal/failed-orders/message/:messageId
+ */
+export async function getFailedOrderMessage(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const messageId = parseFloat(String(req.params.messageId));
+        const mapping = await prisma.failedOrderMessage.findUnique({ where: { messageId } });
+        res.json({ success: !!mapping, data: mapping });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/**
+ * POST /api/internal/failed-orders/message
+ */
+export async function upsertFailedOrderMessage(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const { messageId, orderId } = req.body;
+        const mapping = await prisma.failedOrderMessage.upsert({
+            where: { messageId: parseFloat(messageId) },
+            create: { messageId: parseFloat(messageId), orderId },
+            update: { orderId },
+        });
+        res.json({ success: true, data: mapping });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/**
+ * DELETE /api/internal/failed-orders/message/:messageId
+ */
+export async function removeFailedOrderMessage(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const messageId = parseFloat(String(req.params.messageId));
+        await prisma.failedOrderMessage.delete({ where: { messageId } });
+        res.json({ success: true });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/**
+ * POST /api/internal/orders/:id/approve-manual
+ */
+export async function approveOrderManual(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const id = String(req.params.id);
+        const order = await prisma.order.findUnique({ where: { id } });
+
+        if (!order) {
+            res.status(404).json({ success: false, message: 'Order not found' });
+            return;
+        }
+
+        // Update main order
+        await prisma.order.update({
+            where: { id },
+            data: { status: OrderStatus.PROCESSING },
+        });
+
+        // Trigger SMM placement
+        await rabbitMQService.publishToQueue(QUEUES.PAYMENT_SUCCESS, {
+            orderId: order.id,
+            serviceId: order.serviceId,
+            link: order.link,
+            quantity: order.quantity,
+            amount: order.amount,
+            utr: 'MANUAL_APPROVAL',
+            timestamp: new Date().toISOString(),
+        });
+
+        res.json({ success: true, message: 'Order approved and queued' });
+    } catch (error) {
+        next(error);
+    }
+}

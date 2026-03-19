@@ -5,7 +5,23 @@ import {
     getAuthorizedGroups,
     authorizeGroup,
     removeGroup,
+    getDashboardStats,
+    getOrders,
+    getOrder,
+    createAdminOrder,
+    getSpends,
+    createSpend,
+    login,
+    getFailedOrderMessage,
+    upsertFailedOrderMessage,
+    removeFailedOrderMessage,
+    approveOrderManual,
 } from '../controllers/internal.controller';
+import { 
+    getServices as getSmmServices, 
+    getBalance as getSmmBalances, 
+    getSmmOrderStatus 
+} from '../controllers/ssm.controller';
 import { apiKeyAuth } from '../middleware/apiKeyAuth';
 
 const router = Router();
@@ -45,5 +61,68 @@ router.post('/groups', authorizeGroup);
  * Remove an authorized Telegram group.
  */
 router.delete('/groups/:chatId', removeGroup);
+
+/**
+ * GET /api/internal/stats
+ */
+router.get('/stats', getDashboardStats);
+
+/**
+ * GET /api/internal/orders
+ */
+router.get('/orders', getOrders);
+
+/**
+ * GET /api/internal/orders/:id
+ */
+router.get('/orders/:id', getOrder);
+
+/**
+ * POST /api/internal/orders
+ */
+router.post('/orders', createAdminOrder);
+
+/**
+ * GET /api/internal/spends
+ */
+router.get('/spends', getSpends);
+
+/**
+ * POST /api/internal/spends
+ */
+router.post('/spends', createSpend);
+
+/**
+ * POST /api/internal/auth/login
+ */
+router.post('/auth/login', login);
+
+/**
+ * Failed Order Message Management
+ */
+router.get('/failed-orders/message/:messageId', getFailedOrderMessage);
+router.post('/failed-orders/message', upsertFailedOrderMessage);
+router.delete('/failed-orders/message/:messageId', removeFailedOrderMessage);
+
+/**
+ * Manual Order Approval
+ */
+router.post('/orders/:id/approve-manual', approveOrderManual);
+
+/**
+ * GET /api/internal/ssm/balance
+ * Check all SMM panel balances.
+ */
+router.get('/ssm/balance', getSmmBalances);
+
+/**
+ * GET /api/internal/ssm/services
+ */
+router.get('/ssm/services', getSmmServices);
+
+/**
+ * GET /api/internal/ssm/orders/:smmOrderId/status
+ */
+router.get('/ssm/orders/:smmOrderId/status', getSmmOrderStatus);
 
 export default router;
