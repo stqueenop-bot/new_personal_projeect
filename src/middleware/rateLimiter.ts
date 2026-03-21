@@ -55,3 +55,16 @@ export const webhookRateLimiter = rateLimit({
         message: 'Webhook rate limit exceeded.',
     },
 });
+
+// ─── Payment Creation Limiter ──────────────────────────────────────────────────
+// Very strict: Only 8 payment creations per 5 minutes per IP
+export const paymentCreationLimiter = rateLimit({
+    windowMs: 5 * 60 * 1000,          // 5 minute window
+    max: 8,                             // max 8 requests
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    message: {
+        success: false,
+        message: 'Too many payment attempts. Please wait 15 minutes or contact support.',
+    },
+});
