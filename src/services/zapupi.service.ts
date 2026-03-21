@@ -32,6 +32,8 @@ export class ZapUPIService {
         customerMobile?: string;
         redirectUrl?: string;
         remark?: string;
+        remark1?: string;
+        remark2?: string;
     }): Promise<ZapUPICreateOrderResponse> {
         const MAX_RETRIES = 3;
         let lastError: any;
@@ -45,19 +47,21 @@ export class ZapUPIService {
                 }
 
                 const payload: Record<string, string | number> = {
-                    token_key: this.tokenKey,
-                    secret_key: this.secretKey,
-                    amount: params.amount,
+                    user_token: this.tokenKey,
+                    amount: params.amount.toString(),
                     order_id: params.orderId,
                 };
-
-                if (params.customerMobile) payload.custumer_mobile = params.customerMobile;
+                logger.info(`[ZapUPI] Payload:`, payload);
+                if (params.customerMobile) payload.customer_mobile = params.customerMobile;
                 if (params.redirectUrl) payload.redirect_url = params.redirectUrl;
-                if (params.remark) payload.remark = params.remark;
+
+                // Use remark1/remark2 if provided, otherwise fallback to remark
+                payload.remark1 = params.remark1 || params.remark || 'N/A';
+                payload.remark2 = params.remark2 || params.remark || 'N/A';
 
                 const response = await axios.post<ZapUPICreateOrderResponse>(
                     `${this.baseUrl}/create-order`,
-                    qs.stringify(payload),
+                    payload,
                     {
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         timeout: 30000,
@@ -65,18 +69,25 @@ export class ZapUPIService {
                 );
 
                 logger.info(`[ZapUPI] Order create response:`, response.data);
-                return response.data;
+
+                // Success is true (boolean), but user also showed "false" as string in failed response.
+                // We check for truthiness of status.
+                if (response.data.status === true || response.data.status === 'true') {
+                    return response.data;
+                } else {
+                    logger.error(`[ZapUPI] Order creation failed: ${response.data.message}`);
+                    return response.data;
+                }
             } catch (error) {
                 lastError = error;
                 const isTimeout = (error as any).code === 'ECONNABORTED' || (error as any).message?.includes('timeout');
-                
+
                 if (!isTimeout || attempt === MAX_RETRIES) {
                     logger.error(`[ZapUPI] Failed to create order (Final Attempt ${attempt}/${MAX_RETRIES}):`, error);
                     break;
                 }
-                
+
                 logger.warn(`[ZapUPI] createOrder attempt ${attempt} timed out. Retrying...`);
-                // Wait briefly before retrying (exponential backoff not strictly needed but good practice)
                 await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
             }
         }
@@ -100,21 +111,20 @@ export class ZapUPIService {
                 }
 
                 const payload = {
-                    token_key: this.tokenKey,
-                    secret_key: this.secretKey,
+                    user_token: this.tokenKey,
                     order_id: orderId,
                 };
 
                 const response = await axios.post<ZapUPIOrderStatusResponse>(
-                    `${this.baseUrl}/order-status`,
-                    qs.stringify(payload),
+                    `${this.baseUrl}/check-order-status`,
+                    payload,
                     {
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         timeout: 30000,
                     }
                 );
 
-                logger.info(`[ZapUPI] Order status:`, response.data);
+                logger.info(`[ZapUPI] Order status response:`, response.data);
                 return response.data;
             } catch (error) {
                 lastError = error;

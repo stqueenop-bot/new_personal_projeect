@@ -3,10 +3,12 @@
 // ================================
 
 export interface ZapUPICreateOrderResponse {
-    status: 'success' | 'error';
+    status: boolean | string; // Boolean true for success, string "false" for error
     message: string;
-    payment_url?: string;
-    order_id?: string;
+    result?: {
+        orderId: string;
+        payment_url: string;
+    };
 }
 
 export interface ZapUPIOrderStatusData {
@@ -21,9 +23,17 @@ export interface ZapUPIOrderStatusData {
 }
 
 export interface ZapUPIOrderStatusResponse {
-    status: 'success' | 'error';
-    message?: string;
-    data?: ZapUPIOrderStatusData;
+    status: string; // "COMPLETED", "ERROR", etc.
+    message: string;
+    result?: {
+        txnStatus: string;
+        resultInfo: string;
+        orderId: string;
+        status: string;
+        amount: string;
+        date: string;
+        utr: string;
+    };
 }
 
 // ================================

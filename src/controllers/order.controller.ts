@@ -172,8 +172,9 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
             remark: `Instagram ${serviceCategory} - ${quantity} units`,
         });
 
-        if (zapupiResponse.status === 'success' && zapupiResponse.payment_url) {
-            paymentUrl = zapupiResponse.payment_url;
+        const isSuccess = zapupiResponse.status === true || zapupiResponse.status === 'true';
+        if (isSuccess && zapupiResponse.result?.payment_url) {
+            paymentUrl = zapupiResponse.result.payment_url;
 
             await prisma.payment.create({
                 data: {
@@ -297,18 +298,18 @@ export async function getOrder(req: Request, res: Response, next: NextFunction):
                 try {
                     const liveStatus = await zapUPIService.getOrderStatus(order.payment.zapupiOrderId);
 
-                    if (liveStatus?.status === 'success' && liveStatus.data) {
-                        const normalizedStatus = liveStatus.data.status?.toLowerCase();
+                    if (liveStatus?.status === 'COMPLETED' && liveStatus.result) {
+                        const normalizedStatus = liveStatus.result.status?.toLowerCase();
 
-                        if (normalizedStatus === 'success') {
+                        if (normalizedStatus === 'success' || normalizedStatus === 'completed') {
                             logger.info(`[OrderController] Auto-syncing payment to SUCCESS for order ${id}`);
 
                             await prisma.payment.update({
                                 where: { id: order.payment.id },
                                 data: {
                                     status: 'SUCCESS',
-                                    utr: liveStatus.data.utr || null,
-                                    zapupiTxnId: liveStatus.data.txn_id || null,
+                                    utr: liveStatus.result.utr || null,
+                                    zapupiTxnId: liveStatus.result.orderId || null,
                                 },
                             });
 
@@ -325,7 +326,7 @@ export async function getOrder(req: Request, res: Response, next: NextFunction):
                                     link: order.link,
                                     quantity: order.quantity,
                                     amount: order.payment.amount,
-                                    utr: liveStatus.data.utr || null,
+                                    utr: liveStatus.result.utr || null,
                                     timestamp: new Date().toISOString(),
                                 });
                                 logger.info(`[OrderController] Published PAYMENT_SUCCESS for order ${id}`);
@@ -342,7 +343,7 @@ export async function getOrder(req: Request, res: Response, next: NextFunction):
                             res.json({ success: true, message: 'Order retrieved (payment synced)', data: updated });
                             return;
 
-                        } else if (normalizedStatus === 'failed') {
+                        } else if (normalizedStatus === 'failed' || normalizedStatus === 'error') {
                             logger.info(`[OrderController] Auto-syncing payment to FAILED for order ${id}`);
 
                             await prisma.payment.update({

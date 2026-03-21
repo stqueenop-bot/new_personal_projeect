@@ -15,12 +15,17 @@ export const createPaymentSchema = z.object({
 });
 
 export const webhookSchema = z.object({
-    order_id: z.string().min(1, 'order_id is required'),
+    order_id: z.string().optional(),
+    orderId: z.string().optional(),
     status: z.string().min(1, 'status is required'),
     utr: z.string().optional(),
     txn_id: z.string().optional(),
-    amount: z.number().optional(),
+    txnId: z.string().optional(),
+    amount: z.union([z.number(), z.string()]).optional(),
     reason: z.string().optional(),
+}).refine(data => data.order_id || data.orderId, {
+    message: "Either order_id or orderId must be provided",
+    path: ["order_id"]
 });
 
 // ===================== Controller =====================
@@ -70,7 +75,8 @@ export async function createPayment(req: Request, res: Response, next: NextFunct
             remark: `Instagram SMM Order #${order.id.substring(0, 8)}`,
         });
 
-        if (zapupiResponse.status !== 'success' || !zapupiResponse.payment_url) {
+        const isSuccess = zapupiResponse.status === true || zapupiResponse.status === 'true';
+        if (!isSuccess || !zapupiResponse.result?.payment_url) {
             logger.error('[PaymentController] ZapUPI error:', zapupiResponse);
             return next(createError(`Payment gateway error: ${zapupiResponse.message}`, 502));
         }
@@ -81,12 +87,12 @@ export async function createPayment(req: Request, res: Response, next: NextFunct
                 zapupiOrderId,
                 orderId: order.id,
                 amount: order.amount,
-                paymentUrl: zapupiResponse.payment_url,
+                paymentUrl: zapupiResponse.result.payment_url,
                 status: PaymentStatus.PENDING,
             },
             update: {
                 zapupiOrderId,
-                paymentUrl: zapupiResponse.payment_url,
+                paymentUrl: zapupiResponse.result.payment_url,
                 status: PaymentStatus.PENDING,
             },
         });
@@ -95,7 +101,7 @@ export async function createPayment(req: Request, res: Response, next: NextFunct
             success: true,
             message: 'Payment order created successfully',
             data: {
-                paymentUrl: zapupiResponse.payment_url,
+                paymentUrl: zapupiResponse.result.payment_url,
                 zapupiOrderId,
                 orderId: order.id,
                 amount: order.amount,
@@ -116,7 +122,9 @@ export async function createPayment(req: Request, res: Response, next: NextFunct
 export async function handleWebhook(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         const body = req.body as z.infer<typeof webhookSchema>;
-        const { order_id: zapupiOrderId, status, utr, txn_id, reason } = body;
+        const zapupiOrderId = body.order_id || body.orderId;
+        const { status, utr, txn_id, txnId, reason } = body;
+        const transactionId = txn_id || txnId;
 
         logger.info(`[PaymentController] Webhook received: orderId=${zapupiOrderId}, status=${status}`);
 
@@ -142,15 +150,18 @@ export async function handleWebhook(req: Request, res: Response, next: NextFunct
         let verifiedAmount: number | null = null;
         try {
             const liveStatus = await zapUPIService.getOrderStatus(zapupiOrderId);
-            if (liveStatus.status === 'success' && liveStatus.data) {
-                const normalizedStatus = liveStatus.data.status?.toLowerCase?.() ?? '';
-                if (normalizedStatus === 'success') {
+            if (liveStatus.status === 'COMPLETED' && liveStatus.result) {
+                const normalizedStatus = liveStatus.result.status?.toLowerCase?.() ?? '';
+                if (normalizedStatus === 'success' || normalizedStatus === 'completed') {
                     verifiedStatus = 'success';
-                    verifiedAmount = liveStatus.data.amount ?? null;
-                } else if (normalizedStatus === 'failed') {
+                    verifiedAmount = Number(liveStatus.result.amount) || null;
+                } else if (normalizedStatus === 'failed' || normalizedStatus === 'error') {
                     verifiedStatus = 'failed';
                 }
                 logger.info(`[PaymentController] ZapUPI API verified: status=${verifiedStatus}, amount=${verifiedAmount}`);
+            } else if (liveStatus.status === 'ERROR') {
+                logger.warn(`[PaymentController] ZapUPI API returned error status for ${zapupiOrderId}: ${liveStatus.message}`);
+                verifiedStatus = 'failed';
             }
         } catch (verifyErr) {
             // DO NOT fall back to trusting webhook — keep PENDING for admin review
@@ -329,21 +340,21 @@ export async function getPaymentStatus(req: Request, res: Response, next: NextFu
 
             // AUTO-SYNC: If ZapUPI says paid but DB still PENDING, sync the status
             // This handles cases where webhook can't reach localhost (dev mode)
-            if (liveStatus?.status === 'success' && payment.status === 'PENDING') {
-                const liveData = liveStatus.data;
+            if (liveStatus?.status === 'COMPLETED' && payment.status === 'PENDING') {
+                const liveData = liveStatus.result;
                 const normalizedStatus = liveData?.status?.toLowerCase();
-                const isPaid = normalizedStatus === 'success';
-                const isFailed = normalizedStatus === 'failed';
+                const isPaid = normalizedStatus === 'success' || normalizedStatus === 'completed';
+                const isFailed = normalizedStatus === 'failed' || normalizedStatus === 'error';
 
-                if (isPaid) {
+                if (isPaid && liveData) {
                     logger.info(`[PaymentController] Auto-syncing payment ${payment.zapupiOrderId} to SUCCESS (from ZapUPI live check)`);
 
                     await prisma.payment.update({
                         where: { id: payment.id },
                         data: {
                             status: 'SUCCESS',
-                            utr: liveData?.utr || liveData?.txn_id || null,
-                            zapupiTxnId: liveData?.txn_id || null,
+                            utr: liveData.utr || liveData.orderId || null,
+                            zapupiTxnId: liveData.orderId || null,
                         },
                     });
 
@@ -363,7 +374,7 @@ export async function getPaymentStatus(req: Request, res: Response, next: NextFu
                                 link: order.link,
                                 quantity: order.quantity,
                                 amount: payment.amount,
-                                utr: liveData?.utr || liveData?.txn_id || null,
+                                utr: liveData.utr || liveData.orderId || null,
                                 timestamp: new Date().toISOString(),
                             });
                             logger.info(`[PaymentController] Published PAYMENT_SUCCESS for order ${payment.orderId}`);
@@ -376,7 +387,7 @@ export async function getPaymentStatus(req: Request, res: Response, next: NextFu
                         success: true,
                         message: 'Payment confirmed (synced from ZapUPI)',
                         data: {
-                            payment: { id: payment.id, orderId: payment.orderId, amount: payment.amount, status: 'SUCCESS', utr: liveData?.utr || liveData?.txn_id || null, zapupiOrderId: payment.zapupiOrderId, paymentUrl: payment.paymentUrl, createdAt: payment.createdAt, updatedAt: new Date() },
+                            payment: { id: payment.id, orderId: payment.orderId, amount: payment.amount, status: 'SUCCESS', utr: liveData.utr || liveData.orderId || null, zapupiOrderId: payment.zapupiOrderId, paymentUrl: payment.paymentUrl, createdAt: payment.createdAt, updatedAt: new Date() },
                             liveStatus: liveData,
                         },
                     };
@@ -384,7 +395,7 @@ export async function getPaymentStatus(req: Request, res: Response, next: NextFu
                     return;
                 }
 
-                if (isFailed) {
+                if (isFailed && liveData) {
                     logger.info(`[PaymentController] Auto-syncing payment ${payment.zapupiOrderId} to FAILED (from ZapUPI live check)`);
 
                     await prisma.payment.update({
@@ -441,7 +452,7 @@ export async function getPaymentStatus(req: Request, res: Response, next: NextFu
                     createdAt: payment.createdAt,
                     updatedAt: payment.updatedAt,
                 },
-                liveStatus: liveStatus?.data ?? null,
+                liveStatus: liveStatus?.result ?? null,
             },
         };
 
