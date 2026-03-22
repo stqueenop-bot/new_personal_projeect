@@ -45,21 +45,26 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
             status: PaymentStatus.SUCCESS,
             utr: data.utr,
         },
+        select:{
+            
+        }
     });
 
     // 2. Update Order status to PROCESSING
-    await prisma.order.update({
+    const {serviceName}=await prisma.order.update({
         where: { id: data.orderId },
         data: { status: OrderStatus.PROCESSING },
+        select:{
+            serviceName:true
+        }
     });
 
     sseService.broadcastStatus(data.orderId, OrderStatus.PROCESSING);
-
+  
     // ──────────────────────────────────────────────────────────
     // MAPPED SERVICES: Validation and SMM flow
     // ──────────────────────────────────────────────────────────
     const serviceCategory = getCategoryForId(data.serviceId) as ServiceCategory | null;
-
     // 1. Check if Service is Mapped and Quantity is Valid
     if (!serviceCategory || !isValidQuantity(data.serviceId, data.quantity)) {
         const reason = !serviceCategory 
@@ -80,7 +85,6 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
         });
 
         sseService.broadcastStatus(data.orderId, OrderStatus.COMPLETED);
-
         // If it's just an invalid quantity, send to SUCCESS bot (main bot) as requested
         // but with a flag that it was not placed on SMM.
         if (serviceCategory && !isValidQuantity(data.serviceId, data.quantity)) {
@@ -127,6 +131,19 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
     // ──────────────────────────────────────────────────────────
     const provider = order.provider as SmmProvider;
     const currentSmmService = getSmmService(provider);
+
+    // 1. Check for Idempotency: Is this order already being processed?
+    if (order.status === OrderStatus.PROCESSING || order.status === OrderStatus.COMPLETED) {
+        // Double check if an SmmOrder already exists with an ID
+        const existingSmmOrder = await prisma.smmOrder.findUnique({
+            where: { orderId: data.orderId }
+        });
+        
+        if (existingSmmOrder?.smmOrderId) {
+            logger.info(`[Worker] Order ${data.orderId} already has an SMM order (${existingSmmOrder.smmOrderId}). Skipping duplicate placement.`);
+            return;
+        }
+    }
 
     // 3. Link Validation (MAJOR HOTFIX: Done BEFORE SMM call)
     const linkCheck = validateLinkForService(data.link, serviceCategory);

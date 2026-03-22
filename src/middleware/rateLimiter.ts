@@ -68,3 +68,17 @@ export const paymentCreationLimiter = rateLimit({
         message: 'Too many payment attempts. Please wait 15 minutes or contact support.',
     },
 });
+
+// ─── Order Polling Limiter ─────────────────────────────────────────────────────
+// Prevents rapid UI polling from overwhelming the status check logic
+// Limit: 15 requests per 1 minute window
+export const orderPollingLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000,
+    max: 15,
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    message: {
+        success: false,
+        message: 'Too many status check attempts. Please slow down.',
+    },
+});

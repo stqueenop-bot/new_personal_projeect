@@ -9,6 +9,7 @@ import {
 } from '../controllers/order.controller';
 import { validate } from '../middleware/validate';
 import { apiKeyAuth } from '../middleware/apiKeyAuth';
+import { orderPollingLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 
@@ -34,6 +35,6 @@ router.get('/', apiKeyAuth, getOrders);
  * GET /api/orders/:id
  * Get single order with full details (public — for status tracking).
  */
-router.get('/:id', getOrder);
+router.get('/:id', orderPollingLimiter, getOrder);
 
 export default router;

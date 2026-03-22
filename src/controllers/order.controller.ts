@@ -304,37 +304,59 @@ export async function getOrder(req: Request, res: Response, next: NextFunction):
                         if (normalizedStatus === 'success' || normalizedStatus === 'completed') {
                             logger.info(`[OrderController] Auto-syncing payment to SUCCESS for order ${id}`);
 
-                            await prisma.payment.update({
-                                where: { id: order.payment.id },
-                                data: {
-                                    status: 'SUCCESS',
-                                    utr: liveStatus.result.utr || null,
-                                    zapupiTxnId: liveStatus.result.orderId || null,
-                                },
-                            });
-
-                            await prisma.order.update({
-                                where: { id },
-                                data: { status: OrderStatus.PROCESSING },
-                            });
-
                             try {
-                                await rabbitMQService.publishToQueue(QUEUES.PAYMENT_SUCCESS, {
-                                    orderId: id,
-                                    paymentId: order.payment.id,
-                                    serviceId: order.serviceId,
-                                    link: order.link,
-                                    quantity: order.quantity,
-                                    amount: order.payment.amount,
-                                    utr: liveStatus.result.utr || null,
-                                    timestamp: new Date().toISOString(),
+                                // 1. Update Payment status to SUCCESS (ensure it was PENDING)
+                                await prisma.payment.update({
+                                    where: { 
+                                        id: order.payment.id,
+                                        status: 'PENDING' // ATOMIC PROTECTION
+                                    },
+                                    data: {
+                                        status: 'SUCCESS',
+                                        utr: liveStatus.result.utr || null,
+                                        zapupiTxnId: liveStatus.result.orderId || null,
+                                    },
                                 });
-                                logger.info(`[OrderController] Published PAYMENT_SUCCESS for order ${id}`);
-                            } catch (mqErr) {
-                                logger.error('[OrderController] RabbitMQ publish failed:', mqErr);
+
+                                // 2. Update Order status to PROCESSING
+                                await prisma.order.update({
+                                    where: { 
+                                        id,
+                                        status: 'PENDING'
+                                    },
+                                    data: { status: OrderStatus.PROCESSING },
+                                });
+
+                                try {
+                                    await rabbitMQService.publishToQueue(QUEUES.PAYMENT_SUCCESS, {
+                                        orderId: id,
+                                        paymentId: order.payment.id,
+                                        serviceId: order.serviceId,
+                                        link: order.link,
+                                        quantity: order.quantity,
+                                        amount: order.payment.amount,
+                                        utr: liveStatus.result.utr || null,
+                                        timestamp: new Date().toISOString(),
+                                    });
+                                    logger.info(`[OrderController] Published PAYMENT_SUCCESS for order ${id}`);
+                                } catch (mqErr) {
+                                    logger.error('[OrderController] RabbitMQ publish failed:', mqErr);
+                                }
+                            } catch (updateErr: any) {
+                                // If status is already changed, another request won the race — ignore silently
+                                if (updateErr.code === 'P2025') {
+                                    logger.warn(`[OrderController] Duplicate sync attempt blocked for order ${id}`);
+                                    const updated = await prisma.order.findUnique({
+                                        where: { id },
+                                        include: { payment: true, smmOrder: true, user: true },
+                                    });
+                                    res.json({ success: true, message: 'Order retrieved (already synced)', data: updated });
+                                    return;
+                                }
+                                throw updateErr;
                             }
 
-                            zapupiCheckCache.delete(cacheKey);
+                            // zapupiCheckCache.delete(cacheKey); // REMOVED: Keep lock for 30s to prevent multiple in-flight polls from triggering again
 
                             const updated = await prisma.order.findUnique({
                                 where: { id },
