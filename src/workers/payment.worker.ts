@@ -269,7 +269,7 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
         // User sees SUCCESS, admin handles manually.
         await prisma.smmOrder.update({
             where: { orderId: data.orderId },
-            data: { status: OrderStatus.FAILED, errorMsg },
+            data: { status: OrderStatus.PENDING, errorMsg },
         });
 
         await prisma.order.update({
