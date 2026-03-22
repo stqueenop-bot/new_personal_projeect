@@ -160,8 +160,10 @@ class TelegramService {
             return;
         }
 
-        // If it's a timeout/expiry, route to failed bot instead of main bot
-        // const isExpiry = params.reason.toLowerCase().includes('timeout') || params.reason.toLowerCase().includes('expire');
+        // If it's a timeout/expiry, route to console only as requested
+        const isExpiry = params.reason.toLowerCase().includes('timeout') || 
+                         params.reason.toLowerCase().includes('expire') ||
+                         params.reason.toLowerCase().includes('timed out');
 
         const message =
             `❌ <b>PAYMENT FAILED</b>\n\n` +
@@ -171,7 +173,12 @@ class TelegramService {
             (params.customerMobile ? `📱 <b>Customer Mobile:</b> ${params.customerMobile}\n` : '') +
             `🕐 <b>Time:</b> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
 
-        logger.error("Failure in payment", message);
+        if (isExpiry) {
+            logger.info(`[Telegram] notifyPaymentFailed (Console Only): Order ${params.orderId} failed due to expiry/timeout`);
+            return;
+        }
+
+        await this.sendToMain(message);
     }
 
     /**

@@ -5,9 +5,9 @@ import { getSmmService } from '../services/ssm.service';
 import { prisma } from '../../lib/initiatePrisma';
 import { logger } from '../utils/logger';
 import { sseService } from '../services/sse.service';
-import { PaymentSuccessMessage, PaymentFailedMessage } from '../types/index.js';
-import { getProviderForService, getCategoryForId, isValidQuantity } from '../utils/smm.mapper.js';
-import { validateLinkForService, ServiceCategory } from '../services/instagram.validator.js';
+import { PaymentSuccessMessage, PaymentFailedMessage } from '../types/index';
+import { getProviderForService, getCategoryForId, isValidQuantity } from '../utils/smm.mapper';
+import { validateLinkForService, ServiceCategory } from '../services/instagram.validator';
 
 
 
@@ -45,32 +45,46 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
             status: PaymentStatus.SUCCESS,
             utr: data.utr,
         },
-        select:{
-            
-        }
     });
 
-    // 2. Update Order status to PROCESSING
-    const {serviceName}=await prisma.order.update({
-        where: { id: data.orderId },
-        data: { status: OrderStatus.PROCESSING },
-        select:{
-            serviceName:true
+    // 2. Update Order status to PROCESSING (ONLY if it was PENDING)
+    // This ensures that two workers don't start processing the same order concurrently.
+    let orderData;
+    try {
+        orderData = await prisma.order.update({
+            where: { id: data.orderId, status: OrderStatus.PENDING },
+            data: { status: OrderStatus.PROCESSING },
+            select: { serviceName: true, provider: true, status: true, remark: true }
+        });
+    } catch (updateErr: any) {
+        // If record not found, it's either not PENDING or doesn't exist.
+        // We check the current state to decide if we should skip.
+        const currentOrder = await prisma.order.findUnique({
+            where: { id: data.orderId },
+            include: { smmOrder: true }
+        });
+
+        if (currentOrder?.status === OrderStatus.COMPLETED || currentOrder?.smmOrder?.smmOrderId) {
+            logger.info(`[Worker] Order ${data.orderId} already processed (Status: ${currentOrder.status}). Skipping.`);
+            return;
         }
-    });
+
+        logger.error(`[Worker] Failed to transition order ${data.orderId} to PROCESSING: ${updateErr.message}`);
+        return;
+    }
 
     sseService.broadcastStatus(data.orderId, OrderStatus.PROCESSING);
-  
+
     // ──────────────────────────────────────────────────────────
     // MAPPED SERVICES: Validation and SMM flow
     // ──────────────────────────────────────────────────────────
     const serviceCategory = getCategoryForId(data.serviceId) as ServiceCategory | null;
     // 1. Check if Service is Mapped and Quantity is Valid
     if (!serviceCategory || !isValidQuantity(data.serviceId, data.quantity)) {
-        const reason = !serviceCategory 
-            ? `Unmapped service ID: ${data.serviceId}` 
+        const reason = !serviceCategory
+            ? `Unmapped service ID: ${data.serviceId}`
             : `Manual order required: Invalid quantity ${data.quantity} for service ${data.serviceId}`;
-            
+
         logger.info(`[Worker] ${reason}. Bypassing SMM and marking COMPLETED directly.`);
 
         // Fetch service name from DB if available
@@ -79,15 +93,15 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
             select: { serviceName: true }
         });
 
-        await prisma.order.update({
+        const { serviceName } = await prisma.order.update({
             where: { id: data.orderId },
             data: { status: OrderStatus.COMPLETED },
         });
 
         sseService.broadcastStatus(data.orderId, OrderStatus.COMPLETED);
         // If it's just an invalid quantity, send to SUCCESS bot (main bot) as requested
-        // but with a flag that it was not placed on SMM.
-        if (serviceCategory && !isValidQuantity(data.serviceId, data.quantity)) {
+        // but with a flag that it was not placed on SMM.)
+        if ((serviceName?.toLowerCase() !== 'instagram') || (serviceCategory && !isValidQuantity(data.serviceId, data.quantity))) {
             await rabbitMQService.publishToQueue(QUEUES.ORDER_NOTIFY, {
                 type: 'SUCCESS',
                 payload: {
@@ -129,20 +143,21 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
     // ──────────────────────────────────────────────────────────
     // MAPPED SERVICES: Validation and SMM flow
     // ──────────────────────────────────────────────────────────
-    const provider = order.provider as SmmProvider;
+    const provider = orderData.provider as SmmProvider;
     const currentSmmService = getSmmService(provider);
 
-    // 1. Check for Idempotency: Is this order already being processed?
-    if (order.status === OrderStatus.PROCESSING || order.status === OrderStatus.COMPLETED) {
-        // Double check if an SmmOrder already exists with an ID
-        const existingSmmOrder = await prisma.smmOrder.findUnique({
-            where: { orderId: data.orderId }
-        });
-        
-        if (existingSmmOrder?.smmOrderId) {
-            logger.info(`[Worker] Order ${data.orderId} already has an SMM order (${existingSmmOrder.smmOrderId}). Skipping duplicate placement.`);
-            return;
+    // 1. Check for Idempotency again: Double check if an SmmOrder already exists with an ID
+    const existingSmmOrder = await prisma.smmOrder.findUnique({
+        where: { orderId: data.orderId }
+    });
+
+    if (existingSmmOrder?.smmOrderId) {
+        logger.info(`[Worker] Order ${data.orderId} already has an SMM order (${existingSmmOrder.smmOrderId}). Skipping duplicate placement.`);
+        // Mark COMPLETED if it wasn't already (safety)
+        if (order.status !== OrderStatus.COMPLETED) {
+            await prisma.order.update({ where: { id: data.orderId }, data: { status: OrderStatus.COMPLETED } });
         }
+        return;
     }
 
     // 3. Link Validation (MAJOR HOTFIX: Done BEFORE SMM call)
@@ -200,7 +215,7 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
             serviceId: data.serviceId,
             link: data.link,
             quantity: data.quantity,
-            comments: serviceCategory === 'comments' ? (order.remark || undefined) : undefined,
+            comments: serviceCategory === 'comments' ? (orderData.remark || undefined) : undefined,
         });
 
         // Optionally fetch charge
@@ -307,9 +322,9 @@ async function handlePaymentFailed(msg: ConsumeMessage): Promise<void> {
 
     // ─── TELEGRAM NOTIFICATION ───
     // Only notify if it's NOT a timeout/expiration
-    const isExpiry = data.reason?.toLowerCase().includes('timeout') || 
-                     data.reason?.toLowerCase().includes('timed out') || 
-                     data.reason?.toLowerCase().includes('expire');
+    const isExpiry = data.reason?.toLowerCase().includes('timeout') ||
+        data.reason?.toLowerCase().includes('timed out') ||
+        data.reason?.toLowerCase().includes('expire');
 
     if (!isExpiry) {
         await rabbitMQService.publishToQueue(QUEUES.ORDER_NOTIFY, {

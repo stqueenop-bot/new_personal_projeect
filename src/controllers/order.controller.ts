@@ -64,6 +64,7 @@ export const createOrderSchema = z.object({
     customerMobile: z.string().regex(/^[6-9]\d{9}$/, 'Invalid Indian mobile number').optional(),
     remark: z.string().max(200).optional(),
     userId: z.string().uuid().optional(),
+    serviceName: z.string(),
 });
 
 export const validateLinkSchema = z.object({
@@ -111,7 +112,7 @@ export async function validateLink(req: Request, res: Response, next: NextFuncti
 export async function createOrder(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         const body = req.body as z.infer<typeof createOrderSchema>;
-        let { serviceId, link, quantity, amount, serviceCategory, customerMobile, remark, userId } = body;
+        let { serviceId, link, quantity, amount, serviceCategory, customerMobile, remark, userId, serviceName } = body;
 
         // Derive meta-data from serviceId (Override or supplement frontend)
         const mappedCategory = getCategoryForId(serviceId);
@@ -153,13 +154,14 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
                 remark: finalRemark,
                 userId: userId ?? null,
                 status: OrderStatus.PENDING,
+                serviceName
             },
         });
 
         logger.info(`[OrderController] Created order: ${order.id} (Provider: ${provider}, Category: ${serviceCategory})`);
 
         // Create ZapUPI payment (alphanumeric only, no hyphens)
-        const zapupiOrderId = `SMM${uuidv4().replace(/-/g, '').substring(0, 16).toUpperCase()}`;
+        const zapupiOrderId = `SMM-${uuidv4().replace(/-/g, '').substring(0, 16).toUpperCase()}`;
         let paymentUrl: string | null = null;
 
         const redirectUrl = `${env.FRONTEND_URL}/payment/status?orderId=${order.id}`;
@@ -307,7 +309,7 @@ export async function getOrder(req: Request, res: Response, next: NextFunction):
                             try {
                                 // 1. Update Payment status to SUCCESS (ensure it was PENDING)
                                 await prisma.payment.update({
-                                    where: { 
+                                    where: {
                                         id: order.payment.id,
                                         status: 'PENDING' // ATOMIC PROTECTION
                                     },
@@ -318,14 +320,14 @@ export async function getOrder(req: Request, res: Response, next: NextFunction):
                                     },
                                 });
 
-                                // 2. Update Order status to PROCESSING
-                                await prisma.order.update({
-                                    where: { 
-                                        id,
-                                        status: 'PENDING'
-                                    },
-                                    data: { status: OrderStatus.PROCESSING },
-                                });
+                                // // 2. Update Order status to PROCESSING
+                                // await prisma.order.update({
+                                //     where: { 
+                                //         id,
+                                //         status: 'PENDING'
+                                //     },
+                                //     data: { status: OrderStatus.PROCESSING },
+                                // });
 
                                 try {
                                     await rabbitMQService.publishToQueue(QUEUES.PAYMENT_SUCCESS, {
