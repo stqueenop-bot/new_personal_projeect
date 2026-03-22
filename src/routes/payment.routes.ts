@@ -9,7 +9,6 @@ import {
 import { validate } from '../middleware/validate';
 import { apiKeyAuth } from '../middleware/apiKeyAuth';
 import { webhookAuth } from '../middleware/webhookAuth';
-import { paymentCreationLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 
@@ -18,7 +17,7 @@ const router = Router();
  * Create a ZapUPI payment order for an existing order.
  * Protected by API key auth.
  */
-router.post('/create', paymentCreationLimiter, apiKeyAuth, validate(createPaymentSchema), createPayment);
+router.post('/create', apiKeyAuth, validate(createPaymentSchema), createPayment);
 
 /**
  * POST /api/payments/webhook
