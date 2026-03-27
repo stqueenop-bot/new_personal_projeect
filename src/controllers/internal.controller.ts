@@ -332,7 +332,8 @@ export async function createAdminOrder(req: Request, res: Response, next: NextFu
         const { serviceId, link, quantity, amount, remark, customerMobile } = req.body;
 
         const provider = getProviderForService(serviceId);
-        const serviceName = getServiceNameForId(serviceId);
+        const serviceName = `${getServiceNameForId(serviceId)}-instagram`; 
+        // Append -instagram to differentiate in reports, this ensures that every admin orders goes through smm call
 
         const order = await prisma.order.create({
             data: {
@@ -343,12 +344,12 @@ export async function createAdminOrder(req: Request, res: Response, next: NextFu
                 amount,
                 provider,
                 remark: remark || `Admin Manual: ${serviceName || serviceId}`,
-                status: OrderStatus.PROCESSING,
+                status: OrderStatus.PENDING,
                 payment: {
                     create: {
                         zapupiOrderId: `ADMIN-${Date.now()}`,
                         amount,
-                        status: PaymentStatus.SUCCESS,
+                        status: PaymentStatus.PENDING,
                         customerMobile: customerMobile || 'ADMIN',
                         utr: 'MANUAL',
                     },
