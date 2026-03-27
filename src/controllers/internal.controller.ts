@@ -106,10 +106,9 @@ export async function createBotOrder(req: Request, res: Response, next: NextFunc
         const { serviceId, link, quantity, remark } = botOrderSchema.parse(req.body);
 
         const provider = getProviderForService(serviceId);
-        const serviceName = getServiceNameForId(serviceId);
+        const serviceName = `${getServiceNameForId(serviceId)}-instagram`;
         const finalRemark = remark || (serviceName ? `${serviceName} - ${link}` : `Bot Order - ${link}`);
 
-        // Create Order as PROCESSING (since it's pre-approved by bot admin)
         const order = await prisma.order.create({
             data: {
                 serviceId,
@@ -119,7 +118,7 @@ export async function createBotOrder(req: Request, res: Response, next: NextFunc
                 amount: 0,
                 provider,
                 remark: finalRemark,
-                status: OrderStatus.PROCESSING,
+                status: OrderStatus.PENDING,
             },
         });
 
