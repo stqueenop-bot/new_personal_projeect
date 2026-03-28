@@ -119,6 +119,15 @@ export async function createBotOrder(req: Request, res: Response, next: NextFunc
                 provider,
                 remark: finalRemark,
                 status: OrderStatus.PENDING,
+                payment: {
+                    create: {
+                        zapupiOrderId: `TELE_BOT-${Date.now()}`,
+                        amount: 0,
+                        status: PaymentStatus.PENDING,
+                        customerMobile: 'ADMIN',
+                        utr: 'MANUAL-Telegram bot',
+                    },
+                },
             },
         });
 
