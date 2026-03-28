@@ -52,7 +52,7 @@ export class ZapUPIService {
                     order_id: params.orderId,
                 };
                 logger.info(`[ZapUPI] Payload:`, payload);
-                if (params.customerMobile) payload.customer_mobile = params.customerMobile;
+                payload.customer_mobile = '9999999999';
                 if (params.redirectUrl) payload.redirect_url = params.redirectUrl;
 
                 // Use remark1/remark2 if provided, otherwise fallback to remark
@@ -72,7 +72,7 @@ export class ZapUPIService {
 
                 // Success is true (boolean), but user also showed "false" as string in failed response.
                 // We check for truthiness of status.
-                if (response.data.status === true || response.data.status === 'true') {
+                if (response.data.status === true || response.data.status === 'true'|| (typeof response.data.status === 'string' && response.data.status.toString().toLowerCase() === 'success') || (typeof response.data.status === 'string' && response.data.status.toString().toUpperCase() === 'COMPLETED')) {
                     return response.data;
                 } else {
                     logger.error(`[ZapUPI] Order creation failed: ${response.data.message}`);

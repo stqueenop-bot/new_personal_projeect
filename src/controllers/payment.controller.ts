@@ -343,7 +343,7 @@ export async function getPaymentStatus(req: Request, res: Response, next: NextFu
             if (liveStatus?.status === 'COMPLETED' && payment.status === 'PENDING') {
                 const liveData = liveStatus.result;
                 const normalizedStatus = liveData?.status?.toLowerCase();
-                const isPaid = normalizedStatus === 'success' || normalizedStatus === 'completed';
+                const isPaid = normalizedStatus === 'success' || normalizedStatus === 'completed' || normalizedStatus === 'paid';
                 const isFailed = normalizedStatus === 'failed' || normalizedStatus === 'error';
 
                 if (isPaid && liveData) {

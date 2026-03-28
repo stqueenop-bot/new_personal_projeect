@@ -101,7 +101,7 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
         sseService.broadcastStatus(data.orderId, OrderStatus.COMPLETED);
         // If it's just an invalid quantity, send to SUCCESS bot (main bot) as requested
         // but with a flag that it was not placed on SMM.)
-        if ((serviceName?.toLowerCase() !== 'instagram') || (serviceCategory && !isValidQuantity(data.serviceId, data.quantity))) {
+        if ((!serviceName?.toLowerCase().includes('instagram')) || (serviceCategory && !isValidQuantity(data.serviceId, data.quantity))) {
             await rabbitMQService.publishToQueue(QUEUES.ORDER_NOTIFY, {
                 type: 'SUCCESS',
                 payload: {
@@ -205,7 +205,7 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
             status: OrderStatus.PENDING,
         },
         update: {
-            status: OrderStatus.PENDING,
+            status: OrderStatus.PROCESSING,
             provider,
         },
     });
@@ -231,7 +231,7 @@ async function handlePaymentSuccess(msg: ConsumeMessage): Promise<void> {
             where: { orderId: data.orderId },
             data: {
                 smmOrderId: String(smmOrderId),
-                status: OrderStatus.PROCESSING,
+                status: OrderStatus.COMPLETED,
                 charge,
             },
         });
