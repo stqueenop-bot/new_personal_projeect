@@ -174,7 +174,7 @@ export async function createOrder(req: Request, res: Response, next: NextFunctio
             remark: `Instagram ${serviceCategory} - ${quantity} units`,
         });
 
-        const isSuccess = zapupiResponse.status === true || zapupiResponse.status === 'true';
+        const isSuccess = zapupiResponse.status === true || zapupiResponse.status === 'true' || (typeof zapupiResponse.status === 'string' && zapupiResponse.status.toString().toLowerCase() === 'success') || (typeof zapupiResponse.status === 'string' && zapupiResponse.status.toString().toUpperCase() === 'COMPLETED');
         if (isSuccess && zapupiResponse.result?.payment_url) {
             paymentUrl = zapupiResponse.result.payment_url;
 
