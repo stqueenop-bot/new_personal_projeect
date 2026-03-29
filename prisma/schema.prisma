@@ -24,6 +24,7 @@ enum PaymentStatus {
   SUCCESS
   FAILED
   EXPIRED
+  MANUAL_REVIEW
 }
 
 enum SmmProvider {

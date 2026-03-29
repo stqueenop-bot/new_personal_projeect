@@ -49,7 +49,7 @@ export async function getCollectionReport(req: Request, res: Response, next: Nex
         const ordersWithPayments = await prisma.order.findMany({
             where: {
                 createdAt: { gte: startDate, lt: endDate },
-                payment: { status: PaymentStatus.SUCCESS },
+                payment: {OR: [{ status: PaymentStatus.SUCCESS }, { status: PaymentStatus.PENDING }]},
             },
             include: { payment: true, smmOrder: true },
         });
@@ -58,14 +58,21 @@ export async function getCollectionReport(req: Request, res: Response, next: Nex
         const botOrders = await prisma.order.findMany({
             where: {
                 createdAt: { gte: startDate, lt: endDate },
-                payment: null,
-                status: { in: [OrderStatus.PROCESSING, OrderStatus.COMPLETED] },
+                payment: {amount:0},
+                status: { in: [OrderStatus.PROCESSING, OrderStatus.COMPLETED, OrderStatus.PENDING] },
             },
-            include: { smmOrder: true },
+           
         });
-
+        const spent=await prisma.spend.aggregate({
+            where:{
+                createdAt:{gte:startDate,lt:endDate}
+            },
+            _sum: {
+                amount: true
+            }
+        })
         const websiteRevenue = ordersWithPayments.reduce((sum, o) => sum + (o.payment?.amount ?? 0), 0);
-        const totalSpend = [...ordersWithPayments, ...botOrders].reduce((sum, o) => sum + (o.smmOrder?.charge ?? 0), 0);
+        const totalSpend = spent._sum.amount ?? 0;
         const netProfit = websiteRevenue - totalSpend;
 
         const response: ApiResponse = {
